@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erwartungshorizont Generator - Englisch Abitur NRW</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .input-section, .output-section {
+            margin-bottom: 30px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        textarea, input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        
+        textarea {
+            resize: vertical;
+        }
+        
+        textarea:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .button-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .clear-btn {
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .clear-btn:hover {
+            background: #e0e0e0;
+        }
+        
+        .output {
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 200px;
+        }
+        
+        .output.empty {
+            color: #999;
+            font-style: italic;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .download-btn {
+            background: #4CAF50;
+            color: white;
+            margin-top: 15px;
+        }
+        
+        .download-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        
+        .info-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .info-box h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .info-box p, .info-box ul {
+            color: #856404;
+        }
+        
+        .info-box ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        
+        .info-box li {
+            margin: 5px 0;
+        }
+
+        .api-key-section {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .api-key-section h3 {
+            color: #1976D2;
+            margin-bottom: 10px;
+        }
+
+        .api-key-section p {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .api-key-section a {
+            color: #2196F3;
+            font-weight: 600;
+        }
+
+        .preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .preview-table th, .preview-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .preview-table th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        .preview-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .preview-section {
+            margin: 30px 0;
+        }
+
+        .preview-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin: 20px 0 10px 0;
+        }
+
+        .preview-subtitle {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 15px 0 10px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 Erwartungshorizont Generator</h1>
+            <p>Englisch Abitur NRW Oberstufe</p>
+        </div>
+        
+        <div class="content">
+            <div class="info-box">
+                <h3>ℹ️ So funktioniert's:</h3>
+                <ul>
+                    <li>Füge deine Abituraufgabe oder deinen Text ein</li>
+                    <li>Klicke auf "Erwartungshorizont erstellen"</li>
+                    <li>Erhalte einen strukturierten Erwartungshorizont nach NRW-Kriterien</li>
+                    <li>Lade ihn als Word-Dokument (.doc) herunter</li>
+                </ul>
+            </div>
+            
+            <div class="input-section">
+                <label for="inputText">Aufgabentext eingeben:</label>
+                <textarea 
+                    id="inputText" 
+                    rows="10" 
+                    placeholder="Füge hier deine Abituraufgabe oder den zu analysierenden Text ein..."
+                ></textarea>
+                
+                <div class="button-container">
+                    <button class="generate-btn" onclick="generateErwartungshorizont()">
+                        ✨ Erwartungshorizont erstellen
+                    </button>
+                    <button class="clear-btn" onclick="clearAll()">
+                        🗑️ Alles löschen
+                    </button>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <label>Generierter Erwartungshorizont:</label>
+                <div id="output" class="output empty">
+                    Hier erscheint dein Erwartungshorizont...
+                </div>
+                <button class="download-btn hidden" onclick="downloadAsWord()" id="downloadBtn">
+                    📥 Als .doc herunterladen
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentContentData = null;
+
+        async function generateErwartungshorizont() {
+            const inputText = document.getElementById('inputText').value.trim();
+            const outputDiv = document.getElementById('output');
+            const generateBtn = document.querySelector('.generate-btn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            if (!inputText) {
+                alert('Bitte gib einen Text ein!');
+                return;
+            }
+            
+            generateBtn.disabled = true;
+            generateBtn.textContent = '⏳ Generiere...';
+            outputDiv.className = 'output loading';
+            outputDiv.innerHTML = 'Erwartungshorizont wird erstellt...';
+            downloadBtn.classList.add('hidden');
+            
+            try {
+                // Versuche zuerst das Backend (funktioniert nur wenn deployed)
+                let response;
+                let useBackend = true;
+                
+                try {
+                    response = await fetch('/api/generate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ inputText })
+                    });
+                    
+                    // Wenn 404, dann gibt es kein Backend (Preview-Modus)
+                    if (response.status === 404) {
+                        useBackend = false;
+                    }
+                } catch (e) {
+                    useBackend = false;
+                }
+                
+                let result;
+                
+                if (!useBackend) {
+                    // Fallback für Preview: Zeige Demo-Daten
+                    outputDiv.className = 'output';
+                    outputDiv.innerHTML = `
+                        <div style="padding: 20px; background: #fff3cd; border-radius: 10px; border-left: 4px solid #ffc107;">
+                            <h3 style="color: #856404; margin-bottom: 10px;">⚠️ Preview-Modus</h3>
+                            <p style="color: #856404; margin-bottom: 15px;">
+                                Du siehst gerade die Preview in Claude. Um die volle Funktionalität zu nutzen, 
+                                musst du die Website auf Vercel deployen (siehe Anleitung).
+                            </p>
+                            <p style="color: #856404; margin-bottom: 10px;"><strong>Demo-Beispiel:</strong></p>
+                        </div>
+                    `;
+                    
+                    // Demo-Daten für Preview
+                    currentContentData = {
+                        "teilaufgaben": [
+                            {
+                                "name": "Teilaufgabe 1",
+                                "typ": "Comprehension",
+                                "kriterien": [
+                                    {"nr": 1, "text": "schreibt einen Einleitungssatz.", "punkte": 2},
+                                    {"nr": 2, "text": "fasst die Hauptaussagen des Textes zusammen und erkennt zentrale Themen.", "punkte": 10},
+                                    {"nr": 3, "text": "erfüllt ein weiteres aufgabenbezogenes Kriterium.", "punkte": "(2)"}
+                                ]
+                            },
+                            {
+                                "name": "Teilaufgabe 2",
+                                "typ": "Analysis",
+                                "kriterien": [
+                                    {"nr": 1, "text": "verfasst einen passenden Überleitungssatz.", "punkte": 2},
+                                    {"nr": 2, "text": "analysiert sprachliche Mittel und deren Wirkung auf den Leser.", "punkte": 8},
+                                    {"nr": 3, "text": "verfasst ein Fazit, das die Analyseergebnisse zusammenfasst.", "punkte": 3},
+                                    {"nr": 4, "text": "erfüllt ein weiteres aufgabenbezogenes Kriterium.", "punkte": "(3)"}
+                                ]
+                            }
+                        ]
+                    };
+                    
+                    displayPreview(currentContentData);
+                    downloadBtn.classList.remove('hidden');
+                    generateBtn.disabled = false;
+                    generateBtn.textContent = '✨ Erwartungshorizont erstellen';
+                    return;
+                }
+                
+                result = await response.json();
+                
+                if (result.error) {
+                    throw new Error(result.error);
+                }
+                
+                currentContentData = result.data;
+                
+                displayPreview(currentContentData);
+                downloadBtn.classList.remove('hidden');
+                
+            } catch (error) {
+                outputDiv.className = 'output';
+                outputDiv.innerHTML = 'Fehler beim Generieren: ' + error.message + '<br><br>Bitte versuche es erneut.';
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.textContent = '✨ Erwartungshorizont erstellen';
+            }
+        }
+        
+        function displayPreview(data) {
+            const outputDiv = document.getElementById('output');
+            outputDiv.className = 'output';
+            
+            let html = '<div class="preview-section">';
+            html += '<div class="preview-title">Teil A: Inhaltliche Leistung</div>';
+            
+            let totalPoints = 0;
+            data.teilaufgaben.forEach(ta => {
+                html += `<div class="preview-subtitle">${ta.name} (${ta.typ})</div>`;
+                html += '<table class="preview-table">';
+                html += '<tr><th style="width:5%">Nr.</th><th style="width:65%">Anforderungen</th><th style="width:15%">max. Punkte</th><th style="width:15%">Erreichte Punkte</th></tr>';
+                html += '<tr><td colspan="4" style="font-weight:bold;">Die Schülerin/der Schüler...</td></tr>';
+                
+                ta.kriterien.forEach(k => {
+                    const punkteStr = typeof k.punkte === 'string' ? k.punkte : k.punkte.toString();
+                    html += `<tr><td>${k.nr}</td><td>${k.text}</td><td>${punkteStr}</td><td></td></tr>`;
+                    if (typeof k.punkte === 'number') totalPoints += k.punkte;
+                });
+                
+                html += `<tr style="font-weight:bold;background:#f0f0f0;"><td colspan="2">SUMME ${ta.name.toUpperCase()}</td><td colspan="2">${ta.kriterien.reduce((sum, k) => sum + (typeof k.punkte === 'number' ? k.punkte : 0), 0)}</td></tr>`;
+                html += '</table>';
+            });
+            
+            html += `<div class="preview-title">Summe inhaltliche Leistung Teil A: ${totalPoints} Punkte</div>`;
+            html += '<div style="margin-top:20px;padding:15px;background:#e3f2fd;border-radius:5px;color:#1976D2;">';
+            html += '✅ Der vollständige EWH mit allen Sprachkriterien wird in der .doc-Datei generiert';
+            html += '</div>';
+            html += '</div>';
+            
+            outputDiv.innerHTML = html;
+        }
+        
+        function downloadAsWord() {
+            if (!currentContentData) {
+                alert('Bitte erstelle zuerst einen Erwartungshorizont!');
+                return;
+            }
+            
+            const btn = document.getElementById('downloadBtn');
+            btn.disabled = true;
+            btn.textContent = '📄 Erstelle Word-Dokument...';
+            
+            try {
+                generateWordHTML(currentContentData);
+                btn.textContent = '✅ Heruntergeladen!';
+                setTimeout(() => {
+                    btn.textContent = '📥 Als .doc herunterladen';
+                    btn.disabled = false;
+                }, 2000);
+            } catch (error) {
+                alert('Fehler beim Erstellen: ' + error.message);
+                btn.textContent = '📥 Als .doc herunterladen';
+                btn.disabled = false;
+            }
+        }
+        
+        function generateWordHTML(contentData) {
+            let totalInhalt = 0;
+            contentData.teilaufgaben.forEach(ta => {
+                ta.kriterien.forEach(k => {
+                    if (typeof k.punkte === 'number') totalInhalt += k.punkte;
+                });
+            });
+            
+            let html = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Erwartungshorizont Englisch NRW</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2cm; }
+        h1 { font-size: 16pt; margin-bottom: 0.5cm; }
+        h2 { font-size: 14pt; margin-top: 0.8cm; margin-bottom: 0.3cm; }
+        h3 { font-size: 12pt; margin-top: 0.5cm; margin-bottom: 0.2cm; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 0.5cm; }
+        th, td { border: 1px solid black; padding: 8px; text-align: left; }
+        th { background-color: #f0f0f0; font-weight: bold; }
+        .sum-row { background-color: #e8e8e8; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Bewertungsbogen für: ___________________________</h1>
+    
+    <h2>Teil A: Inhaltliche Leistung</h2>`;
+            
+            contentData.teilaufgaben.forEach(ta => {
+                let taPoints = ta.kriterien.reduce((sum, k) => sum + (typeof k.punkte === 'number' ? k.punkte : 0), 0);
+                
+                html += `
+    <h3>${ta.name} (${ta.typ})</h3>
+    <table>
+        <tr>
+            <th style="width:5%">Nr.</th>
+            <th style="width:65%">Anforderungen</th>
+            <th style="width:15%">max. Punkte</th>
+            <th style="width:15%">Erreichte Punkte</th>
+        </tr>
+        <tr>
+            <td colspan="4"><strong>Die Schülerin/der Schüler...</strong></td>
+        </tr>`;
+                
+                ta.kriterien.forEach(k => {
+                    html += `
+        <tr>
+            <td>${k.nr}</td>
+            <td>${k.text}</td>
+            <td>${k.punkte}</td>
+            <td></td>
+        </tr>`;
+                });
+                
+                html += `
+        <tr class="sum-row">
+            <td colspan="2">SUMME ${ta.name.toUpperCase()}</td>
+            <td>${taPoints}</td>
+            <td></td>
+        </tr>
+    </table>`;
+            });
+            
+            html += `
+    <p style="font-weight:bold; margin-top:0.5cm;">Summe inhaltliche Leistung Teil A: ${totalInhalt} Punkte</p>
+    
+    <h2>Teil A: Sprachliche Leistung / Darstellungsleistung</h2>
+    
+    <h3>Kommunikative Textgestaltung</h3>
+    <table>
+        <tr>
+            <th style="width:5%">Nr.</th>
+            <th style="width:65%">Anforderungen: Der Schüler/Die Schülerin</th>
+            <th style="width:15%">max. Punkte</th>
+            <th style="width:15%">Erreichte Punkte</th>
+        </tr>
+        <tr><td>1</td><td>richtet seinen/ihren Text konsequent und explizit im Sinne der Aufgabenstellung auf die Intention und den/die Adressaten aus.</td><td>6</td><td></td></tr>
+        <tr><td>2</td><td>beachtet die Textsortenmerkmale der jeweils geforderten Zieltextformate.</td><td>4</td><td></td></tr>
+        <tr><td>3</td><td>erstellt einen sachgerecht strukturierten leserfreundlichen Text, u.a. durch sprachliche Verknüpfungen, Absätze als erkennbare Sinnabschnitte.</td><td>4</td><td></td></tr>
+        <tr><td>4</td><td>formuliert hinreichend ausführlich, aber ohne unnötige Wiederholungen und Umständlichkeiten.</td><td>4</td><td></td></tr>
+        <tr><td>5</td><td>belegt seine Aussagen durch eine funktionale Verwendung von Verweisen und Zitaten.</td><td>3</td><td></td></tr>
+        <tr class="sum-row"><td colspan="2">SUMME Kommunikative Textgestaltung</td><td>21</td><td></td></tr>
+    </table>
+    
+    <h3>Ausdrucksvermögen / Verfügbarkeit sprachlicher Mittel</h3>
+    <table>
+        <tr>
+            <th style="width:5%">Nr.</th>
+            <th style="width:65%">Anforderungen: Der Schüler/Die Schülerin</th>
+            <th style="width:15%">max. Punkte</th>
+            <th style="width:15%">Erreichte Punkte</th>
+        </tr>
+        <tr><td>1</td><td>löst sich vom Ausgangstext und formuliert eigenständig.</td><td>4</td><td></td></tr>
+        <tr><td>2</td><td>verwendet einen sachlich wie stilistisch angemessenen und differenzierten allgemeinen und thematischen Wortschatz.</td><td>5</td><td></td></tr>
+        <tr><td>3</td><td>verwendet funktional einen sachlich wie stilistisch angemessenen und differenzierten Funktions- und Interpretationswortschatz.</td><td>5</td><td></td></tr>
+        <tr><td>4</td><td>verwendet einen variablen und dem jeweiligen Zieltextformat angemessenen Satzbau.</td><td>7</td><td></td></tr>
+        <tr class="sum-row"><td colspan="2">SUMME Ausdrucksvermögen/Verfügbarkeit sprachl. Mittel</td><td>21</td><td></td></tr>
+    </table>
+    
+    <h3>Sprachrichtigkeit</h3>
+    <table>
+        <tr>
+            <th style="width:5%">Nr.</th>
+            <th style="width:65%">Anforderungen: Der Schüler/Die Schülerin<br>beachtet die Normen der sprachlichen Korrektheit im Sinne einer gelingenden Kommunikation.</th>
+            <th style="width:15%">max. Punkte</th>
+            <th style="width:15%">Erreichte Punkte</th>
+        </tr>
+        <tr><td>1</td><td>Wortschatz</td><td>8</td><td></td></tr>
+        <tr><td>2</td><td>Grammatik</td><td>8</td><td></td></tr>
+        <tr><td>3</td><td>Orthographie (Rechtschreibung und Zeichensetzung)</td><td>5</td><td></td></tr>
+        <tr class="sum-row"><td colspan="2">SUMME Sprachrichtigkeit</td><td>21</td><td></td></tr>
+    </table>
+    
+    <p style="font-weight:bold; margin-top:0.5cm;">SUMME SPRACHE TEIL A: 63 Punkte</p>
+    <p style="font-weight:bold; font-size:14pt; margin-top:0.5cm;">SUMME TEIL A GESAMT (Inhalt + Sprache): ${totalInhalt + 63} Punkte</p>
+    
+</body>
+</html>`;
+            
+            const blob = new Blob(['\ufeff', html], {
+                type: 'application/msword'
+            });
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'Erwartungshorizont_Englisch_NRW.doc';
+            link.click();
+        }
+        
+        function clearAll() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('output').className = 'output empty';
+            document.getElementById('output').innerHTML = 'Hier erscheint dein Erwartungshorizont...';
+            document.getElementById('downloadBtn').classList.add('hidden');
+            currentContentData = null;
+        }
+    </script>
+</body>
+</html>
