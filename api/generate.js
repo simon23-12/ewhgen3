@@ -43,32 +43,49 @@ export default async function handler(req, res) {
         model: 'anthropic/claude-3.5-sonnet',
         messages: [{
           role: 'user',
-          content: `Du bist ein erfahrener Englischlehrer in NRW. Erstelle NUR den INHALTLICHEN Teil eines Erwartungshorizonts für die folgende Aufgabe:
+          content: `Du bist ein erfahrener Englischlehrer in NRW. Analysiere den folgenden Text und erstelle einen detaillierten Erwartungshorizont.
 
+TEXT:
 "${inputText}"
 
 WICHTIG: 
-1. Antworte NUR mit JSON im folgenden Format (keine anderen Texte, keine Markdown-Formatierung!):
+1. Erkenne die Textsorte (speech/article/essay/etc.) und den Autor/die Quelle aus dem Text
+2. Extrahiere KONKRETE Beispiele für rhetorische Mittel direkt aus dem Text (mit Zeilenangaben wenn möglich)
+3. Antworte NUR mit JSON im folgenden Format (keine anderen Texte!):
+
 {
   "teilaufgaben": [
     {
       "name": "Teilaufgabe 1",
       "typ": "Comprehension",
       "kriterien": [
-        {"nr": 1, "text": "schreibt einen Einleitungssatz.", "punkte": 2},
-        {"nr": 2, "text": "erkennt, dass...", "punkte": 10},
+        {"nr": 1, "text": "schreibt einen Einleitungssatz und benennt Textsorte (z.B. speech/article), Autor und Thema.", "punkte": 2},
+        {"nr": 2, "text": "erkennt die Hauptaussagen und zentralen Argumente des Textes: [liste hier spezifische Punkte auf basierend auf dem Text]", "punkte": 10},
         {"nr": 3, "text": "erfüllt ein weiteres aufgabenbezogenes Kriterium.", "punkte": "(2)"}
+      ]
+    },
+    {
+      "name": "Teilaufgabe 2",
+      "typ": "Analysis",
+      "kriterien": [
+        {"nr": 1, "text": "verfasst einen passenden Überleitungssatz.", "punkte": 2},
+        {"nr": 2, "text": "analysiert die Wortwahl und deren Effekte, z.B.: [nenne konkrete Beispiele aus dem Text]", "punkte": 4},
+        {"nr": 3, "text": "analysiert rhetorische Mittel mit konkreten Textbeispielen, z.B.: [extrahiere Beispiele: Parallelismus in 'we want...we want' (ll. X-Y), Anaphern, metaphors, etc.]", "punkte": 8},
+        {"nr": 4, "text": "verfasst ein Fazit zur Wirkung der sprachlichen Mittel.", "punkte": 3},
+        {"nr": 5, "text": "erfüllt ein weiteres aufgabenbezogenes Kriterium.", "punkte": "(3)"}
       ]
     }
   ]
 }
 
-2. Sei SEHR spezifisch bei den Kriterien - nenne konkrete Inhalte, die analysiert werden sollen
-3. Die Punktzahlen sollten sinnvoll sein (Einleitung: 2, Hauptkriterien: 8-12, Zusatz: (2-3))
-4. Erstelle 2-4 Teilaufgaben je nach Komplexität der Aufgabe
-5. Jede Teilaufgabe braucht einen passenden Typ (Comprehension, Analysis, Evaluation, Re-creation, etc.)
+Sei SEHR spezifisch:
+- Erkenne automatisch die Textsorte (speech, article, essay, letter, etc.)
+- Nenne den Autor/die Quelle wenn im Text erwähnt
+- Extrahiere konkrete Zitate für rhetorische Mittel
+- Punktzahlen: Einleitung 2, Hauptkriterien 8-12, Zusatz (2-3)
+- Erstelle 2-4 Teilaufgaben je nach Komplexität
 
-ANTWORTE NUR MIT DEM JSON - KEINE ZUSÄTZLICHEN TEXTE!`
+ANTWORTE NUR MIT DEM JSON!`
         }]
       })
     });
