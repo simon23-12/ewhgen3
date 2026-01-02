@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -298,6 +299,122 @@
         .hidden {
             display: none;
         }
+
+        /* Vorgaben Section Styles */
+        .vorgaben-section {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        .vorgaben-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .pdf-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .pdf-item {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .pdf-item:hover {
+            border-color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .pdf-item-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .pdf-item-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 0.95em;
+        }
+
+        .pdf-item-desc {
+            color: #666;
+            font-size: 0.85em;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+
+        .modal-content {
+            position: relative;
+            margin: 2% auto;
+            width: 90%;
+            height: 90%;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.3em;
+        }
+
+        .modal-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 2em;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+
+        .pdf-viewer {
+            width: 100%;
+            height: calc(100% - 80px);
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -322,6 +439,39 @@
                     <li>Lade ihn als Word-Dokument (.docx/.odt) oder PDF herunter</li>
                     <li>☕ Lade Simon als Dank mal irgendwann auf einen Kaffee ein</li>
                 </ul>
+            </div>
+
+            <!-- Neue Vorgaben Section -->
+            <div class="vorgaben-section">
+                <h3>📚 Vorgaben & Konstruktionshinweise</h3>
+                <p style="color: #666; margin-bottom: 15px;">Klicke auf ein Dokument, um es direkt im Browser zu öffnen:</p>
+                <div class="pdf-list">
+                    <div class="pdf-item" onclick="openPDF('vorgaben/englisch_abi_2027_vorgaben.pdf', 'Englisch Abitur 2027 - Vorgaben')">
+                        <div class="pdf-item-icon">📘</div>
+                        <div class="pdf-item-title">Abitur 2027 Vorgaben</div>
+                        <div class="pdf-item-desc">Englisch Abitur 2027</div>
+                    </div>
+                    <div class="pdf-item" onclick="openPDF('vorgaben/englisch_abi_2028_vorgaben.pdf', 'Englisch Abitur 2028 - Vorgaben')">
+                        <div class="pdf-item-icon">📗</div>
+                        <div class="pdf-item-title">Abitur 2028 Vorgaben</div>
+                        <div class="pdf-item-desc">Englisch Abitur 2028</div>
+                    </div>
+                    <div class="pdf-item" onclick="openPDF('vorgaben/konstruktionshinweise_englisch_gk_lk.pdf', 'Konstruktionshinweise Englisch GK/LK')">
+                        <div class="pdf-item-icon">📋</div>
+                        <div class="pdf-item-title">Konstruktionshinweise</div>
+                        <div class="pdf-item-desc">GK & LK Englisch</div>
+                    </div>
+                    <div class="pdf-item" onclick="openPDF('vorgaben/konstruktionshinweise_klausuren.pdf', 'Konstruktionshinweise Klausuren')">
+                        <div class="pdf-item-icon">📑</div>
+                        <div class="pdf-item-title">Konstruktionshinweise Klausuren</div>
+                        <div class="pdf-item-desc">Allgemeine Hinweise</div>
+                    </div>
+                    <div class="pdf-item" onclick="openPDF('vorgaben/operatorenuebersicht.pdf', 'Operatorenübersicht')">
+                        <div class="pdf-item-icon">🔤</div>
+                        <div class="pdf-item-title">Operatorenübersicht</div>
+                        <div class="pdf-item-desc">Alle Operatoren erklärt</div>
+                    </div>
+                </div>
             </div>
             
             <div class="input-section">
@@ -362,10 +512,61 @@
         </div>
     </div>
 
+    <!-- PDF Viewer Modal -->
+    <div id="pdfModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="pdfTitle">PDF Dokument</h2>
+                <button class="modal-close" onclick="closePDF()">&times;</button>
+            </div>
+            <iframe id="pdfViewer" class="pdf-viewer"></iframe>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         let currentContentData = null;
+
+        // PDF Modal Functions
+        function openPDF(pdfPath, title) {
+            const modal = document.getElementById('pdfModal');
+            const viewer = document.getElementById('pdfViewer');
+            const titleElement = document.getElementById('pdfTitle');
+            
+            titleElement.textContent = title;
+            viewer.src = pdfPath;
+            modal.style.display = 'block';
+            
+            // Prevent body scroll when modal is open
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePDF() {
+            const modal = document.getElementById('pdfModal');
+            const viewer = document.getElementById('pdfViewer');
+            
+            modal.style.display = 'none';
+            viewer.src = '';
+            
+            // Restore body scroll
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('pdfModal');
+            if (event.target === modal) {
+                closePDF();
+            }
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closePDF();
+            }
+        });
 
         async function generateErwartungshorizont() {
             const inputText = document.getElementById('inputText').value.trim();
@@ -399,103 +600,119 @@
                 // Debug: Zeige Response Status
                 console.log('Response Status:', response.status);
                 
-                // Wenn 404, dann gibt es kein Backend (Preview-Modus)
-                if (response.status === 404) {
-                    throw new Error('Backend nicht gefunden. Stelle sicher, dass die api/generate.js Datei hochgeladen wurde.');
+                if (!response.ok) {
+                    throw new Error(`Server Error: ${response.status}`);
                 }
                 
-                // Hole Response als Text erst
-                const responseText = await response.text();
-                console.log('Response Text:', responseText);
+                const data = await response.json();
                 
-                // Versuche JSON zu parsen
-                let result;
-                try {
-                    result = JSON.parse(responseText);
-                } catch (parseError) {
-                    throw new Error(`Backend-Antwort ist kein gültiges JSON. Antwort: ${responseText.substring(0, 200)}`);
+                if (!data.success) {
+                    throw new Error(data.error || 'Fehler bei der Generierung');
                 }
                 
-                if (result.error) {
-                    throw new Error(result.error);
-                }
-                
-                currentContentData = result.data;
-                
-                displayPreview(currentContentData);
+                currentContentData = data.data;
+                displayErwartungshorizont(currentContentData);
                 downloadButtons.classList.remove('hidden');
                 
             } catch (error) {
+                console.error('Error:', error);
                 outputDiv.className = 'output';
-                outputDiv.innerHTML = 'Fehler beim Generieren: ' + error.message + '<br><br>Bitte versuche es erneut.';
+                outputDiv.innerHTML = `
+                    <p style="color: #d32f2f; font-weight: 600;">❌ Fehler bei der Generierung</p>
+                    <p style="color: #666; margin-top: 10px;">${error.message}</p>
+                    <p style="color: #666; margin-top: 10px; font-size: 0.9em;">
+                        Mögliche Ursachen:<br>
+                        - API nicht erreichbar<br>
+                        - OpenRouter API-Key fehlt oder ungültig<br>
+                        - Netzwerkprobleme
+                    </p>
+                `;
             } finally {
                 generateBtn.disabled = false;
                 generateBtn.textContent = '✨ Erwartungshorizont erstellen';
             }
         }
         
-        function displayPreview(data) {
+        function displayErwartungshorizont(contentData) {
             const outputDiv = document.getElementById('output');
             outputDiv.className = 'output';
             
-            let html = '<div class="preview-section">';
-            html += '<div class="preview-title">Teil A: Inhaltliche Leistung</div>';
+            let html = '';
             
-            let totalPoints = 0;
-            data.teilaufgaben.forEach(ta => {
-                html += `<div class="preview-subtitle">${ta.name} (${ta.typ})</div>`;
-                html += '<table class="preview-table">';
-                html += '<tr><th style="width:5%">Nr.</th><th style="width:65%">Anforderungen</th><th style="width:15%">max. Punkte</th><th style="width:15%">Erreichte Punkte</th></tr>';
-                html += '<tr><td colspan="4" style="font-weight:bold;">Die Schülerin/der Schüler...</td></tr>';
+            contentData.teilaufgaben.forEach((teilaufgabe, idx) => {
+                html += `
+                    <div class="preview-section">
+                        <div class="preview-title">${teilaufgabe.name}</div>
+                        <div class="preview-subtitle">Typ: ${teilaufgabe.typ}</div>
+                        <table class="preview-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%">Nr.</th>
+                                    <th style="width: 65%">Anforderung</th>
+                                    <th style="width: 15%">Punkte</th>
+                                    <th style="width: 15%">Erreicht</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
                 
-                ta.kriterien.forEach(k => {
-                    const punkteStr = typeof k.punkte === 'string' ? k.punkte : k.punkte.toString();
-                    html += `<tr><td>${k.nr}</td><td>${k.text}</td><td>${punkteStr}</td><td></td></tr>`;
-                    if (typeof k.punkte === 'number') totalPoints += k.punkte;
+                teilaufgabe.kriterien.forEach(kriterium => {
+                    html += `
+                        <tr>
+                            <td>${kriterium.nr}</td>
+                            <td>${kriterium.text}</td>
+                            <td>${kriterium.punkte}</td>
+                            <td></td>
+                        </tr>
+                    `;
                 });
                 
-                html += `<tr style="font-weight:bold;background:#f0f0f0;"><td colspan="2">SUMME ${ta.name.toUpperCase()}</td><td colspan="2">${ta.kriterien.reduce((sum, k) => sum + (typeof k.punkte === 'number' ? k.punkte : 0), 0)}</td></tr>`;
-                html += '</table>';
+                const summe = teilaufgabe.kriterien.reduce((sum, k) => {
+                    return sum + (typeof k.punkte === 'number' ? k.punkte : 0);
+                }, 0);
+                
+                html += `
+                            <tr style="background: #f0f0f0; font-weight: bold;">
+                                <td colspan="2">Summe ${teilaufgabe.name}</td>
+                                <td>${summe}</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                `;
             });
-            
-            html += `<div class="preview-title">Summe inhaltliche Leistung Teil A: ${totalPoints} Punkte</div>`;
-            html += '<div style="margin-top:20px;padding:15px;background:#e3f2fd;border-radius:5px;color:#1976D2;">';
-            html += '✅ Der vollständige EWH mit allen Sprachkriterien wird in der .doc-Datei generiert';
-            html += '</div>';
-            html += '</div>';
             
             outputDiv.innerHTML = html;
         }
         
         function downloadAsDocx() {
             if (!currentContentData) {
-                alert('Bitte erstelle zuerst einen Erwartungshorizont!');
+                alert('Bitte erst einen Erwartungshorizont erstellen!');
                 return;
             }
             generateWordHTML(currentContentData, 'docx');
         }
-
+        
         function downloadAsOdt() {
             if (!currentContentData) {
-                alert('Bitte erstelle zuerst einen Erwartungshorizont!');
+                alert('Bitte erst einen Erwartungshorizont erstellen!');
                 return;
             }
             generateWordHTML(currentContentData, 'odt');
         }
-
+        
         async function downloadAsPdf() {
             if (!currentContentData) {
-                alert('Bitte erstelle zuerst einen Erwartungshorizont!');
+                alert('Bitte erst einen Erwartungshorizont erstellen!');
                 return;
             }
             
-            // Erstelle temporäres HTML für PDF
+            const { jsPDF } = window.jspdf;
             const tempDiv = document.createElement('div');
             tempDiv.style.position = 'absolute';
             tempDiv.style.left = '-9999px';
             tempDiv.style.width = '210mm';
-            tempDiv.style.padding = '20mm';
-            tempDiv.style.backgroundColor = 'white';
             tempDiv.innerHTML = generatePdfContent(currentContentData);
             document.body.appendChild(tempDiv);
             
@@ -506,7 +723,6 @@
                     logging: false
                 });
                 
-                const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF('p', 'mm', 'a4');
                 const imgData = canvas.toDataURL('image/png');
                 const imgWidth = 210;
