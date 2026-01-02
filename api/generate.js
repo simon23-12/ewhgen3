@@ -1,12 +1,12 @@
-// api/generate.js - Vercel Serverless Function mit Google Gemini
+// api/generate.js
 export default async function handler(req, res) {
-  // CORS Headers für alle Anfragen
-  res.setHeader('Access-Control-Allow-Credentials', true);
+  // CORS Headers - WICHTIG für Vercel!
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST,PUT');
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 
-  // Handle OPTIONS request (CORS preflight)
+  // Handle OPTIONS (Preflight)
   if (req.method === 'OPTIONS') {
     res.status(200).end();
     return;
@@ -14,24 +14,27 @@ export default async function handler(req, res) {
 
   // Nur POST erlauben
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(405).json({ 
+      error: 'Method not allowed',
+      allowedMethods: ['POST']
+    });
   }
 
   try {
+    // Body parsen
     const { inputText } = req.body;
 
-    if (!inputText) {
-      return res.status(400).json({ error: 'inputText erforderlich' });
+    if (!inputText || inputText.trim() === '') {
+      return res.status(400).json({ 
+        success: false,
+        error: 'inputText ist erforderlich und darf nicht leer sein' 
+      });
     }
 
-    // Google Gemini API Key aus Umgebungsvariable (SICHER!)
-    const apiKey = process.env.GEMINI_API_KEY || 'AIzaSyDz_BUoWdUuw56UUEnZ7DF8TAau7s60OJs';
+    // API Key aus Environment oder Fallback
+    const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyDz_BUoWdUuw56UUEnZ7DF8TAau7s60OJs';
 
-    if (!apiKey) {
-      return res.status(500).json({ error: 'API-Key nicht konfiguriert' });
-    }
-
-    // Prompt für Gemini
+    // Prompt erstellen
     const prompt = `Du bist ein erfahrener Englischlehrer in NRW. Analysiere den folgenden Text und erstelle einen detaillierten Erwartungshorizont.
 
 TEXT:
@@ -76,24 +79,18 @@ Sei SEHR spezifisch:
 
 ANTWORTE NUR MIT DEM JSON!`;
 
-    // Google Gemini API Call
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+    // Google Gemini API aufrufen
+    const geminiResponse = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: prompt
-                }
-              ]
-            }
-          ],
+          contents: [{
+            parts: [{ text: prompt }]
+          }],
           generationConfig: {
             temperature: 0.7,
             maxOutputTokens: 2048,
@@ -104,42 +101,52 @@ ANTWORTE NUR MIT DEM JSON!`;
       }
     );
 
-    const data = await response.json();
-
-    // Fehlerbehandlung
-    if (!response.ok || !data.candidates || data.candidates.length === 0) {
-      console.error('Gemini API Error:', data);
+    if (!geminiResponse.ok) {
+      const errorData = await geminiResponse.json().catch(() => ({}));
+      console.error('Gemini API Error:', errorData);
       return res.status(500).json({ 
-        error: data.error?.message || 'Fehler bei der KI-Generierung',
-        details: data
+        success: false,
+        error: 'Fehler beim Aufruf der Google API',
+        details: errorData.error?.message || 'Unbekannter Fehler'
       });
     }
 
-    // Extrahiere den Text aus Gemini's Antwort
-    let responseText = data.candidates[0].content.parts[0].text;
+    const geminiData = await geminiResponse.json();
+
+    // Validierung
+    if (!geminiData.candidates || geminiData.candidates.length === 0) {
+      return res.status(500).json({ 
+        success: false,
+        error: 'Keine Antwort von der KI erhalten'
+      });
+    }
+
+    // Text extrahieren
+    let responseText = geminiData.candidates[0].content.parts[0].text;
     
-    // Bereinige von Markdown
+    // JSON bereinigen
     responseText = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
     
-    // Finde JSON im Text
+    // JSON finden
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       responseText = jsonMatch[0];
     }
 
-    // Parse JSON
+    // JSON parsen
     let contentData;
     try {
       contentData = JSON.parse(responseText);
     } catch (parseError) {
       console.error('JSON Parse Error:', parseError);
-      console.error('Raw response:', responseText);
       return res.status(500).json({ 
+        success: false,
         error: 'Fehler beim Parsen der KI-Antwort',
         rawResponse: responseText.substring(0, 500)
       });
     }
 
+    // Erfolgreiche Antwort
     return res.status(200).json({ 
       success: true, 
       data: contentData,
@@ -147,10 +154,11 @@ ANTWORTE NUR MIT DEM JSON!`;
     });
 
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Server Error:', error);
     return res.status(500).json({ 
-      error: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      success: false,
+      error: 'Interner Serverfehler',
+      message: error.message
     });
   }
 }
