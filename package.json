@@ -1,0 +1,9 @@
+{
+  "name": "ewhgen3",
+  "version": "1.0.0",
+  "description": "Erwartungshorizont Generator für Englisch Abitur NRW",
+  "type": "module",
+  "engines": {
+    "node": ">=18.x"
+  }
+}
