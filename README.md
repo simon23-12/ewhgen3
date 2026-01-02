@@ -27,13 +27,25 @@ cp vercel.json vercel.json
 cp index.html index.html
 ```
 
-### 2. Vercel Environment Variable setzen (Optional)
+### 2. Google Gemini API Key erstellen
 
-Dashboard → Settings → Environment Variables:
+1. Gehe zu [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Melde dich mit deinem Google-Konto an
+3. Klicke auf "Create API Key"
+4. Wähle ein Google Cloud Projekt oder erstelle ein neues
+5. Kopiere den generierten API Key
+
+### 3. Vercel Environment Variable setzen (WICHTIG!)
+
+Im Vercel Dashboard → Dein Projekt → Settings → Environment Variables:
 - Name: `GEMINI_API_KEY`
-- Value: `AIzaSyDz_BUoWdUuw56UUEnZ7DF8TAau7s60OJs`
+- Value: `[Dein kopierter API Key]`
+- Environment: Production, Preview, Development (alle auswählen)
+- Klicke "Save"
 
-### 3. Git Push
+**⚠️ WICHTIG:** Ohne diesen Schritt funktioniert die App nicht!
+
+### 4. Git Push
 
 ```bash
 git add .
@@ -41,7 +53,7 @@ git commit -m "Add vercel.json and fix API structure"
 git push
 ```
 
-### 4. Testen
+### 5. Testen
 
 Nach dem Deployment:
 - Frontend: `https://ewhgen3.vercel.app/`

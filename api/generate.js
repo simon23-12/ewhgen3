@@ -30,8 +30,16 @@ export default async function handler(req, res) {
       });
     }
 
-    // API Key aus Environment oder Fallback
-    const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyDz_BUoWdUuw56UUEnZ7DF8TAau7s60OJs';
+    // API Key aus Environment Variable
+    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+
+    if (!GEMINI_API_KEY) {
+      return res.status(500).json({
+        success: false,
+        error: 'Server-Konfigurationsfehler',
+        details: 'GEMINI_API_KEY environment variable is not set. Please configure it in your Vercel project settings.'
+      });
+    }
 
     // Prompt erstellen
     const prompt = `Du bist ein erfahrener Englischlehrer in NRW. Analysiere den folgenden Text und erstelle einen detaillierten Erwartungshorizont.
@@ -102,11 +110,21 @@ ANTWORTE NUR MIT DEM JSON!`;
 
     if (!geminiResponse.ok) {
       const errorData = await geminiResponse.json().catch(() => ({}));
-      console.error('Gemini API Error:', errorData);
-      return res.status(500).json({ 
+      console.error('Gemini API Error:', {
+        status: geminiResponse.status,
+        statusText: geminiResponse.statusText,
+        errorData
+      });
+      return res.status(500).json({
         success: false,
         error: 'Fehler beim Aufruf der Google API',
-        details: errorData.error?.message || 'Unbekannter Fehler'
+        details: errorData.error?.message || `HTTP ${geminiResponse.status}: ${geminiResponse.statusText}`,
+        status: geminiResponse.status,
+        hint: geminiResponse.status === 403
+          ? 'API key might be invalid or quota exceeded. Check your Gemini API key in Vercel environment variables.'
+          : geminiResponse.status === 429
+          ? 'Rate limit exceeded. Gemini free tier allows 15 requests per minute.'
+          : 'Check Vercel logs for more details.'
       });
     }
 
