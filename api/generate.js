@@ -42,49 +42,46 @@ export default async function handler(req, res) {
     }
 
     // Prompt erstellen
-    const prompt = `Du bist ein erfahrener Englischlehrer in NRW. Analysiere den folgenden Text und erstelle einen detaillierten Erwartungshorizont.
+    const prompt = `Du bist ein Erwartungshorizont-Generator für Englisch Abitur in NRW.
 
-TEXT:
-"${inputText}"
+AUFGABE: Erstelle einen Erwartungshorizont für folgenden Text:
 
-WICHTIG: 
-1. Erkenne die Textsorte (speech/article/essay/etc.) und den Autor/die Quelle aus dem Text
-2. Extrahiere KONKRETE Beispiele für rhetorische Mittel direkt aus dem Text (mit Zeilenangaben wenn möglich)
-3. Antworte NUR mit JSON im folgenden Format (keine anderen Texte!):
+${inputText}
 
+ANWEISUNG: Antworte AUSSCHLIESSLICH mit validem JSON. Keine Erklärungen, keine Markdown-Formatierung.
+
+FORMAT:
 {
   "teilaufgaben": [
     {
-      "name": "Teilaufgabe 1",
+      "name": "Teilaufgabe 1: Comprehension",
       "typ": "Comprehension",
       "kriterien": [
-        {"nr": 1, "text": "schreibt einen Einleitungssatz und benennt Textsorte (z.B. speech/article), Autor und Thema.", "punkte": 2},
-        {"nr": 2, "text": "erkennt die Hauptaussagen und zentralen Argumente des Textes: [liste hier spezifische Punkte auf basierend auf dem Text]", "punkte": 10},
-        {"nr": 3, "text": "erfüllt ein weiteres aufgabenbezogenes Kriterium.", "punkte": "(2)"}
+        {"nr": 1, "text": "Einleitungssatz: Textsorte, Autor, Thema", "punkte": 2},
+        {"nr": 2, "text": "Hauptaussagen und Argumente", "punkte": 10},
+        {"nr": 3, "text": "Weiteres Kriterium", "punkte": "(2)"}
       ]
     },
     {
-      "name": "Teilaufgabe 2",
+      "name": "Teilaufgabe 2: Analysis",
       "typ": "Analysis",
       "kriterien": [
-        {"nr": 1, "text": "verfasst einen passenden Überleitungssatz.", "punkte": 2},
-        {"nr": 2, "text": "analysiert die Wortwahl und deren Effekte, z.B.: [nenne konkrete Beispiele aus dem Text]", "punkte": 4},
-        {"nr": 3, "text": "analysiert rhetorische Mittel mit konkreten Textbeispielen, z.B.: [extrahiere Beispiele: Parallelismus in 'we want...we want' (ll. X-Y), Anaphern, metaphors, etc.]", "punkte": 8},
-        {"nr": 4, "text": "verfasst ein Fazit zur Wirkung der sprachlichen Mittel.", "punkte": 3},
-        {"nr": 5, "text": "erfüllt ein weiteres aufgabenbezogenes Kriterium.", "punkte": "(3)"}
+        {"nr": 1, "text": "Ueberleitungssatz", "punkte": 2},
+        {"nr": 2, "text": "Wortwahl und Effekte", "punkte": 4},
+        {"nr": 3, "text": "Rhetorische Mittel mit Beispielen", "punkte": 8},
+        {"nr": 4, "text": "Fazit zur Wirkung", "punkte": 3},
+        {"nr": 5, "text": "Weiteres Kriterium", "punkte": "(3)"}
       ]
     }
   ]
 }
 
-Sei SEHR spezifisch:
-- Erkenne automatisch die Textsorte (speech, article, essay, letter, etc.)
-- Nenne den Autor/die Quelle wenn im Text erwähnt
-- Extrahiere konkrete Zitate für rhetorische Mittel
-- Punktzahlen: Einleitung 2, Hauptkriterien 8-12, Zusatz (2-3)
-- Erstelle 2-4 Teilaufgaben je nach Komplexität
-
-ANTWORTE NUR MIT DEM JSON!`;
+WICHTIG:
+- Erkenne Textsorte automatisch
+- Sei spezifisch bei Beispielen
+- Schliesse ALLE JSON-Klammern korrekt
+- Keine Sonderzeichen die JSON brechen
+- Erstelle 2-4 Teilaufgaben`;
 
     // Google Gemini API aufrufen
     const geminiResponse = await fetch(
@@ -100,9 +97,9 @@ ANTWORTE NUR MIT DEM JSON!`;
           }],
           generationConfig: {
             temperature: 0.7,
-            maxOutputTokens: 2048,
+            maxOutputTokens: 8192,
             topP: 0.95,
-            topK: 40
+            topK: 64
           }
         })
       }
