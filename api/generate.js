@@ -140,15 +140,18 @@ ANTWORTE NUR MIT DEM JSON!`;
 
     // Text extrahieren
     let responseText = geminiData.candidates[0].content.parts[0].text;
-    
-    // JSON bereinigen
-    responseText = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
-    
-    // JSON finden
+
+    // JSON bereinigen - entferne Markdown code blocks
+    responseText = responseText.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+
+    // JSON finden - nimm nur den ersten vollständigen JSON-Block
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       responseText = jsonMatch[0];
     }
+
+    // Zusätzliche Bereinigung: Entferne trailing commas vor ] oder }
+    responseText = responseText.replace(/,(\s*[}\]])/g, '$1');
 
     // JSON parsen
     let contentData;
@@ -156,10 +159,15 @@ ANTWORTE NUR MIT DEM JSON!`;
       contentData = JSON.parse(responseText);
     } catch (parseError) {
       console.error('JSON Parse Error:', parseError);
-      return res.status(500).json({ 
+      console.error('Problematic JSON (first 1000 chars):', responseText.substring(0, 1000));
+      console.error('Full response length:', responseText.length);
+
+      return res.status(500).json({
         success: false,
         error: 'Fehler beim Parsen der KI-Antwort',
-        rawResponse: responseText.substring(0, 500)
+        details: parseError.message,
+        rawResponse: responseText.substring(0, 1000),
+        hint: 'The AI returned invalid JSON. This might be due to trailing commas or malformed structure.'
       });
     }
 
