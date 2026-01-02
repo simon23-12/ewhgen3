@@ -196,14 +196,6 @@
         .btn-odt:hover {
             background: #075985;
         }
-
-        .btn-pdf {
-            background: #dc2626;
-        }
-
-        .btn-pdf:hover {
-            background: #b91c1c;
-        }
         
         .info-box {
             background: #fff3cd;
@@ -229,29 +221,6 @@
         
         .info-box li {
             margin: 5px 0;
-        }
-
-        .api-key-section {
-            background: #e3f2fd;
-            border-left: 4px solid #2196F3;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-        }
-
-        .api-key-section h3 {
-            color: #1976D2;
-            margin-bottom: 10px;
-        }
-
-        .api-key-section p {
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .api-key-section a {
-            color: #2196F3;
-            font-weight: 600;
         }
 
         .preview-table {
@@ -415,6 +384,17 @@
             height: calc(100% - 80px);
             border: none;
         }
+
+        .success-badge {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-left: 10px;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -424,7 +404,7 @@
                 <img src="https://leibniz-montessori.nrw.schule/logineo-news/instanz/image/2687" alt="Schullogo" class="school-logo">
                 <div class="header-text">
                     <h1>📝 Erwartungshorizont Generator</h1>
-                    <p>Englisch Abitur NRW Oberstufe</p>
+                    <p>Englisch Abitur NRW Oberstufe <span class="success-badge">🆓 Kostenlos mit Google AI</span></p>
                 </div>
             </div>
         </div>
@@ -436,12 +416,12 @@
                     <li>Füge deine Abituraufgabe oder deinen Text ein</li>
                     <li>Klicke auf "Erwartungshorizont erstellen"</li>
                     <li>Erhalte einen strukturierten Erwartungshorizont nach NRW-Kriterien</li>
-                    <li>Lade ihn als Word-Dokument (.docx/.odt) oder PDF herunter</li>
+                    <li>Lade ihn als Word-Dokument (.docx/.odt) herunter</li>
                     <li>☕ Lade Simon als Dank mal irgendwann auf einen Kaffee ein</li>
                 </ul>
             </div>
 
-            <!-- Neue Vorgaben Section -->
+            <!-- Vorgaben Section -->
             <div class="vorgaben-section">
                 <h3>📚 Vorgaben & Konstruktionshinweise</h3>
                 <p style="color: #666; margin-bottom: 15px;">Klicke auf ein Dokument, um es direkt im Browser zu öffnen:</p>
@@ -504,9 +484,6 @@
                     <button class="download-btn btn-odt" onclick="downloadAsOdt()">
                         📝 Als .odt herunterladen
                     </button>
-                    <button class="download-btn btn-pdf" onclick="downloadAsPdf()">
-                        📕 Als PDF herunterladen
-                    </button>
                 </div>
             </div>
         </div>
@@ -523,8 +500,6 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         let currentContentData = null;
 
@@ -580,25 +555,19 @@
             }
             
             generateBtn.disabled = true;
-            generateBtn.textContent = '⏳ Generiere...';
+            generateBtn.textContent = '⏳ Generiere mit Google AI...';
             outputDiv.className = 'output loading';
             outputDiv.innerHTML = 'Erwartungshorizont wird erstellt...';
             downloadButtons.classList.add('hidden');
             
             try {
-                // Versuche zuerst das Backend (funktioniert nur wenn deployed)
-                let response;
-                
-                response = await fetch('/api/generate', {
+                const response = await fetch('/api/generate', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ inputText })
                 });
-                
-                // Debug: Zeige Response Status
-                console.log('Response Status:', response.status);
                 
                 if (!response.ok) {
                     throw new Error(`Server Error: ${response.status}`);
@@ -623,8 +592,9 @@
                     <p style="color: #666; margin-top: 10px; font-size: 0.9em;">
                         Mögliche Ursachen:<br>
                         - API nicht erreichbar<br>
-                        - OpenRouter API-Key fehlt oder ungültig<br>
-                        - Netzwerkprobleme
+                        - Google Gemini API-Key fehlt oder ungültig<br>
+                        - Netzwerkprobleme<br>
+                        - Rate Limit erreicht (15 Anfragen/Minute)
                     </p>
                 `;
             } finally {
@@ -700,100 +670,6 @@
                 return;
             }
             generateWordHTML(currentContentData, 'odt');
-        }
-        
-        async function downloadAsPdf() {
-            if (!currentContentData) {
-                alert('Bitte erst einen Erwartungshorizont erstellen!');
-                return;
-            }
-            
-            const { jsPDF } = window.jspdf;
-            const tempDiv = document.createElement('div');
-            tempDiv.style.position = 'absolute';
-            tempDiv.style.left = '-9999px';
-            tempDiv.style.width = '210mm';
-            tempDiv.innerHTML = generatePdfContent(currentContentData);
-            document.body.appendChild(tempDiv);
-            
-            try {
-                const canvas = await html2canvas(tempDiv, {
-                    scale: 2,
-                    useCORS: true,
-                    logging: false
-                });
-                
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                const imgData = canvas.toDataURL('image/png');
-                const imgWidth = 210;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                
-                pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-                pdf.save('Erwartungshorizont_Englisch_NRW.pdf');
-            } catch (error) {
-                alert('Fehler beim PDF-Export: ' + error.message);
-            } finally {
-                document.body.removeChild(tempDiv);
-            }
-        }
-        
-        function generatePdfContent(contentData) {
-            let totalInhalt = 0;
-            contentData.teilaufgaben.forEach(ta => {
-                ta.kriterien.forEach(k => {
-                    if (typeof k.punkte === 'number') totalInhalt += k.punkte;
-                });
-            });
-            
-            let html = `
-                <div style="font-family: Arial, sans-serif;">
-                    <h1 style="font-size: 18pt; margin-bottom: 10px;">Bewertungsbogen für: ___________________________</h1>
-                    <h2 style="font-size: 16pt; margin-top: 20px; margin-bottom: 10px;">Teil A: Inhaltliche Leistung</h2>
-            `;
-            
-            contentData.teilaufgaben.forEach(ta => {
-                let taPoints = ta.kriterien.reduce((sum, k) => sum + (typeof k.punkte === 'number' ? k.punkte : 0), 0);
-                
-                html += `
-                    <h3 style="font-size: 14pt; margin-top: 15px; margin-bottom: 8px;">${ta.name} (${ta.typ})</h3>
-                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 10pt;">
-                        <tr style="background: #f0f0f0;">
-                            <th style="border: 1px solid black; padding: 6px; width: 5%;">Nr.</th>
-                            <th style="border: 1px solid black; padding: 6px; width: 65%;">Anforderungen</th>
-                            <th style="border: 1px solid black; padding: 6px; width: 15%;">max. Punkte</th>
-                            <th style="border: 1px solid black; padding: 6px; width: 15%;">Erreichte Punkte</th>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="border: 1px solid black; padding: 6px;"><strong>Die Schülerin/der Schüler...</strong></td>
-                        </tr>
-                `;
-                
-                ta.kriterien.forEach(k => {
-                    html += `
-                        <tr>
-                            <td style="border: 1px solid black; padding: 6px;">${k.nr}</td>
-                            <td style="border: 1px solid black; padding: 6px;">${k.text}</td>
-                            <td style="border: 1px solid black; padding: 6px;">${k.punkte}</td>
-                            <td style="border: 1px solid black; padding: 6px;"></td>
-                        </tr>
-                    `;
-                });
-                
-                html += `
-                        <tr style="background: #e8e8e8; font-weight: bold;">
-                            <td colspan="2" style="border: 1px solid black; padding: 6px;">SUMME ${ta.name.toUpperCase()}</td>
-                            <td style="border: 1px solid black; padding: 6px;">${taPoints}</td>
-                            <td style="border: 1px solid black; padding: 6px;"></td>
-                        </tr>
-                    </table>
-                `;
-            });
-            
-            html += `<p style="font-weight: bold; margin-top: 15px; font-size: 12pt;">Summe inhaltliche Leistung Teil A: ${totalInhalt} Punkte</p>`;
-            html += `<p style="font-weight: bold; margin-top: 15px; font-size: 12pt;">SUMME TEIL A GESAMT: ${totalInhalt + 63} Punkte</p>`;
-            html += '</div>';
-            
-            return html;
         }
         
         function generateWordHTML(contentData, format) {
