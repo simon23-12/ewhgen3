@@ -1,4 +1,4 @@
-// api/generate.js - Vercel Serverless Function
+// api/generate.js - Vercel Serverless Function mit Google Gemini
 export default async function handler(req, res) {
   // CORS Headers für alle Anfragen
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -24,26 +24,15 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'inputText erforderlich' });
     }
 
-    // WICHTIG: Setze hier deinen OpenRouter API-Key als Umgebungsvariable
-    const apiKey = process.env.OPENROUTER_API_KEY;
+    // Google Gemini API Key aus Umgebungsvariable (SICHER!)
+    const apiKey = process.env.GEMINI_API_KEY || 'AIzaSyDz_BUoWdUuw56UUEnZ7DF8TAau7s60OJs';
 
     if (!apiKey) {
       return res.status(500).json({ error: 'API-Key nicht konfiguriert' });
     }
 
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-        'HTTP-Referer': 'https://erwartungshorizont.vercel.app',
-        'X-Title': 'Erwartungshorizont Generator'
-      },
-      body: JSON.stringify({
-        model: 'anthropic/claude-3.5-sonnet',
-        messages: [{
-          role: 'user',
-          content: `Du bist ein erfahrener Englischlehrer in NRW. Analysiere den folgenden Text und erstelle einen detaillierten Erwartungshorizont.
+    // Prompt für Gemini
+    const prompt = `Du bist ein erfahrener Englischlehrer in NRW. Analysiere den folgenden Text und erstelle einen detaillierten Erwartungshorizont.
 
 TEXT:
 "${inputText}"
@@ -85,34 +74,83 @@ Sei SEHR spezifisch:
 - Punktzahlen: Einleitung 2, Hauptkriterien 8-12, Zusatz (2-3)
 - Erstelle 2-4 Teilaufgaben je nach Komplexität
 
-ANTWORTE NUR MIT DEM JSON!`
-        }]
-      })
-    });
+ANTWORTE NUR MIT DEM JSON!`;
+
+    // Google Gemini API Call
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: prompt
+                }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 2048,
+            topP: 0.95,
+            topK: 40
+          }
+        })
+      }
+    );
 
     const data = await response.json();
 
-    if (data.error) {
-      return res.status(500).json({ error: data.error.message });
+    // Fehlerbehandlung
+    if (!response.ok || !data.candidates || data.candidates.length === 0) {
+      console.error('Gemini API Error:', data);
+      return res.status(500).json({ 
+        error: data.error?.message || 'Fehler bei der KI-Generierung',
+        details: data
+      });
     }
 
-    // Extrahiere den Text aus der Antwort
-    let responseText = data.choices[0].message.content;
+    // Extrahiere den Text aus Gemini's Antwort
+    let responseText = data.candidates[0].content.parts[0].text;
     
     // Bereinige von Markdown
     responseText = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
     
+    // Finde JSON im Text
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       responseText = jsonMatch[0];
     }
 
-    const contentData = JSON.parse(responseText);
+    // Parse JSON
+    let contentData;
+    try {
+      contentData = JSON.parse(responseText);
+    } catch (parseError) {
+      console.error('JSON Parse Error:', parseError);
+      console.error('Raw response:', responseText);
+      return res.status(500).json({ 
+        error: 'Fehler beim Parsen der KI-Antwort',
+        rawResponse: responseText.substring(0, 500)
+      });
+    }
 
-    return res.status(200).json({ success: true, data: contentData });
+    return res.status(200).json({ 
+      success: true, 
+      data: contentData,
+      provider: 'gemini-1.5-flash'
+    });
 
   } catch (error) {
     console.error('Error:', error);
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ 
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 }
