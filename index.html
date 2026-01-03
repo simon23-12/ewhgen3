@@ -636,7 +636,7 @@
                             <div class="pdf-item-desc">Englisch Abitur 2028</div>
                         </div>
                     </div>
-                    <div class="pdf-item" onclick="openPDF('vorgaben/konstruktionshinweise_englisch_gk_lk.pdf', 'Konstruktionshinweise Englisch GK/LK')">
+                    <div class="pdf-item" onclick="openPDF('vorgaben/konstruktionshinweise_englisch_abitur.pdf', 'Konstruktionshinweise Englisch GK/LK')">
                         <div class="pdf-item-content">
                             <div class="pdf-item-title">Konstruktionshinweise</div>
                             <div class="pdf-item-desc">GK & LK Englisch</div>
@@ -648,7 +648,7 @@
                             <div class="pdf-item-desc">Allgemeine Hinweise</div>
                         </div>
                     </div>
-                    <div class="pdf-item" onclick="openPDF('vorgaben/operatorenuebersicht.pdf', 'Operatorenübersicht')">
+                    <div class="pdf-item" onclick="openPDF('vorgaben/operatorenübersicht.pdf', 'Operatorenübersicht')">
                         <div class="pdf-item-content">
                             <div class="pdf-item-title">Operatorenübersicht</div>
                             <div class="pdf-item-desc">Alle Operatoren erklärt</div>
@@ -793,6 +793,7 @@
             outputDiv.className = 'output';
 
             let html = '';
+            let totalInhalt = 0;
 
             contentData.teilaufgaben.forEach((teilaufgabe, idx) => {
                 html += `
@@ -825,6 +826,7 @@
                 const summe = teilaufgabe.kriterien.reduce((sum, k) => {
                     return sum + (typeof k.punkte === 'number' ? k.punkte : 0);
                 }, 0);
+                totalInhalt += summe;
 
                 html += `
                             <tr style="background: #f0f0f0; font-weight: bold;">
@@ -837,6 +839,111 @@
                 </div>
                 `;
             });
+
+            // Detect exam type for language sections
+            const isListening = contentData.teilaufgaben.some(ta => ta.name.includes('Teil B'));
+            const hasMediation = contentData.teilaufgaben.some(ta => ta.typ === 'Mediation');
+
+            // Determine language points
+            let languagePoints, kommPoints, ausdrPoints, sprachPoints;
+            if (isListening) {
+                languagePoints = 72;
+                kommPoints = 24;
+                ausdrPoints = 24;
+                sprachPoints = 24;
+            } else if (!hasMediation) {
+                languagePoints = 90;
+                kommPoints = 30;
+                ausdrPoints = 30;
+                sprachPoints = 30;
+            } else {
+                languagePoints = 63;
+                kommPoints = 21;
+                ausdrPoints = 21;
+                sprachPoints = 21;
+            }
+
+            // Add language sections to preview
+            html += `
+                <div class="preview-section">
+                    <div class="preview-title">Sprachliche Leistung / Darstellungsleistung</div>
+                    <div class="preview-subtitle">Kommunikative Textgestaltung</div>
+                    <table class="preview-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%">Nr.</th>
+                                <th style="width: 65%">Anforderung</th>
+                                <th style="width: 15%">Punkte</th>
+                                <th style="width: 15%">Erreicht</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>richtet seinen/ihren Text konsequent und explizit im Sinne der Aufgabenstellung auf die Intention und den/die Adressaten aus.</td><td>${Math.ceil(kommPoints * 0.286)}</td><td></td></tr>
+                            <tr><td>2</td><td>beachtet die Textsortenmerkmale der jeweils geforderten Zieltextformate.</td><td>${Math.ceil(kommPoints * 0.19)}</td><td></td></tr>
+                            <tr><td>3</td><td>erstellt einen sachgerecht strukturierten leserfreundlichen Text, u.a. durch sprachliche Verknüpfungen, Absätze als erkennbare Sinnabschnitte.</td><td>${Math.ceil(kommPoints * 0.19)}</td><td></td></tr>
+                            <tr><td>4</td><td>formuliert hinreichend ausführlich, aber ohne unnötige Wiederholungen und Umständlichkeiten.</td><td>${Math.ceil(kommPoints * 0.19)}</td><td></td></tr>
+                            <tr><td>5</td><td>belegt seine Aussagen durch eine funktionale Verwendung von Verweisen und Zitaten.</td><td>${Math.floor(kommPoints * 0.143)}</td><td></td></tr>
+                            <tr style="background: #f0f0f0; font-weight: bold;">
+                                <td colspan="2">Summe Kommunikative Textgestaltung</td>
+                                <td>${kommPoints}</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="preview-subtitle">Ausdrucksvermögen / Verfügbarkeit sprachlicher Mittel</div>
+                    <table class="preview-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%">Nr.</th>
+                                <th style="width: 65%">Anforderung</th>
+                                <th style="width: 15%">Punkte</th>
+                                <th style="width: 15%">Erreicht</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>löst sich vom Ausgangstext und formuliert eigenständig.</td><td>${Math.ceil(ausdrPoints * 0.19)}</td><td></td></tr>
+                            <tr><td>2</td><td>verwendet einen sachlich wie stilistisch angemessenen und differenzierten allgemeinen und thematischen Wortschatz.</td><td>${Math.ceil(ausdrPoints * 0.238)}</td><td></td></tr>
+                            <tr><td>3</td><td>verwendet funktional einen sachlich wie stilistisch angemessenen und differenzierten Funktions- und Interpretationswortschatz.</td><td>${Math.ceil(ausdrPoints * 0.238)}</td><td></td></tr>
+                            <tr><td>4</td><td>verwendet einen variablen und dem jeweiligen Zieltextformat angemessenen Satzbau.</td><td>${Math.floor(ausdrPoints * 0.333)}</td><td></td></tr>
+                            <tr style="background: #f0f0f0; font-weight: bold;">
+                                <td colspan="2">Summe Ausdrucksvermögen/Verfügbarkeit sprachl. Mittel</td>
+                                <td>${ausdrPoints}</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="preview-subtitle">Sprachrichtigkeit</div>
+                    <table class="preview-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%">Nr.</th>
+                                <th style="width: 65%">Anforderung</th>
+                                <th style="width: 15%">Punkte</th>
+                                <th style="width: 15%">Erreicht</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>Wortschatz</td><td>${Math.ceil(sprachPoints * 0.381)}</td><td></td></tr>
+                            <tr><td>2</td><td>Grammatik</td><td>${Math.ceil(sprachPoints * 0.381)}</td><td></td></tr>
+                            <tr><td>3</td><td>Orthographie (Rechtschreibung und Zeichensetzung)</td><td>${Math.floor(sprachPoints * 0.238)}</td><td></td></tr>
+                            <tr style="background: #f0f0f0; font-weight: bold;">
+                                <td colspan="2">Summe Sprachrichtigkeit</td>
+                                <td>${sprachPoints}</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p style="font-weight: bold; margin-top: 20px; font-size: 1.1em; color: #667eea;">
+                        Summe Sprache: ${languagePoints} Punkte
+                    </p>
+                    <p style="font-weight: bold; margin-top: 10px; font-size: 1.2em; color: #333;">
+                        Gesamtpunktzahl (Inhalt + Sprache): ${totalInhalt + languagePoints} Punkte
+                    </p>
+                </div>
+            `;
 
             outputDiv.innerHTML = html;
         }
