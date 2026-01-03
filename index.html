@@ -902,9 +902,9 @@
         h1 { font-size: 16pt; margin-bottom: 0.5cm; }
         h2 { font-size: 14pt; margin-top: 0.8cm; margin-bottom: 0.3cm; }
         h3 { font-size: 12pt; margin-top: 0.5cm; margin-bottom: 0.2cm; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 0.5cm; }
-        th, td { border: 1px solid black; padding: 8px; text-align: left; }
-        th { background-color: #f0f0f0; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 0.5cm; table-layout: fixed; }
+        th, td { border: 1px solid black; padding: 8px; text-align: left; vertical-align: top; }
+        th { background-color: #f0f0f0; font-weight: bold; writing-mode: horizontal-tb; text-orientation: mixed; }
         .sum-row { background-color: #e8e8e8; font-weight: bold; }
     </style>
 </head>
@@ -923,11 +923,17 @@ ${isListening ? `
                 html += `
     <h3>${ta.name} (${ta.typ})</h3>
     <table>
+        <colgroup>
+            <col style="width: 8%;">
+            <col style="width: 62%;">
+            <col style="width: 15%;">
+            <col style="width: 15%;">
+        </colgroup>
         <tr>
-            <th style="width:5%">Nr.</th>
-            <th style="width:65%">Anforderungen</th>
-            <th style="width:15%">max. Punkte</th>
-            <th style="width:15%">Erreichte Punkte</th>
+            <th>Nr.</th>
+            <th>Anforderungen</th>
+            <th>max. Punkte</th>
+            <th>Erreichte Punkte</th>
         </tr>
         <tr>
             <td colspan="4"><strong>Die Schülerin/der Schüler...</strong></td>
@@ -959,11 +965,17 @@ ${isListening ? `
 
     <h3>Kommunikative Textgestaltung</h3>
     <table>
+        <colgroup>
+            <col style="width: 8%;">
+            <col style="width: 62%;">
+            <col style="width: 15%;">
+            <col style="width: 15%;">
+        </colgroup>
         <tr>
-            <th style="width:5%">Nr.</th>
-            <th style="width:65%">Anforderungen: Der Schüler/Die Schülerin</th>
-            <th style="width:15%">max. Punkte</th>
-            <th style="width:15%">Erreichte Punkte</th>
+            <th>Nr.</th>
+            <th>Anforderungen: Der Schüler/Die Schülerin</th>
+            <th>max. Punkte</th>
+            <th>Erreichte Punkte</th>
         </tr>
         <tr><td>1</td><td>richtet seinen/ihren Text konsequent und explizit im Sinne der Aufgabenstellung auf die Intention und den/die Adressaten aus.</td><td>${Math.ceil(kommPoints * 0.286)}</td><td></td></tr>
         <tr><td>2</td><td>beachtet die Textsortenmerkmale der jeweils geforderten Zieltextformate.</td><td>${Math.ceil(kommPoints * 0.19)}</td><td></td></tr>
@@ -975,11 +987,17 @@ ${isListening ? `
 
     <h3>Ausdrucksvermögen / Verfügbarkeit sprachlicher Mittel</h3>
     <table>
+        <colgroup>
+            <col style="width: 8%;">
+            <col style="width: 62%;">
+            <col style="width: 15%;">
+            <col style="width: 15%;">
+        </colgroup>
         <tr>
-            <th style="width:5%">Nr.</th>
-            <th style="width:65%">Anforderungen: Der Schüler/Die Schülerin</th>
-            <th style="width:15%">max. Punkte</th>
-            <th style="width:15%">Erreichte Punkte</th>
+            <th>Nr.</th>
+            <th>Anforderungen: Der Schüler/Die Schülerin</th>
+            <th>max. Punkte</th>
+            <th>Erreichte Punkte</th>
         </tr>
         <tr><td>1</td><td>löst sich vom Ausgangstext und formuliert eigenständig.</td><td>${Math.ceil(ausdrPoints * 0.19)}</td><td></td></tr>
         <tr><td>2</td><td>verwendet einen sachlich wie stilistisch angemessenen und differenzierten allgemeinen und thematischen Wortschatz.</td><td>${Math.ceil(ausdrPoints * 0.238)}</td><td></td></tr>
@@ -990,11 +1008,17 @@ ${isListening ? `
 
     <h3>Sprachrichtigkeit</h3>
     <table>
+        <colgroup>
+            <col style="width: 8%;">
+            <col style="width: 62%;">
+            <col style="width: 15%;">
+            <col style="width: 15%;">
+        </colgroup>
         <tr>
-            <th style="width:5%">Nr.</th>
-            <th style="width:65%">Anforderungen: Der Schüler/Die Schülerin<br>beachtet die Normen der sprachlichen Korrektheit im Sinne einer gelingenden Kommunikation.</th>
-            <th style="width:15%">max. Punkte</th>
-            <th style="width:15%">Erreichte Punkte</th>
+            <th>Nr.</th>
+            <th>Anforderungen: Der Schüler/Die Schülerin<br>beachtet die Normen der sprachlichen Korrektheit im Sinne einer gelingenden Kommunikation.</th>
+            <th>max. Punkte</th>
+            <th>Erreichte Punkte</th>
         </tr>
         <tr><td>1</td><td>Wortschatz</td><td>${Math.ceil(sprachPoints * 0.381)}</td><td></td></tr>
         <tr><td>2</td><td>Grammatik</td><td>${Math.ceil(sprachPoints * 0.381)}</td><td></td></tr>
@@ -1008,7 +1032,14 @@ ${isListening ? `
 
     <div style="page-break-before: always;"></div>
     <h2 style="margin-top: 1cm;">Notenschlüssel</h2>
-    <table style="width: 100%; border-collapse: collapse; margin-top: 0.5cm;">
+    <table style="width: 100%; border-collapse: collapse; margin-top: 0.5cm; table-layout: fixed;">
+        <colgroup>
+            <col style="width: 20%;">
+            <col style="width: 20%;">
+            <col style="width: 20%;">
+            <col style="width: 20%;">
+            <col style="width: 20%;">
+        </colgroup>
         <tr>
             <th style="border: 1px solid black; padding: 8px; background-color: #f0f0f0;">Anteil (ab)</th>
             <th style="border: 1px solid black; padding: 8px; background-color: #f0f0f0;">150 Punkte</th>
