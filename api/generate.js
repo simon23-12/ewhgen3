@@ -21,12 +21,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { inputText } = req.body;
+    const { inputText, mediationText } = req.body;
 
     if (!inputText || inputText.trim() === '') {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        error: 'inputText ist erforderlich und darf nicht leer sein' 
+        error: 'inputText ist erforderlich und darf nicht leer sein'
       });
     }
 
@@ -42,11 +42,17 @@ export default async function handler(req, res) {
     }
 
     // Prompt erstellen
+    const hasMediation = mediationText && mediationText.trim() !== '';
     const prompt = `Du bist ein Erwartungshorizont-Generator für Englisch Abitur in NRW.
 
-AUFGABE: Erstelle einen Erwartungshorizont für folgenden Text:
+AUFGABE: Erstelle einen Erwartungshorizont für folgende Texte:
 
+TEIL A (Englisch):
 ${inputText}
+${hasMediation ? `
+TEIL B (Mediation - Deutsch):
+${mediationText}
+` : ''}
 
 ANWEISUNG: Antworte AUSSCHLIESSLICH mit validem JSON. Keine Erklärungen, keine Markdown-Formatierung.
 
@@ -72,16 +78,26 @@ FORMAT:
         {"nr": 4, "text": "Fazit zur Wirkung", "punkte": 3},
         {"nr": 5, "text": "Weiteres Kriterium", "punkte": "(3)"}
       ]
-    }
+    }${hasMediation ? `,
+    {
+      "name": "Teilaufgabe 3: Mediation",
+      "typ": "Mediation",
+      "kriterien": [
+        {"nr": 1, "text": "Aufgabenerfuellung: Alle relevanten Informationen vermittelt", "punkte": 8},
+        {"nr": 2, "text": "Adressatengerechtigkeit und Situationsangemessenheit", "punkte": 4},
+        {"nr": 3, "text": "Sprachmittlung: Korrekte Uebertragung ins Englische", "punkte": 6},
+        {"nr": 4, "text": "Weiteres Kriterium", "punkte": "(2)"}
+      ]
+    }` : ''}
   ]
 }
 
 WICHTIG:
 - Erkenne Textsorte automatisch
-- Sei spezifisch bei Beispielen
+- Sei spezifisch bei Beispielen${hasMediation ? '\n- Erstelle Mediation-Kriterien für Teil B' : ''}
 - Schliesse ALLE JSON-Klammern korrekt
 - Keine Sonderzeichen die JSON brechen
-- Erstelle 2-4 Teilaufgaben`;
+- Erstelle ${hasMediation ? '3' : '2-4'} Teilaufgaben`;
 
     // Google Gemini API aufrufen
     const geminiResponse = await fetch(

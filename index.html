@@ -455,13 +455,20 @@
             </div>
             
             <div class="input-section">
-                <label for="inputText">Aufgabentext eingeben:</label>
-                <textarea 
-                    id="inputText" 
-                    rows="10" 
-                    placeholder="Füge hier deine Abituraufgabe oder den zu analysierenden Text ein..."
+                <label for="inputText">Teil A: Aufgabentext (Englisch)</label>
+                <textarea
+                    id="inputText"
+                    rows="10"
+                    placeholder="Füge hier den englischen Text für Comprehension/Analysis ein..."
                 ></textarea>
-                
+
+                <label for="mediationText" style="margin-top: 20px; display: block;">Teil B: Mediation Text (Deutsch) - Optional</label>
+                <textarea
+                    id="mediationText"
+                    rows="6"
+                    placeholder="Füge hier den deutschen Text für Mediation ein (optional)..."
+                ></textarea>
+
                 <div class="button-container">
                     <button class="generate-btn" onclick="generateErwartungshorizont()">
                         ✨ Erwartungshorizont erstellen
@@ -545,28 +552,29 @@
 
         async function generateErwartungshorizont() {
             const inputText = document.getElementById('inputText').value.trim();
+            const mediationText = document.getElementById('mediationText').value.trim();
             const outputDiv = document.getElementById('output');
             const generateBtn = document.querySelector('.generate-btn');
             const downloadButtons = document.getElementById('downloadButtons');
-            
+
             if (!inputText) {
-                alert('Bitte gib einen Text ein!');
+                alert('Bitte gib mindestens einen Text für Teil A ein!');
                 return;
             }
-            
+
             generateBtn.disabled = true;
             generateBtn.textContent = '⏳ Generiere mit Google AI...';
             outputDiv.className = 'output loading';
             outputDiv.innerHTML = 'Erwartungshorizont wird erstellt...';
             downloadButtons.classList.add('hidden');
-            
+
             try {
                 const response = await fetch('/api/generate', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ inputText })
+                    body: JSON.stringify({ inputText, mediationText })
                 });
                 
                 if (!response.ok) {
@@ -804,6 +812,7 @@
         
         function clearAll() {
             document.getElementById('inputText').value = '';
+            document.getElementById('mediationText').value = '';
             document.getElementById('output').className = 'output empty';
             document.getElementById('output').innerHTML = 'Hier erscheint dein Erwartungshorizont...';
             document.getElementById('downloadButtons').classList.add('hidden');
