@@ -21,12 +21,19 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { inputText, mediationText } = req.body;
+    const { inputText, task3aText, task3bText, mediationText } = req.body;
 
     if (!inputText || inputText.trim() === '') {
       return res.status(400).json({
         success: false,
         error: 'inputText ist erforderlich und darf nicht leer sein'
+      });
+    }
+
+    if (!task3aText || task3aText.trim() === '') {
+      return res.status(400).json({
+        success: false,
+        error: 'task3aText ist erforderlich und darf nicht leer sein'
       });
     }
 
@@ -43,18 +50,52 @@ export default async function handler(req, res) {
 
     // Prompt erstellen
     const hasMediation = mediationText && mediationText.trim() !== '';
+    const hasTask3b = task3bText && task3bText.trim() !== '';
+    const isEF = !hasMediation; // EF Klausur = keine Mediation
+
+    // Punkteverteilung basierend auf Klausurtyp
+    const points = isEF ? {
+      task1: 16,
+      task2: 24,
+      task3a: 20,
+      task3b: 20
+    } : {
+      task1: 12,
+      task2: 16,
+      task3a: 14,
+      task3b: 14
+    };
+
     const prompt = `Du bist ein Erwartungshorizont-Generator für Englisch Abitur in NRW.
 
-AUFGABE: Erstelle einen Erwartungshorizont für folgende Texte:
+AUFGABE: Erstelle einen Erwartungshorizont für folgende ${isEF ? 'EF' : 'Q1/Q2'} Klausur:
 
 TEIL A (Englisch):
 ${inputText}
+
+AUFGABE 3a:
+${task3aText}
+${hasTask3b ? `
+AUFGABE 3b:
+${task3bText}
+` : ''}
 ${hasMediation ? `
 TEIL B (Mediation - Deutsch):
 ${mediationText}
 ` : ''}
 
 ANWEISUNG: Antworte AUSSCHLIESSLICH mit validem JSON. Keine Erklärungen, keine Markdown-Formatierung.
+
+WICHTIGE PUNKTEVERTEILUNG:
+${isEF ? `EF-Klausur (ohne Mediation):
+- Teilaufgabe 1 (Comprehension): ${points.task1} Punkte
+- Teilaufgabe 2 (Analysis): ${points.task2} Punkte
+- Teilaufgabe 3a: ${points.task3a} Punkte${hasTask3b ? `\n- Teilaufgabe 3b: ${points.task3b} Punkte` : ''}
+- KEINE Mediation` : `Q1/Q2-Klausur (mit Mediation):
+- Teilaufgabe 1 (Comprehension): ${points.task1} Punkte
+- Teilaufgabe 2 (Analysis): ${points.task2} Punkte
+- Teilaufgabe 3a: ${points.task3a} Punkte${hasTask3b ? `\n- Teilaufgabe 3b: ${points.task3b} Punkte` : ''}
+- TEIL B Mediation: 18 Punkte (wird separat generiert)`}
 
 FORMAT:
 {
@@ -64,7 +105,7 @@ FORMAT:
       "typ": "Comprehension",
       "kriterien": [
         {"nr": 1, "text": "Einleitungssatz: Textsorte, Autor, Thema", "punkte": 2},
-        {"nr": 2, "text": "Hauptaussagen und Argumente", "punkte": 10},
+        {"nr": 2, "text": "Hauptaussagen und Argumente", "punkte": 8},
         {"nr": 3, "text": "Weiteres Kriterium", "punkte": "(2)"}
       ]
     },
@@ -78,9 +119,27 @@ FORMAT:
         {"nr": 4, "text": "Fazit zur Wirkung", "punkte": 3},
         {"nr": 5, "text": "Weiteres Kriterium", "punkte": "(3)"}
       ]
-    }${hasMediation ? `,
+    },
     {
-      "name": "Teilaufgabe 3: Mediation",
+      "name": "Teilaufgabe 3a: [erkenne Aufgabentyp aus der Aufgabenstellung]",
+      "typ": "[z.B. Evaluation, Discussion, etc.]",
+      "kriterien": [
+        {"nr": 1, "text": "[spezifisches Kriterium]", "punkte": 2},
+        {"nr": 2, "text": "[weitere Kriterien basierend auf Aufgabenstellung]", "punkte": 4},
+        {"nr": 3, "text": "Weiteres Kriterium", "punkte": "(3)"}
+      ]
+    }${hasTask3b ? `,
+    {
+      "name": "Teilaufgabe 3b: [erkenne Aufgabentyp aus der Aufgabenstellung]",
+      "typ": "[z.B. Re-creation, Letter, etc.]",
+      "kriterien": [
+        {"nr": 1, "text": "[spezifisches Kriterium]", "punkte": 3},
+        {"nr": 2, "text": "[weitere Kriterien basierend auf Aufgabenstellung]", "punkte": 6},
+        {"nr": 3, "text": "Weiteres Kriterium", "punkte": "(3)"}
+      ]
+    }` : ''}${hasMediation ? `,
+    {
+      "name": "Teil B: Mediation",
       "typ": "Mediation",
       "kriterien": [
         {"nr": 1, "text": "Aufgabenerfuellung: Alle relevanten Informationen vermittelt", "punkte": 8},
@@ -92,12 +151,13 @@ FORMAT:
   ]
 }
 
-WICHTIG:
+KRITISCHE ANFORDERUNGEN:
 - Erkenne Textsorte automatisch
-- Sei spezifisch bei Beispielen${hasMediation ? '\n- Erstelle Mediation-Kriterien für Teil B' : ''}
+- Analysiere Aufgabe 3a und 3b genau und erstelle passende, spezifische Kriterien
+- Die Gesamtpunkte für Aufgabe 3a MÜSSEN ${points.task3a} Punkte ergeben (inkl. optionaler Punkte in Klammern)${hasTask3b ? `\n- Die Gesamtpunkte für Aufgabe 3b MÜSSEN ${points.task3b} Punkte ergeben (inkl. optionaler Punkte in Klammern)` : ''}
 - Schliesse ALLE JSON-Klammern korrekt
 - Keine Sonderzeichen die JSON brechen
-- Erstelle ${hasMediation ? '3' : '2-4'} Teilaufgaben`;
+- Erstelle ${hasMediation ? (hasTask3b ? '5' : '4') : (hasTask3b ? '4' : '3')} Teilaufgaben`;
 
     // Google Gemini API aufrufen
     const geminiResponse = await fetch(
