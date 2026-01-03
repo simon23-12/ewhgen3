@@ -523,6 +523,16 @@
                         </ul>
                     </div>
 
+                    <div class="input-section" style="background: rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 16px; margin-bottom: 25px;">
+                        <label style="display: flex; align-items: center; cursor: pointer; gap: 12px; margin-bottom: 0;">
+                            <input type="checkbox" id="listeningMode" style="width: 20px; height: 20px; cursor: pointer;">
+                            <span style="font-size: 1.05em;">Listening Comprehension aktivieren</span>
+                        </label>
+                        <p style="color: rgba(255,255,255,0.7); font-size: 0.9em; margin-top: 8px; margin-left: 32px;">
+                            Für Klausuren mit Listening Comprehension (Teil A: Listening 30P, Teil B: Schriftliche Aufgaben)
+                        </p>
+                    </div>
+
                     <div class="input-section">
                         <label for="inputText">Teil A: Aufgabentext (Englisch)</label>
                         <textarea
@@ -691,6 +701,7 @@
             const task3aText = document.getElementById('task3aText').value.trim();
             const task3bText = document.getElementById('task3bText').value.trim();
             const mediationText = document.getElementById('mediationText').value.trim();
+            const listeningMode = document.getElementById('listeningMode').checked;
             const outputDiv = document.getElementById('output');
             const generateBtn = document.querySelector('.generate-btn');
             const downloadButtons = document.getElementById('downloadButtons');
@@ -721,7 +732,8 @@
                         inputText,
                         task3aText,
                         task3bText,
-                        mediationText
+                        mediationText,
+                        listeningMode
                     })
                 });
 
@@ -836,6 +848,33 @@
                 });
             });
 
+            // Detect exam type based on task names
+            const isListening = contentData.teilaufgaben.some(ta => ta.name.includes('Teil B'));
+            const hasMediation = contentData.teilaufgaben.some(ta => ta.typ === 'Mediation');
+
+            // Determine language points: Listening = 72, EF = 90, Q1/Q2 = 63
+            let languagePoints;
+            let kommPoints, ausdrPoints, sprachPoints;
+
+            if (isListening) {
+                languagePoints = 72;
+                kommPoints = 24;
+                ausdrPoints = 24;
+                sprachPoints = 24;
+            } else if (!hasMediation) {
+                // EF mode
+                languagePoints = 90;
+                kommPoints = 30;
+                ausdrPoints = 30;
+                sprachPoints = 30;
+            } else {
+                // Q1/Q2 mode
+                languagePoints = 63;
+                kommPoints = 21;
+                ausdrPoints = 21;
+                sprachPoints = 21;
+            }
+
             let html = `<!DOCTYPE html>
 <html>
 <head>
@@ -854,8 +893,12 @@
 </head>
 <body>
     <h1>Bewertungsbogen für: ___________________________</h1>
+${isListening ? `
+    <h2>Teil A: Listening Comprehension</h2>
+    <p style="font-style: italic; margin-bottom: 0.5cm;">30 Punkte (wird separat bewertet)</p>
 
-    <h2>Teil A: Inhaltliche Leistung</h2>`;
+    <h2>Teil B: Inhaltliche Leistung</h2>` : `
+    <h2>Teil A: Inhaltliche Leistung</h2>`}`;
 
             contentData.teilaufgaben.forEach(ta => {
                 let taPoints = ta.kriterien.reduce((sum, k) => sum + (typeof k.punkte === 'number' ? k.punkte : 0), 0);
@@ -893,9 +936,9 @@
             });
 
             html += `
-    <p style="font-weight:bold; margin-top:0.5cm;">Summe inhaltliche Leistung Teil A: ${totalInhalt} Punkte</p>
+    <p style="font-weight:bold; margin-top:0.5cm;">Summe inhaltliche Leistung ${isListening ? 'Teil B' : 'Teil A'}: ${totalInhalt} Punkte</p>
 
-    <h2>Teil A: Sprachliche Leistung / Darstellungsleistung</h2>
+    <h2>${isListening ? 'Teil B' : 'Teil A'}: Sprachliche Leistung / Darstellungsleistung</h2>
 
     <h3>Kommunikative Textgestaltung</h3>
     <table>
@@ -905,12 +948,12 @@
             <th style="width:15%">max. Punkte</th>
             <th style="width:15%">Erreichte Punkte</th>
         </tr>
-        <tr><td>1</td><td>richtet seinen/ihren Text konsequent und explizit im Sinne der Aufgabenstellung auf die Intention und den/die Adressaten aus.</td><td>6</td><td></td></tr>
-        <tr><td>2</td><td>beachtet die Textsortenmerkmale der jeweils geforderten Zieltextformate.</td><td>4</td><td></td></tr>
-        <tr><td>3</td><td>erstellt einen sachgerecht strukturierten leserfreundlichen Text, u.a. durch sprachliche Verknüpfungen, Absätze als erkennbare Sinnabschnitte.</td><td>4</td><td></td></tr>
-        <tr><td>4</td><td>formuliert hinreichend ausführlich, aber ohne unnötige Wiederholungen und Umständlichkeiten.</td><td>4</td><td></td></tr>
-        <tr><td>5</td><td>belegt seine Aussagen durch eine funktionale Verwendung von Verweisen und Zitaten.</td><td>3</td><td></td></tr>
-        <tr class="sum-row"><td colspan="2">SUMME Kommunikative Textgestaltung</td><td>21</td><td></td></tr>
+        <tr><td>1</td><td>richtet seinen/ihren Text konsequent und explizit im Sinne der Aufgabenstellung auf die Intention und den/die Adressaten aus.</td><td>${Math.ceil(kommPoints * 0.286)}</td><td></td></tr>
+        <tr><td>2</td><td>beachtet die Textsortenmerkmale der jeweils geforderten Zieltextformate.</td><td>${Math.ceil(kommPoints * 0.19)}</td><td></td></tr>
+        <tr><td>3</td><td>erstellt einen sachgerecht strukturierten leserfreundlichen Text, u.a. durch sprachliche Verknüpfungen, Absätze als erkennbare Sinnabschnitte.</td><td>${Math.ceil(kommPoints * 0.19)}</td><td></td></tr>
+        <tr><td>4</td><td>formuliert hinreichend ausführlich, aber ohne unnötige Wiederholungen und Umständlichkeiten.</td><td>${Math.ceil(kommPoints * 0.19)}</td><td></td></tr>
+        <tr><td>5</td><td>belegt seine Aussagen durch eine funktionale Verwendung von Verweisen und Zitaten.</td><td>${Math.floor(kommPoints * 0.143)}</td><td></td></tr>
+        <tr class="sum-row"><td colspan="2">SUMME Kommunikative Textgestaltung</td><td>${kommPoints}</td><td></td></tr>
     </table>
 
     <h3>Ausdrucksvermögen / Verfügbarkeit sprachlicher Mittel</h3>
@@ -921,11 +964,11 @@
             <th style="width:15%">max. Punkte</th>
             <th style="width:15%">Erreichte Punkte</th>
         </tr>
-        <tr><td>1</td><td>löst sich vom Ausgangstext und formuliert eigenständig.</td><td>4</td><td></td></tr>
-        <tr><td>2</td><td>verwendet einen sachlich wie stilistisch angemessenen und differenzierten allgemeinen und thematischen Wortschatz.</td><td>5</td><td></td></tr>
-        <tr><td>3</td><td>verwendet funktional einen sachlich wie stilistisch angemessenen und differenzierten Funktions- und Interpretationswortschatz.</td><td>5</td><td></td></tr>
-        <tr><td>4</td><td>verwendet einen variablen und dem jeweiligen Zieltextformat angemessenen Satzbau.</td><td>7</td><td></td></tr>
-        <tr class="sum-row"><td colspan="2">SUMME Ausdrucksvermögen/Verfügbarkeit sprachl. Mittel</td><td>21</td><td></td></tr>
+        <tr><td>1</td><td>löst sich vom Ausgangstext und formuliert eigenständig.</td><td>${Math.ceil(ausdrPoints * 0.19)}</td><td></td></tr>
+        <tr><td>2</td><td>verwendet einen sachlich wie stilistisch angemessenen und differenzierten allgemeinen und thematischen Wortschatz.</td><td>${Math.ceil(ausdrPoints * 0.238)}</td><td></td></tr>
+        <tr><td>3</td><td>verwendet funktional einen sachlich wie stilistisch angemessenen und differenzierten Funktions- und Interpretationswortschatz.</td><td>${Math.ceil(ausdrPoints * 0.238)}</td><td></td></tr>
+        <tr><td>4</td><td>verwendet einen variablen und dem jeweiligen Zieltextformat angemessenen Satzbau.</td><td>${Math.floor(ausdrPoints * 0.333)}</td><td></td></tr>
+        <tr class="sum-row"><td colspan="2">SUMME Ausdrucksvermögen/Verfügbarkeit sprachl. Mittel</td><td>${ausdrPoints}</td><td></td></tr>
     </table>
 
     <h3>Sprachrichtigkeit</h3>
@@ -936,14 +979,15 @@
             <th style="width:15%">max. Punkte</th>
             <th style="width:15%">Erreichte Punkte</th>
         </tr>
-        <tr><td>1</td><td>Wortschatz</td><td>8</td><td></td></tr>
-        <tr><td>2</td><td>Grammatik</td><td>8</td><td></td></tr>
-        <tr><td>3</td><td>Orthographie (Rechtschreibung und Zeichensetzung)</td><td>5</td><td></td></tr>
-        <tr class="sum-row"><td colspan="2">SUMME Sprachrichtigkeit</td><td>21</td><td></td></tr>
+        <tr><td>1</td><td>Wortschatz</td><td>${Math.ceil(sprachPoints * 0.381)}</td><td></td></tr>
+        <tr><td>2</td><td>Grammatik</td><td>${Math.ceil(sprachPoints * 0.381)}</td><td></td></tr>
+        <tr><td>3</td><td>Orthographie (Rechtschreibung und Zeichensetzung)</td><td>${Math.floor(sprachPoints * 0.238)}</td><td></td></tr>
+        <tr class="sum-row"><td colspan="2">SUMME Sprachrichtigkeit</td><td>${sprachPoints}</td><td></td></tr>
     </table>
 
-    <p style="font-weight:bold; margin-top:0.5cm;">SUMME SPRACHE TEIL A: 63 Punkte</p>
-    <p style="font-weight:bold; font-size:14pt; margin-top:0.5cm;">SUMME TEIL A GESAMT (Inhalt + Sprache): ${totalInhalt + 63} Punkte</p>
+    <p style="font-weight:bold; margin-top:0.5cm;">SUMME SPRACHE ${isListening ? 'TEIL B' : 'TEIL A'}: ${languagePoints} Punkte</p>
+    <p style="font-weight:bold; font-size:14pt; margin-top:0.5cm;">SUMME ${isListening ? 'TEIL B' : 'TEIL A'} GESAMT (Inhalt + Sprache): ${totalInhalt + languagePoints} Punkte</p>${isListening ? `
+    <p style="font-weight:bold; font-size:14pt; margin-top:0.5cm;">SUMME GESAMT (Teil A Listening 30P + Teil B ${totalInhalt + languagePoints}P): ${30 + totalInhalt + languagePoints} Punkte</p>` : ''}
 
 </body>
 </html>`;

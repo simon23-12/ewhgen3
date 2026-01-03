@@ -21,7 +21,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { inputText, task3aText, task3bText, mediationText } = req.body;
+    const { inputText, task3aText, task3bText, mediationText, listeningMode } = req.body;
 
     if (!inputText || inputText.trim() === '') {
       return res.status(400).json({
@@ -51,22 +51,110 @@ export default async function handler(req, res) {
     // Prompt erstellen
     const hasMediation = mediationText && mediationText.trim() !== '';
     const hasTask3b = task3bText && task3bText.trim() !== '';
-    const isEF = !hasMediation; // EF Klausur = keine Mediation
+    const isListening = listeningMode === true;
+    const isEF = !hasMediation && !isListening; // EF Klausur = keine Mediation und kein Listening
 
     // Punkteverteilung basierend auf Klausurtyp
-    const points = isEF ? {
-      task1: 16,
-      task2: 24,
-      task3a: 20,
-      task3b: 20
-    } : {
-      task1: 12,
-      task2: 16,
-      task3a: 14,
-      task3b: 14
-    };
+    let points;
+    if (isListening) {
+      // Listening Comprehension Mode: Part A (Listening 30P), Part B (14P, 18P, 16P)
+      points = {
+        listening: 30,
+        task1: 14,
+        task2: 18,
+        task3: 16,
+        language: 72
+      };
+    } else if (isEF) {
+      // EF mode (no mediation)
+      points = {
+        task1: 16,
+        task2: 24,
+        task3a: 20,
+        task3b: 20
+      };
+    } else {
+      // Q1/Q2 mode (with mediation)
+      points = {
+        task1: 12,
+        task2: 16,
+        task3a: 14,
+        task3b: 14
+      };
+    }
 
-    const prompt = `Du bist ein Erwartungshorizont-Generator für Englisch Abitur in NRW.
+    const prompt = isListening ?
+      // Listening Comprehension Prompt
+      `Du bist ein Erwartungshorizont-Generator für Englisch Abitur in NRW.
+
+AUFGABE: Erstelle einen Erwartungshorizont für eine Klausur MIT LISTENING COMPREHENSION:
+
+STRUKTUR:
+- TEIL A: Listening Comprehension (30 Punkte) - wird separat bewertet, NICHT generieren
+- TEIL B: Schriftliche Aufgaben (Englisch)
+
+TEIL B AUFGABENTEXT (Englisch):
+${inputText}
+
+AUFGABE 3 (Re-creation/Letter/etc.):
+${task3aText}
+
+ANWEISUNG: Antworte AUSSCHLIESSLICH mit validem JSON. Keine Erklärungen, keine Markdown-Formatierung.
+
+WICHTIGE PUNKTEVERTEILUNG FÜR TEIL B:
+- Teilaufgabe 1 (Comprehension): ${points.task1} Punkte
+- Teilaufgabe 2 (Analysis): ${points.task2} Punkte
+- Teilaufgabe 3 (${task3aText.includes('letter') || task3aText.includes('Letter') ? 'Letter' : 'Re-creation/Comment'}): ${points.task3} Punkte
+- Sprache Teil B: ${points.language} Punkte (wird separat generiert)
+- TEIL A Listening: ${points.listening} Punkte (wird separat bewertet)
+
+FORMAT:
+{
+  "teilaufgaben": [
+    {
+      "name": "Teil B - Teilaufgabe 1: Comprehension",
+      "typ": "Comprehension",
+      "kriterien": [
+        {"nr": 1, "text": "Einleitungssatz: Textsorte, Autor, Thema", "punkte": 2},
+        {"nr": 2, "text": "Hauptaussagen und Argumente", "punkte": 8},
+        {"nr": 3, "text": "Weiteres Kriterium", "punkte": "(4)"}
+      ]
+    },
+    {
+      "name": "Teil B - Teilaufgabe 2: Analysis",
+      "typ": "Analysis",
+      "kriterien": [
+        {"nr": 1, "text": "Ueberleitungssatz", "punkte": 2},
+        {"nr": 2, "text": "Wortwahl und Effekte", "punkte": 4},
+        {"nr": 3, "text": "Rhetorische Mittel mit Beispielen", "punkte": 8},
+        {"nr": 4, "text": "Fazit zur Wirkung", "punkte": 3},
+        {"nr": 5, "text": "Weiteres Kriterium", "punkte": "(1)"}
+      ]
+    },
+    {
+      "name": "Teil B - Teilaufgabe 3: [erkenne Aufgabentyp aus der Aufgabenstellung]",
+      "typ": "[z.B. Re-creation, Letter, Comment, etc.]",
+      "kriterien": [
+        {"nr": 1, "text": "[spezifisches Kriterium basierend auf Aufgabenstellung]", "punkte": 3},
+        {"nr": 2, "text": "[weitere Kriterien]", "punkte": 8},
+        {"nr": 3, "text": "Weiteres Kriterium", "punkte": "(5)"}
+      ]
+    }
+  ]
+}
+
+KRITISCHE ANFORDERUNGEN:
+- Erkenne Textsorte automatisch
+- Analysiere Aufgabe 3 genau und erstelle passende, spezifische Kriterien
+- Die Gesamtpunkte für Teilaufgabe 1 MÜSSEN ${points.task1} Punkte ergeben (inkl. optionaler Punkte in Klammern)
+- Die Gesamtpunkte für Teilaufgabe 2 MÜSSEN ${points.task2} Punkte ergeben (inkl. optionaler Punkte in Klammern)
+- Die Gesamtpunkte für Teilaufgabe 3 MÜSSEN ${points.task3} Punkte ergeben (inkl. optionaler Punkte in Klammern)
+- Schliesse ALLE JSON-Klammern korrekt
+- Keine Sonderzeichen die JSON brechen
+- Erstelle GENAU 3 Teilaufgaben für TEIL B (nicht Teil A Listening!)`
+      :
+      // Regular (non-listening) prompt
+      `Du bist ein Erwartungshorizont-Generator für Englisch Abitur in NRW.
 
 AUFGABE: Erstelle einen Erwartungshorizont für folgende ${isEF ? 'EF' : 'Q1/Q2'} Klausur:
 
