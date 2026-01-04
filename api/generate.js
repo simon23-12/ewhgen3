@@ -67,20 +67,38 @@ export default async function handler(req, res) {
       };
     } else if (isEF) {
       // EF mode (no mediation)
-      points = {
-        task1: 16,
-        task2: 24,
-        task3a: 20,
-        task3b: 20
-      };
+      // If both task3a and task3b exist, split 40 points; otherwise one task gets all 40 points
+      if (hasTask3b) {
+        points = {
+          task1: 16,
+          task2: 24,
+          task3a: 20,
+          task3b: 20
+        };
+      } else {
+        points = {
+          task1: 16,
+          task2: 24,
+          task3a: 40  // Single task gets all 40 points
+        };
+      }
     } else {
       // Q1/Q2 mode (with mediation)
-      points = {
-        task1: 12,
-        task2: 16,
-        task3a: 14,
-        task3b: 14
-      };
+      // If both task3a and task3b exist, split 28 points; otherwise one task gets all 28 points
+      if (hasTask3b) {
+        points = {
+          task1: 12,
+          task2: 16,
+          task3a: 14,
+          task3b: 14
+        };
+      } else {
+        points = {
+          task1: 12,
+          task2: 16,
+          task3a: 28  // Single task gets all 28 points
+        };
+      }
     }
 
     const prompt = isListening ?

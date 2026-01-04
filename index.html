@@ -5,6 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Erwartungshorizont Generator - Englisch Abitur NRW</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        // Configure PDF.js worker
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
@@ -619,7 +626,7 @@
                             <li>Klausurtexte einfügen</li>
                             <li>Bitte füge Author, Quelle etc. mit ein</li>
                             <li>Erhalte einen strukturierten Erwartungshorizont nach NRW-Kriterien</li>
-                            <li>Lade ihn als Word-Dokument (.docx/.odt) herunter</li>
+                            <li>Bearbeite ihn direkt im Browser und speichere als PDF</li>
                             <li>Lade Simon als Dank mal irgendwann auf einen Kaffee ein</li>
                         </ul>
                     </div>
@@ -629,6 +636,17 @@
                             <input type="checkbox" id="listeningMode" style="width: 20px; height: 20px; cursor: pointer;">
                             <span style="font-size: 1.05em;">Listening Comprehension inkludieren</span>
                         </label>
+                    </div>
+
+                    <div class="input-section" style="background: rgba(102, 126, 234, 0.15); border: 2px dashed rgba(102, 126, 234, 0.5); border-radius: 12px; padding: 20px; margin-bottom: 25px;">
+                        <label style="font-size: 1.05em; font-weight: 600; margin-bottom: 12px; display: block;">
+                            📄 Klausur-PDF hochladen (Optional)
+                        </label>
+                        <p style="color: rgba(255,255,255,0.8); font-size: 0.9em; margin-bottom: 15px;">
+                            Lade eine PDF-Datei mit den Klausuraufgaben hoch, um die Texte automatisch zu extrahieren
+                        </p>
+                        <input type="file" id="pdfUpload" accept=".pdf" style="display: block; width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white; cursor: pointer;">
+                        <p id="pdfStatus" style="color: rgba(255,255,255,0.7); font-size: 0.85em; margin-top: 10px; display: none;"></p>
                     </div>
 
                     <div class="input-section">
@@ -689,12 +707,6 @@
                         Hier erscheint dein Erwartungshorizont...
                     </div>
                     <div class="download-buttons hidden" id="downloadButtons">
-                        <button class="download-btn btn-docx" onclick="downloadAsDocx()">
-                            Als .docx herunterladen
-                        </button>
-                        <button class="download-btn btn-odt" onclick="downloadAsOdt()">
-                            Als .odt herunterladen
-                        </button>
                         <button class="download-btn btn-pdf" onclick="printAsPdf()">
                             Als PDF speichern
                         </button>
@@ -756,6 +768,49 @@
 
     <script>
         let currentContentData = null;
+        let currentListeningMode = false;
+
+        // PDF Upload Handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const pdfUpload = document.getElementById('pdfUpload');
+            if (pdfUpload) {
+                pdfUpload.addEventListener('change', handlePDFUpload);
+            }
+        });
+
+        async function handlePDFUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const statusEl = document.getElementById('pdfStatus');
+            statusEl.style.display = 'block';
+            statusEl.textContent = 'PDF wird verarbeitet...';
+            statusEl.style.color = 'rgba(102, 126, 234, 1)';
+
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+                let fullText = '';
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(' ');
+                    fullText += pageText + '\n\n';
+                }
+
+                // Fill the main input text area with extracted text
+                document.getElementById('inputText').value = fullText.trim();
+
+                statusEl.textContent = `✓ PDF erfolgreich geladen (${pdf.numPages} Seiten)`;
+                statusEl.style.color = 'rgba(76, 175, 80, 1)';
+
+            } catch (error) {
+                console.error('PDF Error:', error);
+                statusEl.textContent = '✗ Fehler beim Laden der PDF: ' + error.message;
+                statusEl.style.color = 'rgba(244, 67, 54, 1)';
+            }
+        }
 
         // PDF Modal Functions
         function openPDF(pdfPath, title) {
@@ -849,6 +904,7 @@
                 }
 
                 currentContentData = data.data;
+                currentListeningMode = listeningMode;
                 displayErwartungshorizont(currentContentData);
                 downloadButtons.classList.remove('hidden');
 
@@ -879,7 +935,35 @@
             outputDiv.style.outline = 'none';
 
             let html = '<h1 contenteditable="true">Bewertungsbogen für: ___________________________</h1>';
-            html += '<h2>Teil A: Inhaltliche Leistung</h2>';
+
+            // Add Listening Comprehension table if listening mode is active
+            if (currentListeningMode) {
+                html += `
+                    <div class="preview-section">
+                        <h2>Teil A: Listening Comprehension</h2>
+                        <table class="preview-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 60%">Bereich</th>
+                                    <th style="width: 20%">Maximum</th>
+                                    <th style="width: 20%">Erreicht</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td contenteditable="true">Listening Comprehension</td>
+                                    <td contenteditable="true">30</td>
+                                    <td contenteditable="true"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                html += '<h2>Teil B: Inhaltliche Leistung</h2>';
+            } else {
+                html += '<h2>Teil A: Inhaltliche Leistung</h2>';
+            }
+
             let teilAInhalt = 0;
             let teilBInhalt = 0;
 
@@ -1164,15 +1248,88 @@
                         <p style="font-weight: bold; margin-top: 10px; font-size: 1.2em; color: #333;">
                             Gesamtpunktzahl Teil B (Inhalt + Sprache): ${teilBInhalt + 27} Punkte
                         </p>
-                        <p style="font-weight: bold; margin-top: 10px; font-size: 1.3em; color: #667eea;">
-                            GESAMTPUNKTZAHL (Teil A + Teil B): ${teilAInhalt + teilALanguagePoints + teilBInhalt + 27} Punkte
-                        </p>
                     </div>
                 `;
             }
 
+            // Add summary table before final total
+            html += `
+                <div class="preview-section" style="margin-top: 30px;">
+                    <h2>Gesamtübersicht</h2>
+                    <table class="preview-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 60%">Bereich</th>
+                                <th style="width: 20%">Maximum</th>
+                                <th style="width: 20%">Erreicht</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            if (currentListeningMode) {
+                html += `
+                            <tr>
+                                <td contenteditable="true">Listening Comprehension (Teil A)</td>
+                                <td contenteditable="true">30</td>
+                                <td contenteditable="true"></td>
+                            </tr>
+                            <tr>
+                                <td contenteditable="true">Gesamtpunktzahl Inhalt Teil B</td>
+                                <td contenteditable="true">${teilAInhalt}</td>
+                                <td contenteditable="true"></td>
+                            </tr>
+                            <tr>
+                                <td contenteditable="true">Gesamtpunktzahl Sprache Teil B</td>
+                                <td contenteditable="true">${teilALanguagePoints}</td>
+                                <td contenteditable="true"></td>
+                            </tr>
+                `;
+            } else {
+                html += `
+                            <tr>
+                                <td contenteditable="true">Gesamtpunktzahl Inhalt Teil A</td>
+                                <td contenteditable="true">${teilAInhalt}</td>
+                                <td contenteditable="true"></td>
+                            </tr>
+                            <tr>
+                                <td contenteditable="true">Gesamtpunktzahl Sprache Teil A</td>
+                                <td contenteditable="true">${teilALanguagePoints}</td>
+                                <td contenteditable="true"></td>
+                            </tr>
+                `;
+            }
+
+            if (hasMediation) {
+                html += `
+                            <tr>
+                                <td contenteditable="true">Gesamtpunktzahl Inhalt Teil B</td>
+                                <td contenteditable="true">${teilBInhalt}</td>
+                                <td contenteditable="true"></td>
+                            </tr>
+                            <tr>
+                                <td contenteditable="true">Gesamtpunktzahl Sprache Teil B</td>
+                                <td contenteditable="true">27</td>
+                                <td contenteditable="true"></td>
+                            </tr>
+                `;
+            }
+
+            const listeningPoints = currentListeningMode ? 30 : 0;
+            const gesamtMax = listeningPoints + teilAInhalt + teilALanguagePoints + (hasMediation ? teilBInhalt + 27 : 0);
+            html += `
+                            <tr style="background: #f0f0f0; font-weight: bold;">
+                                <td contenteditable="true">GESAMT${currentListeningMode ? ' (Teil A + Teil B)' : hasMediation ? ' (Teil A + Teil B)' : ''}</td>
+                                <td contenteditable="true">${gesamtMax} Punkte</td>
+                                <td contenteditable="true"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
             // Add Notenschlüssel
-            const gesamtpunkte = teilAInhalt + teilALanguagePoints + (hasMediation ? teilBInhalt + 27 : 0);
+            const gesamtpunkte = listeningPoints + teilAInhalt + teilALanguagePoints + (hasMediation ? teilBInhalt + 27 : 0);
             html += `
                 <div class="preview-section" style="page-break-before: always; margin-top: 40px;">
                     <h2>Notenschlüssel</h2>
