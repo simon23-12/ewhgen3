@@ -568,6 +568,19 @@
             /* Ensure tables print correctly */
             .preview-table {
                 page-break-inside: avoid;
+                border-collapse: collapse !important;
+                border: 1px solid #000 !important;
+            }
+
+            .preview-table th,
+            .preview-table td {
+                border: 1px solid #000 !important;
+                padding: 8px !important;
+            }
+
+            .preview-table thead th {
+                background-color: #f0f0f0 !important;
+                font-weight: bold !important;
             }
 
             .preview-section {
@@ -576,8 +589,12 @@
 
             /* Remove contenteditable styling for print */
             [contenteditable="true"] {
-                border: none !important;
+                border: 1px solid #000 !important;
                 outline: none !important;
+            }
+
+            .preview-table [contenteditable="true"] {
+                border: 1px solid #000 !important;
             }
         }
     </style>
