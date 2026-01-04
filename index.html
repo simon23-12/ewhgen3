@@ -1161,17 +1161,18 @@
     <meta charset="utf-8">
     <title>Erwartungshorizont Englisch NRW</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 2cm; }
+        @page { size: A4; margin: 2cm; }
+        body { font-family: Arial, sans-serif; margin: 2cm; font-size: 11pt; }
         h1 { font-size: 16pt; margin-bottom: 0.5cm; }
         h2 { font-size: 14pt; margin-top: 0.8cm; margin-bottom: 0.3cm; }
         h3 { font-size: 12pt; margin-top: 0.5cm; margin-bottom: 0.2cm; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 0.5cm; }
-        th, td { border: 1px solid black; padding: 8px; text-align: left; vertical-align: top; overflow: visible; white-space: normal; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 0.5cm; table-layout: fixed; }
+        th, td { border: 1px solid black; padding: 6px; text-align: left; vertical-align: top; word-wrap: break-word; overflow-wrap: break-word; }
         th { background-color: #f0f0f0; font-weight: bold; }
         .sum-row { background-color: #e8e8e8; font-weight: bold; }
-        col.col-nr { width: 50px; }
-        col.col-text { width: auto; }
-        col.col-points { width: 100px; }
+        .col-nr { width: 5%; }
+        .col-text { width: 65%; }
+        .col-points { width: 15%; }
     </style>
 </head>
 <body>
@@ -1190,17 +1191,11 @@ ${isListening ? `
                 html += `
     <h3>${ta.name} (${ta.typ})</h3>
     <table>
-        <colgroup>
-            <col class="col-nr">
-            <col class="col-text">
-            <col class="col-points">
-            <col class="col-points">
-        </colgroup>
         <tr>
-            <th>Nr.</th>
-            <th>Anforderungen</th>
-            <th>max. Punkte</th>
-            <th>Erreichte Punkte</th>
+            <th style="width: 5%;">Nr.</th>
+            <th style="width: 65%;">Anforderungen</th>
+            <th style="width: 15%;">max. Punkte</th>
+            <th style="width: 15%;">Erreichte Punkte</th>
         </tr>
         <tr>
             <td colspan="4"><strong>Die Schülerin/der Schüler...</strong></td>
@@ -1209,18 +1204,18 @@ ${isListening ? `
                 ta.kriterien.forEach(k => {
                     html += `
         <tr>
-            <td>${k.nr}</td>
-            <td>${k.text}</td>
-            <td>${k.punkte}</td>
-            <td></td>
+            <td style="width: 5%;">${k.nr}</td>
+            <td style="width: 65%;">${k.text}</td>
+            <td style="width: 15%;">${k.punkte}</td>
+            <td style="width: 15%;"></td>
         </tr>`;
                 });
 
                 html += `
         <tr class="sum-row">
             <td colspan="2">SUMME ${ta.name.toUpperCase()}</td>
-            <td>${taPoints}</td>
-            <td></td>
+            <td style="width: 15%;">${taPoints}</td>
+            <td style="width: 15%;"></td>
         </tr>
     </table>`;
             });
@@ -1232,65 +1227,47 @@ ${isListening ? `
 
     <h3>Kommunikative Textgestaltung</h3>
     <table>
-        <colgroup>
-            <col class="col-nr">
-            <col class="col-text">
-            <col class="col-points">
-            <col class="col-points">
-        </colgroup>
         <tr>
-            <th>Nr.</th>
-            <th>Anforderungen: Der Schüler/Die Schülerin</th>
-            <th>max. Punkte</th>
-            <th>Erreichte Punkte</th>
+            <th style="width: 5%;">Nr.</th>
+            <th style="width: 65%;">Anforderungen: Der Schüler/Die Schülerin</th>
+            <th style="width: 15%;">max. Punkte</th>
+            <th style="width: 15%;">Erreichte Punkte</th>
         </tr>
-        <tr><td>1</td><td>richtet seinen/ihren Text konsequent und explizit im Sinne der Aufgabenstellung auf die Intention und den/die Adressaten aus.</td><td>${Math.ceil(teilAKommPoints * 0.286)}</td><td></td></tr>
-        <tr><td>2</td><td>beachtet die Textsortenmerkmale der jeweils geforderten Zieltextformate.</td><td>${Math.ceil(teilAKommPoints * 0.19)}</td><td></td></tr>
-        <tr><td>3</td><td>erstellt einen sachgerecht strukturierten leserfreundlichen Text, u.a. durch sprachliche Verknüpfungen, Absätze als erkennbare Sinnabschnitte.</td><td>${Math.ceil(teilAKommPoints * 0.19)}</td><td></td></tr>
-        <tr><td>4</td><td>formuliert hinreichend ausführlich, aber ohne unnötige Wiederholungen und Umständlichkeiten.</td><td>${Math.ceil(teilAKommPoints * 0.19)}</td><td></td></tr>
-        <tr><td>5</td><td>belegt seine Aussagen durch eine funktionale Verwendung von Verweisen und Zitaten.</td><td>${Math.floor(teilAKommPoints * 0.143)}</td><td></td></tr>
-        <tr class="sum-row"><td colspan="2">SUMME Kommunikative Textgestaltung</td><td>${teilAKommPoints}</td><td></td></tr>
+        <tr><td style="width: 5%;">1</td><td style="width: 65%;">richtet seinen/ihren Text konsequent und explizit im Sinne der Aufgabenstellung auf die Intention und den/die Adressaten aus.</td><td style="width: 15%;">${Math.ceil(teilAKommPoints * 0.286)}</td><td style="width: 15%;"></td></tr>
+        <tr><td style="width: 5%;">2</td><td style="width: 65%;">beachtet die Textsortenmerkmale der jeweils geforderten Zieltextformate.</td><td style="width: 15%;">${Math.ceil(teilAKommPoints * 0.19)}</td><td style="width: 15%;"></td></tr>
+        <tr><td style="width: 5%;">3</td><td style="width: 65%;">erstellt einen sachgerecht strukturierten leserfreundlichen Text, u.a. durch sprachliche Verknüpfungen, Absätze als erkennbare Sinnabschnitte.</td><td style="width: 15%;">${Math.ceil(teilAKommPoints * 0.19)}</td><td style="width: 15%;"></td></tr>
+        <tr><td style="width: 5%;">4</td><td style="width: 65%;">formuliert hinreichend ausführlich, aber ohne unnötige Wiederholungen und Umständlichkeiten.</td><td style="width: 15%;">${Math.ceil(teilAKommPoints * 0.19)}</td><td style="width: 15%;"></td></tr>
+        <tr><td style="width: 5%;">5</td><td style="width: 65%;">belegt seine Aussagen durch eine funktionale Verwendung von Verweisen und Zitaten.</td><td style="width: 15%;">${Math.floor(teilAKommPoints * 0.143)}</td><td style="width: 15%;"></td></tr>
+        <tr class="sum-row"><td colspan="2">SUMME Kommunikative Textgestaltung</td><td style="width: 15%;">${teilAKommPoints}</td><td style="width: 15%;"></td></tr>
     </table>
 
     <h3>Ausdrucksvermögen / Verfügbarkeit sprachlicher Mittel</h3>
     <table>
-        <colgroup>
-            <col class="col-nr">
-            <col class="col-text">
-            <col class="col-points">
-            <col class="col-points">
-        </colgroup>
         <tr>
-            <th>Nr.</th>
-            <th>Anforderungen: Der Schüler/Die Schülerin</th>
-            <th>max. Punkte</th>
-            <th>Erreichte Punkte</th>
+            <th style="width: 5%;">Nr.</th>
+            <th style="width: 65%;">Anforderungen: Der Schüler/Die Schülerin</th>
+            <th style="width: 15%;">max. Punkte</th>
+            <th style="width: 15%;">Erreichte Punkte</th>
         </tr>
-        <tr><td>1</td><td>löst sich vom Ausgangstext und formuliert eigenständig.</td><td>${Math.ceil(teilAAusdrPoints * 0.19)}</td><td></td></tr>
-        <tr><td>2</td><td>verwendet einen sachlich wie stilistisch angemessenen und differenzierten allgemeinen und thematischen Wortschatz.</td><td>${Math.ceil(teilAAusdrPoints * 0.238)}</td><td></td></tr>
-        <tr><td>3</td><td>verwendet funktional einen sachlich wie stilistisch angemessenen und differenzierten Funktions- und Interpretationswortschatz.</td><td>${Math.ceil(teilAAusdrPoints * 0.238)}</td><td></td></tr>
-        <tr><td>4</td><td>verwendet einen variablen und dem jeweiligen Zieltextformat angemessenen Satzbau.</td><td>${Math.floor(teilAAusdrPoints * 0.333)}</td><td></td></tr>
-        <tr class="sum-row"><td colspan="2">SUMME Ausdrucksvermögen/Verfügbarkeit sprachl. Mittel</td><td>${teilAAusdrPoints}</td><td></td></tr>
+        <tr><td style="width: 5%;">1</td><td style="width: 65%;">löst sich vom Ausgangstext und formuliert eigenständig.</td><td style="width: 15%;">${Math.ceil(teilAAusdrPoints * 0.19)}</td><td style="width: 15%;"></td></tr>
+        <tr><td style="width: 5%;">2</td><td style="width: 65%;">verwendet einen sachlich wie stilistisch angemessenen und differenzierten allgemeinen und thematischen Wortschatz.</td><td style="width: 15%;">${Math.ceil(teilAAusdrPoints * 0.238)}</td><td style="width: 15%;"></td></tr>
+        <tr><td style="width: 5%;">3</td><td style="width: 65%;">verwendet funktional einen sachlich wie stilistisch angemessenen und differenzierten Funktions- und Interpretationswortschatz.</td><td style="width: 15%;">${Math.ceil(teilAAusdrPoints * 0.238)}</td><td style="width: 15%;"></td></tr>
+        <tr><td style="width: 5%;">4</td><td style="width: 65%;">verwendet einen variablen und dem jeweiligen Zieltextformat angemessenen Satzbau.</td><td style="width: 15%;">${Math.floor(teilAAusdrPoints * 0.333)}</td><td style="width: 15%;"></td></tr>
+        <tr class="sum-row"><td colspan="2">SUMME Ausdrucksvermögen/Verfügbarkeit sprachl. Mittel</td><td style="width: 15%;">${teilAAusdrPoints}</td><td style="width: 15%;"></td></tr>
     </table>
 
     <h3>Sprachrichtigkeit</h3>
     <table>
-        <colgroup>
-            <col class="col-nr">
-            <col class="col-text">
-            <col class="col-points">
-            <col class="col-points">
-        </colgroup>
         <tr>
-            <th>Nr.</th>
-            <th>Anforderungen: Der Schüler/Die Schülerin<br>beachtet die Normen der sprachlichen Korrektheit im Sinne einer gelingenden Kommunikation.</th>
-            <th>max. Punkte</th>
-            <th>Erreichte Punkte</th>
+            <th style="width: 5%;">Nr.</th>
+            <th style="width: 65%;">Anforderungen: Der Schüler/Die Schülerin<br>beachtet die Normen der sprachlichen Korrektheit im Sinne einer gelingenden Kommunikation.</th>
+            <th style="width: 15%;">max. Punkte</th>
+            <th style="width: 15%;">Erreichte Punkte</th>
         </tr>
-        <tr><td>1</td><td>Wortschatz</td><td>${Math.ceil(teilASprachPoints * 0.381)}</td><td></td></tr>
-        <tr><td>2</td><td>Grammatik</td><td>${Math.ceil(teilASprachPoints * 0.381)}</td><td></td></tr>
-        <tr><td>3</td><td>Orthographie (Rechtschreibung und Zeichensetzung)</td><td>${Math.floor(teilASprachPoints * 0.238)}</td><td></td></tr>
-        <tr class="sum-row"><td colspan="2">SUMME Sprachrichtigkeit</td><td>${teilASprachPoints}</td><td></td></tr>
+        <tr><td style="width: 5%;">1</td><td style="width: 65%;">Wortschatz</td><td style="width: 15%;">${Math.ceil(teilASprachPoints * 0.381)}</td><td style="width: 15%;"></td></tr>
+        <tr><td style="width: 5%;">2</td><td style="width: 65%;">Grammatik</td><td style="width: 15%;">${Math.ceil(teilASprachPoints * 0.381)}</td><td style="width: 15%;"></td></tr>
+        <tr><td style="width: 5%;">3</td><td style="width: 65%;">Orthographie (Rechtschreibung und Zeichensetzung)</td><td style="width: 15%;">${Math.floor(teilASprachPoints * 0.238)}</td><td style="width: 15%;"></td></tr>
+        <tr class="sum-row"><td colspan="2">SUMME Sprachrichtigkeit</td><td style="width: 15%;">${teilASprachPoints}</td><td style="width: 15%;"></td></tr>
     </table>
 
     <p style="font-weight:bold; margin-top:0.5cm;">SUMME SPRACHE ${isListening ? 'TEIL B' : 'TEIL A'}: ${teilALanguagePoints} Punkte</p>
@@ -1310,17 +1287,11 @@ ${isListening ? `
                     html += `
     <h3>${ta.name} (${ta.typ})</h3>
     <table>
-        <colgroup>
-            <col class="col-nr">
-            <col class="col-text">
-            <col class="col-points">
-            <col class="col-points">
-        </colgroup>
         <tr>
-            <th>Nr.</th>
-            <th>Anforderungen</th>
-            <th>max. Punkte</th>
-            <th>Erreichte Punkte</th>
+            <th style="width: 5%;">Nr.</th>
+            <th style="width: 65%;">Anforderungen</th>
+            <th style="width: 15%;">max. Punkte</th>
+            <th style="width: 15%;">Erreichte Punkte</th>
         </tr>
         <tr>
             <td colspan="4"><strong>Die Schülerin/der Schüler...</strong></td>
@@ -1329,18 +1300,18 @@ ${isListening ? `
                     ta.kriterien.forEach(k => {
                         html += `
         <tr>
-            <td>${k.nr}</td>
-            <td>${k.text}</td>
-            <td>${k.punkte}</td>
-            <td></td>
+            <td style="width: 5%;">${k.nr}</td>
+            <td style="width: 65%;">${k.text}</td>
+            <td style="width: 15%;">${k.punkte}</td>
+            <td style="width: 15%;"></td>
         </tr>`;
                     });
 
                     html += `
         <tr class="sum-row">
             <td colspan="2">SUMME ${ta.name.toUpperCase()}</td>
-            <td>${taPoints}</td>
-            <td></td>
+            <td style="width: 15%;">${taPoints}</td>
+            <td style="width: 15%;"></td>
         </tr>
     </table>`;
                 });
@@ -1352,65 +1323,47 @@ ${isListening ? `
 
     <h3>Kommunikative Textgestaltung</h3>
     <table>
-        <colgroup>
-            <col class="col-nr">
-            <col class="col-text">
-            <col class="col-points">
-            <col class="col-points">
-        </colgroup>
         <tr>
-            <th>Nr.</th>
-            <th>Anforderungen: Der Schüler/Die Schülerin</th>
-            <th>max. Punkte</th>
-            <th>Erreichte Punkte</th>
+            <th style="width: 5%;">Nr.</th>
+            <th style="width: 65%;">Anforderungen: Der Schüler/Die Schülerin</th>
+            <th style="width: 15%;">max. Punkte</th>
+            <th style="width: 15%;">Erreichte Punkte</th>
         </tr>
-        <tr><td>1</td><td>richtet seinen/ihren Text konsequent und explizit im Sinne der Aufgabenstellung auf die Intention und den/die Adressaten aus.</td><td>3</td><td></td></tr>
-        <tr><td>2</td><td>beachtet die Textsortenmerkmale der jeweils geforderten Zieltextformate.</td><td>2</td><td></td></tr>
-        <tr><td>3</td><td>erstellt einen sachgerecht strukturierten leserfreundlichen Text, u.a. durch sprachliche Verknüpfungen, Absätze als erkennbare Sinnabschnitte.</td><td>2</td><td></td></tr>
-        <tr><td>4</td><td>formuliert hinreichend ausführlich, aber ohne unnötige Wiederholungen und Umständlichkeiten.</td><td>1</td><td></td></tr>
-        <tr><td>5</td><td>belegt seine Aussagen durch eine funktionale Verwendung von Verweisen und Zitaten.</td><td>1</td><td></td></tr>
-        <tr class="sum-row"><td colspan="2">SUMME Kommunikative Textgestaltung</td><td>${teilBKommPoints}</td><td></td></tr>
+        <tr><td style="width: 5%;">1</td><td style="width: 65%;">richtet seinen/ihren Text konsequent und explizit im Sinne der Aufgabenstellung auf die Intention und den/die Adressaten aus.</td><td style="width: 15%;">3</td><td style="width: 15%;"></td></tr>
+        <tr><td style="width: 5%;">2</td><td style="width: 65%;">beachtet die Textsortenmerkmale der jeweils geforderten Zieltextformate.</td><td style="width: 15%;">2</td><td style="width: 15%;"></td></tr>
+        <tr><td style="width: 5%;">3</td><td style="width: 65%;">erstellt einen sachgerecht strukturierten leserfreundlichen Text, u.a. durch sprachliche Verknüpfungen, Absätze als erkennbare Sinnabschnitte.</td><td style="width: 15%;">2</td><td style="width: 15%;"></td></tr>
+        <tr><td style="width: 5%;">4</td><td style="width: 65%;">formuliert hinreichend ausführlich, aber ohne unnötige Wiederholungen und Umständlichkeiten.</td><td style="width: 15%;">1</td><td style="width: 15%;"></td></tr>
+        <tr><td style="width: 5%;">5</td><td style="width: 65%;">belegt seine Aussagen durch eine funktionale Verwendung von Verweisen und Zitaten.</td><td style="width: 15%;">1</td><td style="width: 15%;"></td></tr>
+        <tr class="sum-row"><td colspan="2">SUMME Kommunikative Textgestaltung</td><td style="width: 15%;">${teilBKommPoints}</td><td style="width: 15%;"></td></tr>
     </table>
 
     <h3>Ausdrucksvermögen / Verfügbarkeit sprachlicher Mittel</h3>
     <table>
-        <colgroup>
-            <col class="col-nr">
-            <col class="col-text">
-            <col class="col-points">
-            <col class="col-points">
-        </colgroup>
         <tr>
-            <th>Nr.</th>
-            <th>Anforderungen: Der Schüler/Die Schülerin</th>
-            <th>max. Punkte</th>
-            <th>Erreichte Punkte</th>
+            <th style="width: 5%;">Nr.</th>
+            <th style="width: 65%;">Anforderungen: Der Schüler/Die Schülerin</th>
+            <th style="width: 15%;">max. Punkte</th>
+            <th style="width: 15%;">Erreichte Punkte</th>
         </tr>
-        <tr><td>1</td><td>löst sich vom Ausgangstext und formuliert eigenständig.</td><td>2</td><td></td></tr>
-        <tr><td>2</td><td>verwendet einen sachlich wie stilistisch angemessenen und differenzierten allgemeinen und thematischen Wortschatz.</td><td>2</td><td></td></tr>
-        <tr><td>3</td><td>verwendet funktional einen sachlich wie stilistisch angemessenen und differenzierten Funktions- und Interpretationswortschatz.</td><td>2</td><td></td></tr>
-        <tr><td>4</td><td>verwendet einen variablen und dem jeweiligen Zieltextformat angemessenen Satzbau.</td><td>3</td><td></td></tr>
-        <tr class="sum-row"><td colspan="2">SUMME Ausdrucksvermögen/Verfügbarkeit sprachl. Mittel</td><td>${teilBAusdrPoints}</td><td></td></tr>
+        <tr><td style="width: 5%;">1</td><td style="width: 65%;">löst sich vom Ausgangstext und formuliert eigenständig.</td><td style="width: 15%;">2</td><td style="width: 15%;"></td></tr>
+        <tr><td style="width: 5%;">2</td><td style="width: 65%;">verwendet einen sachlich wie stilistisch angemessenen und differenzierten allgemeinen und thematischen Wortschatz.</td><td style="width: 15%;">2</td><td style="width: 15%;"></td></tr>
+        <tr><td style="width: 5%;">3</td><td style="width: 65%;">verwendet funktional einen sachlich wie stilistisch angemessenen und differenzierten Funktions- und Interpretationswortschatz.</td><td style="width: 15%;">2</td><td style="width: 15%;"></td></tr>
+        <tr><td style="width: 5%;">4</td><td style="width: 65%;">verwendet einen variablen und dem jeweiligen Zieltextformat angemessenen Satzbau.</td><td style="width: 15%;">3</td><td style="width: 15%;"></td></tr>
+        <tr class="sum-row"><td colspan="2">SUMME Ausdrucksvermögen/Verfügbarkeit sprachl. Mittel</td><td style="width: 15%;">${teilBAusdrPoints}</td><td style="width: 15%;"></td></tr>
     </table>
 
     <h3>Sprachrichtigkeit</h3>
     <table>
-        <colgroup>
-            <col class="col-nr">
-            <col class="col-text">
-            <col class="col-points">
-            <col class="col-points">
-        </colgroup>
         <tr>
-            <th>Nr.</th>
-            <th>Anforderungen: Der Schüler/Die Schülerin<br>beachtet die Normen der sprachlichen Korrektheit im Sinne einer gelingenden Kommunikation.</th>
-            <th>max. Punkte</th>
-            <th>Erreichte Punkte</th>
+            <th style="width: 5%;">Nr.</th>
+            <th style="width: 65%;">Anforderungen: Der Schüler/Die Schülerin<br>beachtet die Normen der sprachlichen Korrektheit im Sinne einer gelingenden Kommunikation.</th>
+            <th style="width: 15%;">max. Punkte</th>
+            <th style="width: 15%;">Erreichte Punkte</th>
         </tr>
-        <tr><td>1</td><td>Wortschatz</td><td>3</td><td></td></tr>
-        <tr><td>2</td><td>Grammatik</td><td>3</td><td></td></tr>
-        <tr><td>3</td><td>Orthographie (Rechtschreibung und Zeichensetzung)</td><td>3</td><td></td></tr>
-        <tr class="sum-row"><td colspan="2">SUMME Sprachrichtigkeit</td><td>${teilBSprachPoints}</td><td></td></tr>
+        <tr><td style="width: 5%;">1</td><td style="width: 65%;">Wortschatz</td><td style="width: 15%;">3</td><td style="width: 15%;"></td></tr>
+        <tr><td style="width: 5%;">2</td><td style="width: 65%;">Grammatik</td><td style="width: 15%;">3</td><td style="width: 15%;"></td></tr>
+        <tr><td style="width: 5%;">3</td><td style="width: 65%;">Orthographie (Rechtschreibung und Zeichensetzung)</td><td style="width: 15%;">3</td><td style="width: 15%;"></td></tr>
+        <tr class="sum-row"><td colspan="2">SUMME Sprachrichtigkeit</td><td style="width: 15%;">${teilBSprachPoints}</td><td style="width: 15%;"></td></tr>
     </table>
 
     <p style="font-weight:bold; margin-top:0.5cm;">SUMME SPRACHE TEIL B: ${teilBLanguagePoints} Punkte</p>
@@ -1422,37 +1375,30 @@ ${isListening ? `
 
     <div style="page-break-before: always;"></div>
     <h2 style="margin-top: 1cm;">Notenschlüssel</h2>
-    <table style="width: 100%; border-collapse: collapse; margin-top: 0.5cm;">
-        <colgroup>
-            <col style="width: 120px;">
-            <col style="width: 120px;">
-            <col style="width: 120px;">
-            <col style="width: 120px;">
-            <col style="width: auto;">
-        </colgroup>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 0.5cm; table-layout: fixed;">
         <tr>
-            <th style="border: 1px solid black; padding: 8px; background-color: #f0f0f0;">Anteil (ab)</th>
-            <th style="border: 1px solid black; padding: 8px; background-color: #f0f0f0;">150 Punkte</th>
-            <th style="border: 1px solid black; padding: 8px; background-color: #f0f0f0;">160 Punkte</th>
-            <th style="border: 1px solid black; padding: 8px; background-color: #f0f0f0;">200 Punkte</th>
-            <th style="border: 1px solid black; padding: 8px; background-color: #f0f0f0;">Notenpunkte (Q-Phase)</th>
+            <th style="width: 15%; border: 1px solid black; padding: 8px; background-color: #f0f0f0;">Anteil (ab)</th>
+            <th style="width: 17%; border: 1px solid black; padding: 8px; background-color: #f0f0f0;">150 Punkte</th>
+            <th style="width: 17%; border: 1px solid black; padding: 8px; background-color: #f0f0f0;">160 Punkte</th>
+            <th style="width: 17%; border: 1px solid black; padding: 8px; background-color: #f0f0f0;">200 Punkte</th>
+            <th style="width: 34%; border: 1px solid black; padding: 8px; background-color: #f0f0f0;">Notenpunkte (Q-Phase)</th>
         </tr>
-        <tr><td style="border: 1px solid black; padding: 8px;">95%</td><td style="border: 1px solid black; padding: 8px;">143-150</td><td style="border: 1px solid black; padding: 8px;">152-160</td><td style="border: 1px solid black; padding: 8px;">190-200</td><td style="border: 1px solid black; padding: 8px; font-weight: bold;">15</td></tr>
-        <tr><td style="border: 1px solid black; padding: 8px;">90%</td><td style="border: 1px solid black; padding: 8px;">135-142</td><td style="border: 1px solid black; padding: 8px;">144-151</td><td style="border: 1px solid black; padding: 8px;">180-189</td><td style="border: 1px solid black; padding: 8px; font-weight: bold;">14</td></tr>
-        <tr><td style="border: 1px solid black; padding: 8px;">85%</td><td style="border: 1px solid black; padding: 8px;">128-134</td><td style="border: 1px solid black; padding: 8px;">136-143</td><td style="border: 1px solid black; padding: 8px;">170-179</td><td style="border: 1px solid black; padding: 8px; font-weight: bold;">13</td></tr>
-        <tr><td style="border: 1px solid black; padding: 8px;">80%</td><td style="border: 1px solid black; padding: 8px;">120-127</td><td style="border: 1px solid black; padding: 8px;">128-135</td><td style="border: 1px solid black; padding: 8px;">160-169</td><td style="border: 1px solid black; padding: 8px; font-weight: bold;">12</td></tr>
-        <tr><td style="border: 1px solid black; padding: 8px;">75%</td><td style="border: 1px solid black; padding: 8px;">113-119</td><td style="border: 1px solid black; padding: 8px;">120-127</td><td style="border: 1px solid black; padding: 8px;">150-159</td><td style="border: 1px solid black; padding: 8px; font-weight: bold;">11</td></tr>
-        <tr><td style="border: 1px solid black; padding: 8px;">70%</td><td style="border: 1px solid black; padding: 8px;">105-112</td><td style="border: 1px solid black; padding: 8px;">112-119</td><td style="border: 1px solid black; padding: 8px;">140-149</td><td style="border: 1px solid black; padding: 8px; font-weight: bold;">10</td></tr>
-        <tr><td style="border: 1px solid black; padding: 8px;">65%</td><td style="border: 1px solid black; padding: 8px;">98-104</td><td style="border: 1px solid black; padding: 8px;">104-111</td><td style="border: 1px solid black; padding: 8px;">130-139</td><td style="border: 1px solid black; padding: 8px; font-weight: bold;">9</td></tr>
-        <tr><td style="border: 1px solid black; padding: 8px;">60%</td><td style="border: 1px solid black; padding: 8px;">90-97</td><td style="border: 1px solid black; padding: 8px;">96-103</td><td style="border: 1px solid black; padding: 8px;">120-129</td><td style="border: 1px solid black; padding: 8px; font-weight: bold;">8</td></tr>
-        <tr><td style="border: 1px solid black; padding: 8px;">55%</td><td style="border: 1px solid black; padding: 8px;">83-89</td><td style="border: 1px solid black; padding: 8px;">88-95</td><td style="border: 1px solid black; padding: 8px;">110-119</td><td style="border: 1px solid black; padding: 8px; font-weight: bold;">7</td></tr>
-        <tr><td style="border: 1px solid black; padding: 8px;">50%</td><td style="border: 1px solid black; padding: 8px;">75-82</td><td style="border: 1px solid black; padding: 8px;">80-87</td><td style="border: 1px solid black; padding: 8px;">100-109</td><td style="border: 1px solid black; padding: 8px; font-weight: bold;">6</td></tr>
-        <tr><td style="border: 1px solid black; padding: 8px;">45%</td><td style="border: 1px solid black; padding: 8px;">68-74</td><td style="border: 1px solid black; padding: 8px;">72-79</td><td style="border: 1px solid black; padding: 8px;">90-99</td><td style="border: 1px solid black; padding: 8px; font-weight: bold;">5</td></tr>
-        <tr><td style="border: 1px solid black; padding: 8px;">40%</td><td style="border: 1px solid black; padding: 8px;">60-67</td><td style="border: 1px solid black; padding: 8px;">64-71</td><td style="border: 1px solid black; padding: 8px;">80-89</td><td style="border: 1px solid black; padding: 8px; font-weight: bold;">4</td></tr>
-        <tr><td style="border: 1px solid black; padding: 8px;">33%</td><td style="border: 1px solid black; padding: 8px;">50-59</td><td style="border: 1px solid black; padding: 8px;">53-63</td><td style="border: 1px solid black; padding: 8px;">66-79</td><td style="border: 1px solid black; padding: 8px; font-weight: bold;">3</td></tr>
-        <tr><td style="border: 1px solid black; padding: 8px;">27%</td><td style="border: 1px solid black; padding: 8px;">41-49</td><td style="border: 1px solid black; padding: 8px;">43-52</td><td style="border: 1px solid black; padding: 8px;">54-65</td><td style="border: 1px solid black; padding: 8px; font-weight: bold;">2</td></tr>
-        <tr><td style="border: 1px solid black; padding: 8px;">20%</td><td style="border: 1px solid black; padding: 8px;">30-40</td><td style="border: 1px solid black; padding: 8px;">32-42</td><td style="border: 1px solid black; padding: 8px;">40-53</td><td style="border: 1px solid black; padding: 8px; font-weight: bold;">1</td></tr>
-        <tr><td style="border: 1px solid black; padding: 8px;">0%</td><td style="border: 1px solid black; padding: 8px;">0-29</td><td style="border: 1px solid black; padding: 8px;">0-31</td><td style="border: 1px solid black; padding: 8px;">0-39</td><td style="border: 1px solid black; padding: 8px; font-weight: bold;">0</td></tr>
+        <tr><td style="width: 15%; border: 1px solid black; padding: 8px;">95%</td><td style="width: 17%; border: 1px solid black; padding: 8px;">143-150</td><td style="width: 17%; border: 1px solid black; padding: 8px;">152-160</td><td style="width: 17%; border: 1px solid black; padding: 8px;">190-200</td><td style="width: 34%; border: 1px solid black; padding: 8px; font-weight: bold;">15</td></tr>
+        <tr><td style="width: 15%; border: 1px solid black; padding: 8px;">90%</td><td style="width: 17%; border: 1px solid black; padding: 8px;">135-142</td><td style="width: 17%; border: 1px solid black; padding: 8px;">144-151</td><td style="width: 17%; border: 1px solid black; padding: 8px;">180-189</td><td style="width: 34%; border: 1px solid black; padding: 8px; font-weight: bold;">14</td></tr>
+        <tr><td style="width: 15%; border: 1px solid black; padding: 8px;">85%</td><td style="width: 17%; border: 1px solid black; padding: 8px;">128-134</td><td style="width: 17%; border: 1px solid black; padding: 8px;">136-143</td><td style="width: 17%; border: 1px solid black; padding: 8px;">170-179</td><td style="width: 34%; border: 1px solid black; padding: 8px; font-weight: bold;">13</td></tr>
+        <tr><td style="width: 15%; border: 1px solid black; padding: 8px;">80%</td><td style="width: 17%; border: 1px solid black; padding: 8px;">120-127</td><td style="width: 17%; border: 1px solid black; padding: 8px;">128-135</td><td style="width: 17%; border: 1px solid black; padding: 8px;">160-169</td><td style="width: 34%; border: 1px solid black; padding: 8px; font-weight: bold;">12</td></tr>
+        <tr><td style="width: 15%; border: 1px solid black; padding: 8px;">75%</td><td style="width: 17%; border: 1px solid black; padding: 8px;">113-119</td><td style="width: 17%; border: 1px solid black; padding: 8px;">120-127</td><td style="width: 17%; border: 1px solid black; padding: 8px;">150-159</td><td style="width: 34%; border: 1px solid black; padding: 8px; font-weight: bold;">11</td></tr>
+        <tr><td style="width: 15%; border: 1px solid black; padding: 8px;">70%</td><td style="width: 17%; border: 1px solid black; padding: 8px;">105-112</td><td style="width: 17%; border: 1px solid black; padding: 8px;">112-119</td><td style="width: 17%; border: 1px solid black; padding: 8px;">140-149</td><td style="width: 34%; border: 1px solid black; padding: 8px; font-weight: bold;">10</td></tr>
+        <tr><td style="width: 15%; border: 1px solid black; padding: 8px;">65%</td><td style="width: 17%; border: 1px solid black; padding: 8px;">98-104</td><td style="width: 17%; border: 1px solid black; padding: 8px;">104-111</td><td style="width: 17%; border: 1px solid black; padding: 8px;">130-139</td><td style="width: 34%; border: 1px solid black; padding: 8px; font-weight: bold;">9</td></tr>
+        <tr><td style="width: 15%; border: 1px solid black; padding: 8px;">60%</td><td style="width: 17%; border: 1px solid black; padding: 8px;">90-97</td><td style="width: 17%; border: 1px solid black; padding: 8px;">96-103</td><td style="width: 17%; border: 1px solid black; padding: 8px;">120-129</td><td style="width: 34%; border: 1px solid black; padding: 8px; font-weight: bold;">8</td></tr>
+        <tr><td style="width: 15%; border: 1px solid black; padding: 8px;">55%</td><td style="width: 17%; border: 1px solid black; padding: 8px;">83-89</td><td style="width: 17%; border: 1px solid black; padding: 8px;">88-95</td><td style="width: 17%; border: 1px solid black; padding: 8px;">110-119</td><td style="width: 34%; border: 1px solid black; padding: 8px; font-weight: bold;">7</td></tr>
+        <tr><td style="width: 15%; border: 1px solid black; padding: 8px;">50%</td><td style="width: 17%; border: 1px solid black; padding: 8px;">75-82</td><td style="width: 17%; border: 1px solid black; padding: 8px;">80-87</td><td style="width: 17%; border: 1px solid black; padding: 8px;">100-109</td><td style="width: 34%; border: 1px solid black; padding: 8px; font-weight: bold;">6</td></tr>
+        <tr><td style="width: 15%; border: 1px solid black; padding: 8px;">45%</td><td style="width: 17%; border: 1px solid black; padding: 8px;">68-74</td><td style="width: 17%; border: 1px solid black; padding: 8px;">72-79</td><td style="width: 17%; border: 1px solid black; padding: 8px;">90-99</td><td style="width: 34%; border: 1px solid black; padding: 8px; font-weight: bold;">5</td></tr>
+        <tr><td style="width: 15%; border: 1px solid black; padding: 8px;">40%</td><td style="width: 17%; border: 1px solid black; padding: 8px;">60-67</td><td style="width: 17%; border: 1px solid black; padding: 8px;">64-71</td><td style="width: 17%; border: 1px solid black; padding: 8px;">80-89</td><td style="width: 34%; border: 1px solid black; padding: 8px; font-weight: bold;">4</td></tr>
+        <tr><td style="width: 15%; border: 1px solid black; padding: 8px;">33%</td><td style="width: 17%; border: 1px solid black; padding: 8px;">50-59</td><td style="width: 17%; border: 1px solid black; padding: 8px;">53-63</td><td style="width: 17%; border: 1px solid black; padding: 8px;">66-79</td><td style="width: 34%; border: 1px solid black; padding: 8px; font-weight: bold;">3</td></tr>
+        <tr><td style="width: 15%; border: 1px solid black; padding: 8px;">27%</td><td style="width: 17%; border: 1px solid black; padding: 8px;">41-49</td><td style="width: 17%; border: 1px solid black; padding: 8px;">43-52</td><td style="width: 17%; border: 1px solid black; padding: 8px;">54-65</td><td style="width: 34%; border: 1px solid black; padding: 8px; font-weight: bold;">2</td></tr>
+        <tr><td style="width: 15%; border: 1px solid black; padding: 8px;">20%</td><td style="width: 17%; border: 1px solid black; padding: 8px;">30-40</td><td style="width: 17%; border: 1px solid black; padding: 8px;">32-42</td><td style="width: 17%; border: 1px solid black; padding: 8px;">40-53</td><td style="width: 34%; border: 1px solid black; padding: 8px; font-weight: bold;">1</td></tr>
+        <tr><td style="width: 15%; border: 1px solid black; padding: 8px;">0%</td><td style="width: 17%; border: 1px solid black; padding: 8px;">0-29</td><td style="width: 17%; border: 1px solid black; padding: 8px;">0-31</td><td style="width: 17%; border: 1px solid black; padding: 8px;">0-39</td><td style="width: 34%; border: 1px solid black; padding: 8px; font-weight: bold;">0</td></tr>
     </table>
 
 </body>
