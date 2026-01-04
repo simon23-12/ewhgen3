@@ -313,6 +313,16 @@
             box-shadow: 0 6px 20px rgba(3, 105, 161, 0.4);
         }
 
+        .btn-pdf {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-pdf:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+        }
+
         .hidden {
             display: none;
         }
@@ -516,6 +526,60 @@
                 width: 100%;
             }
         }
+
+        /* Print styles for PDF export */
+        @media print {
+            /* Hide everything except the output */
+            body {
+                background: white !important;
+            }
+
+            .header,
+            .glass-card:not(.output-section),
+            .sidebar,
+            .download-buttons,
+            button {
+                display: none !important;
+            }
+
+            .main-grid {
+                display: block !important;
+            }
+
+            .glass-card-strong.output-section {
+                background: white !important;
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .glass-card-strong.output-section label {
+                display: none !important;
+            }
+
+            #output {
+                background: white !important;
+                border: none !important;
+                padding: 20px !important;
+                margin: 0 !important;
+            }
+
+            /* Ensure tables print correctly */
+            .preview-table {
+                page-break-inside: avoid;
+            }
+
+            .preview-section {
+                page-break-inside: avoid;
+            }
+
+            /* Remove contenteditable styling for print */
+            [contenteditable="true"] {
+                border: none !important;
+                outline: none !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -613,6 +677,9 @@
                         </button>
                         <button class="download-btn btn-odt" onclick="downloadAsOdt()">
                             Als .odt herunterladen
+                        </button>
+                        <button class="download-btn btn-pdf" onclick="printAsPdf()">
+                            Als PDF speichern
                         </button>
                     </div>
                 </div>
@@ -791,8 +858,11 @@
         function displayErwartungshorizont(contentData) {
             const outputDiv = document.getElementById('output');
             outputDiv.className = 'output';
+            outputDiv.setAttribute('contenteditable', 'true');
+            outputDiv.style.outline = 'none';
 
-            let html = '';
+            let html = '<h1 contenteditable="true">Bewertungsbogen für: ___________________________</h1>';
+            html += '<h2>Teil A: Inhaltliche Leistung</h2>';
             let teilAInhalt = 0;
             let teilBInhalt = 0;
 
@@ -804,8 +874,8 @@
             teilATasks.forEach((teilaufgabe, idx) => {
                 html += `
                     <div class="preview-section">
-                        <div class="preview-title">${teilaufgabe.name}</div>
-                        <div class="preview-subtitle">Typ: ${teilaufgabe.typ}</div>
+                        <div class="preview-title" contenteditable="true">${teilaufgabe.name}</div>
+                        <div class="preview-subtitle" contenteditable="true">Typ: ${teilaufgabe.typ}</div>
                         <table class="preview-table">
                             <thead>
                                 <tr>
@@ -821,10 +891,10 @@
                 teilaufgabe.kriterien.forEach(kriterium => {
                     html += `
                         <tr>
-                            <td>${kriterium.nr}</td>
-                            <td>${kriterium.text}</td>
-                            <td>${kriterium.punkte}</td>
-                            <td></td>
+                            <td contenteditable="true">${kriterium.nr}</td>
+                            <td contenteditable="true">${kriterium.text}</td>
+                            <td contenteditable="true">${kriterium.punkte}</td>
+                            <td contenteditable="true"></td>
                         </tr>
                     `;
                 });
@@ -837,8 +907,8 @@
                 html += `
                             <tr style="background: #f0f0f0; font-weight: bold;">
                                 <td colspan="2">Summe ${teilaufgabe.name}</td>
-                                <td>${summe}</td>
-                                <td></td>
+                                <td contenteditable="true">${summe}</td>
+                                <td contenteditable="true"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -884,15 +954,15 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td>1</td><td>richtet seinen/ihren Text konsequent und explizit im Sinne der Aufgabenstellung auf die Intention und den/die Adressaten aus.</td><td>${Math.ceil(teilAKommPoints * 0.286)}</td><td></td></tr>
-                            <tr><td>2</td><td>beachtet die Textsortenmerkmale der jeweils geforderten Zieltextformate.</td><td>${Math.ceil(teilAKommPoints * 0.19)}</td><td></td></tr>
-                            <tr><td>3</td><td>erstellt einen sachgerecht strukturierten leserfreundlichen Text, u.a. durch sprachliche Verknüpfungen, Absätze als erkennbare Sinnabschnitte.</td><td>${Math.ceil(teilAKommPoints * 0.19)}</td><td></td></tr>
-                            <tr><td>4</td><td>formuliert hinreichend ausführlich, aber ohne unnötige Wiederholungen und Umständlichkeiten.</td><td>${Math.ceil(teilAKommPoints * 0.19)}</td><td></td></tr>
-                            <tr><td>5</td><td>belegt seine Aussagen durch eine funktionale Verwendung von Verweisen und Zitaten.</td><td>${Math.floor(teilAKommPoints * 0.143)}</td><td></td></tr>
+                            <tr><td contenteditable="true">1</td><td contenteditable="true">richtet seinen/ihren Text konsequent und explizit im Sinne der Aufgabenstellung auf die Intention und den/die Adressaten aus.</td><td contenteditable="true">${Math.ceil(teilAKommPoints * 0.286)}</td><td contenteditable="true"></td></tr>
+                            <tr><td contenteditable="true">2</td><td contenteditable="true">beachtet die Textsortenmerkmale der jeweils geforderten Zieltextformate.</td><td contenteditable="true">${Math.ceil(teilAKommPoints * 0.19)}</td><td contenteditable="true"></td></tr>
+                            <tr><td contenteditable="true">3</td><td contenteditable="true">erstellt einen sachgerecht strukturierten leserfreundlichen Text, u.a. durch sprachliche Verknüpfungen, Absätze als erkennbare Sinnabschnitte.</td><td contenteditable="true">${Math.ceil(teilAKommPoints * 0.19)}</td><td contenteditable="true"></td></tr>
+                            <tr><td contenteditable="true">4</td><td contenteditable="true">formuliert hinreichend ausführlich, aber ohne unnötige Wiederholungen und Umständlichkeiten.</td><td contenteditable="true">${Math.ceil(teilAKommPoints * 0.19)}</td><td contenteditable="true"></td></tr>
+                            <tr><td contenteditable="true">5</td><td contenteditable="true">belegt seine Aussagen durch eine funktionale Verwendung von Verweisen und Zitaten.</td><td contenteditable="true">${Math.floor(teilAKommPoints * 0.143)}</td><td contenteditable="true"></td></tr>
                             <tr style="background: #f0f0f0; font-weight: bold;">
                                 <td colspan="2">Summe Kommunikative Textgestaltung</td>
-                                <td>${teilAKommPoints}</td>
-                                <td></td>
+                                <td contenteditable="true">${teilAKommPoints}</td>
+                                <td contenteditable="true"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -908,14 +978,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td>1</td><td>löst sich vom Ausgangstext und formuliert eigenständig.</td><td>${Math.ceil(teilAAusdrPoints * 0.19)}</td><td></td></tr>
-                            <tr><td>2</td><td>verwendet einen sachlich wie stilistisch angemessenen und differenzierten allgemeinen und thematischen Wortschatz.</td><td>${Math.ceil(teilAAusdrPoints * 0.238)}</td><td></td></tr>
-                            <tr><td>3</td><td>verwendet funktional einen sachlich wie stilistisch angemessenen und differenzierten Funktions- und Interpretationswortschatz.</td><td>${Math.ceil(teilAAusdrPoints * 0.238)}</td><td></td></tr>
-                            <tr><td>4</td><td>verwendet einen variablen und dem jeweiligen Zieltextformat angemessenen Satzbau.</td><td>${Math.floor(teilAAusdrPoints * 0.333)}</td><td></td></tr>
+                            <tr><td contenteditable="true">1</td><td contenteditable="true">löst sich vom Ausgangstext und formuliert eigenständig.</td><td contenteditable="true">${Math.ceil(teilAAusdrPoints * 0.19)}</td><td contenteditable="true"></td></tr>
+                            <tr><td contenteditable="true">2</td><td contenteditable="true">verwendet einen sachlich wie stilistisch angemessenen und differenzierten allgemeinen und thematischen Wortschatz.</td><td contenteditable="true">${Math.ceil(teilAAusdrPoints * 0.238)}</td><td contenteditable="true"></td></tr>
+                            <tr><td contenteditable="true">3</td><td contenteditable="true">verwendet funktional einen sachlich wie stilistisch angemessenen und differenzierten Funktions- und Interpretationswortschatz.</td><td contenteditable="true">${Math.ceil(teilAAusdrPoints * 0.238)}</td><td contenteditable="true"></td></tr>
+                            <tr><td contenteditable="true">4</td><td contenteditable="true">verwendet einen variablen und dem jeweiligen Zieltextformat angemessenen Satzbau.</td><td contenteditable="true">${Math.floor(teilAAusdrPoints * 0.333)}</td><td contenteditable="true"></td></tr>
                             <tr style="background: #f0f0f0; font-weight: bold;">
-                                <td colspan="2">Summe Ausdrucksvermögen/Verfügbarkeit sprachl. Mittel</td>
-                                <td>${teilAAusdrPoints}</td>
-                                <td></td>
+                                <td contenteditable="true" colspan="2">Summe Ausdrucksvermögen/Verfügbarkeit sprachl. Mittel</td>
+                                <td contenteditable="true">${teilAAusdrPoints}</td>
+                                <td contenteditable="true"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -931,13 +1001,13 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td>1</td><td>Wortschatz</td><td>${Math.ceil(teilASprachPoints * 0.381)}</td><td></td></tr>
-                            <tr><td>2</td><td>Grammatik</td><td>${Math.ceil(teilASprachPoints * 0.381)}</td><td></td></tr>
-                            <tr><td>3</td><td>Orthographie (Rechtschreibung und Zeichensetzung)</td><td>${Math.floor(teilASprachPoints * 0.238)}</td><td></td></tr>
+                            <tr><td contenteditable="true">1</td><td contenteditable="true">Wortschatz</td><td contenteditable="true">${Math.ceil(teilASprachPoints * 0.381)}</td><td contenteditable="true"></td></tr>
+                            <tr><td contenteditable="true">2</td><td contenteditable="true">Grammatik</td><td contenteditable="true">${Math.ceil(teilASprachPoints * 0.381)}</td><td contenteditable="true"></td></tr>
+                            <tr><td contenteditable="true">3</td><td contenteditable="true">Orthographie (Rechtschreibung und Zeichensetzung)</td><td contenteditable="true">${Math.floor(teilASprachPoints * 0.238)}</td><td contenteditable="true"></td></tr>
                             <tr style="background: #f0f0f0; font-weight: bold;">
-                                <td colspan="2">Summe Sprachrichtigkeit</td>
-                                <td>${teilASprachPoints}</td>
-                                <td></td>
+                                <td contenteditable="true" colspan="2">Summe Sprachrichtigkeit</td>
+                                <td contenteditable="true">${teilASprachPoints}</td>
+                                <td contenteditable="true"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -973,10 +1043,10 @@
                     teilaufgabe.kriterien.forEach(kriterium => {
                         html += `
                             <tr>
-                                <td>${kriterium.nr}</td>
-                                <td>${kriterium.text}</td>
-                                <td>${kriterium.punkte}</td>
-                                <td></td>
+                                <td contenteditable="true">${kriterium.nr}</td>
+                                <td contenteditable="true">${kriterium.text}</td>
+                                <td contenteditable="true">${kriterium.punkte}</td>
+                                <td contenteditable="true"></td>
                             </tr>
                         `;
                     });
@@ -988,9 +1058,9 @@
 
                     html += `
                                 <tr style="background: #f0f0f0; font-weight: bold;">
-                                    <td colspan="2">Summe ${teilaufgabe.name}</td>
-                                    <td>${summe}</td>
-                                    <td></td>
+                                    <td contenteditable="true" colspan="2">Summe ${teilaufgabe.name}</td>
+                                    <td contenteditable="true">${summe}</td>
+                                    <td contenteditable="true"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1013,15 +1083,15 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td>1</td><td>richtet seinen/ihren Text konsequent und explizit im Sinne der Aufgabenstellung auf die Intention und den/die Adressaten aus.</td><td>3</td><td></td></tr>
-                                <tr><td>2</td><td>beachtet die Textsortenmerkmale der jeweils geforderten Zieltextformate.</td><td>2</td><td></td></tr>
-                                <tr><td>3</td><td>erstellt einen sachgerecht strukturierten leserfreundlichen Text, u.a. durch sprachliche Verknüpfungen, Absätze als erkennbare Sinnabschnitte.</td><td>2</td><td></td></tr>
-                                <tr><td>4</td><td>formuliert hinreichend ausführlich, aber ohne unnötige Wiederholungen und Umständlichkeiten.</td><td>1</td><td></td></tr>
-                                <tr><td>5</td><td>belegt seine Aussagen durch eine funktionale Verwendung von Verweisen und Zitaten.</td><td>1</td><td></td></tr>
+                                <tr><td contenteditable="true">1</td><td contenteditable="true">richtet seinen/ihren Text konsequent und explizit im Sinne der Aufgabenstellung auf die Intention und den/die Adressaten aus.</td><td contenteditable="true">3</td><td contenteditable="true"></td></tr>
+                                <tr><td contenteditable="true">2</td><td contenteditable="true">beachtet die Textsortenmerkmale der jeweils geforderten Zieltextformate.</td><td contenteditable="true">2</td><td contenteditable="true"></td></tr>
+                                <tr><td contenteditable="true">3</td><td contenteditable="true">erstellt einen sachgerecht strukturierten leserfreundlichen Text, u.a. durch sprachliche Verknüpfungen, Absätze als erkennbare Sinnabschnitte.</td><td contenteditable="true">2</td><td contenteditable="true"></td></tr>
+                                <tr><td contenteditable="true">4</td><td contenteditable="true">formuliert hinreichend ausführlich, aber ohne unnötige Wiederholungen und Umständlichkeiten.</td><td contenteditable="true">1</td><td contenteditable="true"></td></tr>
+                                <tr><td contenteditable="true">5</td><td contenteditable="true">belegt seine Aussagen durch eine funktionale Verwendung von Verweisen und Zitaten.</td><td contenteditable="true">1</td><td contenteditable="true"></td></tr>
                                 <tr style="background: #f0f0f0; font-weight: bold;">
-                                    <td colspan="2">Summe Kommunikative Textgestaltung</td>
-                                    <td>9</td>
-                                    <td></td>
+                                    <td contenteditable="true" colspan="2">Summe Kommunikative Textgestaltung</td>
+                                    <td contenteditable="true">9</td>
+                                    <td contenteditable="true"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1037,14 +1107,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td>1</td><td>löst sich vom Ausgangstext und formuliert eigenständig.</td><td>2</td><td></td></tr>
-                                <tr><td>2</td><td>verwendet einen sachlich wie stilistisch angemessenen und differenzierten allgemeinen und thematischen Wortschatz.</td><td>2</td><td></td></tr>
-                                <tr><td>3</td><td>verwendet funktional einen sachlich wie stilistisch angemessenen und differenzierten Funktions- und Interpretationswortschatz.</td><td>2</td><td></td></tr>
-                                <tr><td>4</td><td>verwendet einen variablen und dem jeweiligen Zieltextformat angemessenen Satzbau.</td><td>3</td><td></td></tr>
+                                <tr><td contenteditable="true">1</td><td contenteditable="true">löst sich vom Ausgangstext und formuliert eigenständig.</td><td contenteditable="true">2</td><td contenteditable="true"></td></tr>
+                                <tr><td contenteditable="true">2</td><td contenteditable="true">verwendet einen sachlich wie stilistisch angemessenen und differenzierten allgemeinen und thematischen Wortschatz.</td><td contenteditable="true">2</td><td contenteditable="true"></td></tr>
+                                <tr><td contenteditable="true">3</td><td contenteditable="true">verwendet funktional einen sachlich wie stilistisch angemessenen und differenzierten Funktions- und Interpretationswortschatz.</td><td contenteditable="true">2</td><td contenteditable="true"></td></tr>
+                                <tr><td contenteditable="true">4</td><td contenteditable="true">verwendet einen variablen und dem jeweiligen Zieltextformat angemessenen Satzbau.</td><td contenteditable="true">3</td><td contenteditable="true"></td></tr>
                                 <tr style="background: #f0f0f0; font-weight: bold;">
-                                    <td colspan="2">Summe Ausdrucksvermögen/Verfügbarkeit sprachl. Mittel</td>
-                                    <td>9</td>
-                                    <td></td>
+                                    <td contenteditable="true" colspan="2">Summe Ausdrucksvermögen/Verfügbarkeit sprachl. Mittel</td>
+                                    <td contenteditable="true">9</td>
+                                    <td contenteditable="true"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1060,13 +1130,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td>1</td><td>Wortschatz</td><td>3</td><td></td></tr>
-                                <tr><td>2</td><td>Grammatik</td><td>3</td><td></td></tr>
-                                <tr><td>3</td><td>Orthographie (Rechtschreibung und Zeichensetzung)</td><td>3</td><td></td></tr>
+                                <tr><td contenteditable="true">1</td><td contenteditable="true">Wortschatz</td><td contenteditable="true">3</td><td contenteditable="true"></td></tr>
+                                <tr><td contenteditable="true">2</td><td contenteditable="true">Grammatik</td><td contenteditable="true">3</td><td contenteditable="true"></td></tr>
+                                <tr><td contenteditable="true">3</td><td contenteditable="true">Orthographie (Rechtschreibung und Zeichensetzung)</td><td contenteditable="true">3</td><td contenteditable="true"></td></tr>
                                 <tr style="background: #f0f0f0; font-weight: bold;">
-                                    <td colspan="2">Summe Sprachrichtigkeit</td>
-                                    <td>9</td>
-                                    <td></td>
+                                    <td contenteditable="true" colspan="2">Summe Sprachrichtigkeit</td>
+                                    <td contenteditable="true">9</td>
+                                    <td contenteditable="true"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1083,6 +1153,43 @@
                     </div>
                 `;
             }
+
+            // Add Notenschlüssel
+            const gesamtpunkte = teilAInhalt + teilALanguagePoints + (hasMediation ? teilBInhalt + 27 : 0);
+            html += `
+                <div class="preview-section" style="page-break-before: always; margin-top: 40px;">
+                    <h2>Notenschlüssel</h2>
+                    <table class="preview-table">
+                        <thead>
+                            <tr>
+                                <th>Anteil (ab)</th>
+                                <th>150 Punkte</th>
+                                <th>160 Punkte</th>
+                                <th>200 Punkte</th>
+                                <th>Notenpunkte (Q-Phase)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td contenteditable="true">95%</td><td contenteditable="true">143-150</td><td contenteditable="true">152-160</td><td contenteditable="true">190-200</td><td contenteditable="true" style="font-weight: bold;">15</td></tr>
+                            <tr><td contenteditable="true">90%</td><td contenteditable="true">135-142</td><td contenteditable="true">144-151</td><td contenteditable="true">180-189</td><td contenteditable="true" style="font-weight: bold;">14</td></tr>
+                            <tr><td contenteditable="true">85%</td><td contenteditable="true">128-134</td><td contenteditable="true">136-143</td><td contenteditable="true">170-179</td><td contenteditable="true" style="font-weight: bold;">13</td></tr>
+                            <tr><td contenteditable="true">80%</td><td contenteditable="true">120-127</td><td contenteditable="true">128-135</td><td contenteditable="true">160-169</td><td contenteditable="true" style="font-weight: bold;">12</td></tr>
+                            <tr><td contenteditable="true">75%</td><td contenteditable="true">113-119</td><td contenteditable="true">120-127</td><td contenteditable="true">150-159</td><td contenteditable="true" style="font-weight: bold;">11</td></tr>
+                            <tr><td contenteditable="true">70%</td><td contenteditable="true">105-112</td><td contenteditable="true">112-119</td><td contenteditable="true">140-149</td><td contenteditable="true" style="font-weight: bold;">10</td></tr>
+                            <tr><td contenteditable="true">65%</td><td contenteditable="true">98-104</td><td contenteditable="true">104-111</td><td contenteditable="true">130-139</td><td contenteditable="true" style="font-weight: bold;">9</td></tr>
+                            <tr><td contenteditable="true">60%</td><td contenteditable="true">90-97</td><td contenteditable="true">96-103</td><td contenteditable="true">120-129</td><td contenteditable="true" style="font-weight: bold;">8</td></tr>
+                            <tr><td contenteditable="true">55%</td><td contenteditable="true">83-89</td><td contenteditable="true">88-95</td><td contenteditable="true">110-119</td><td contenteditable="true" style="font-weight: bold;">7</td></tr>
+                            <tr><td contenteditable="true">50%</td><td contenteditable="true">75-82</td><td contenteditable="true">80-87</td><td contenteditable="true">100-109</td><td contenteditable="true" style="font-weight: bold;">6</td></tr>
+                            <tr><td contenteditable="true">45%</td><td contenteditable="true">68-74</td><td contenteditable="true">72-79</td><td contenteditable="true">90-99</td><td contenteditable="true" style="font-weight: bold;">5</td></tr>
+                            <tr><td contenteditable="true">40%</td><td contenteditable="true">60-67</td><td contenteditable="true">64-71</td><td contenteditable="true">80-89</td><td contenteditable="true" style="font-weight: bold;">4</td></tr>
+                            <tr><td contenteditable="true">33%</td><td contenteditable="true">50-59</td><td contenteditable="true">53-63</td><td contenteditable="true">66-79</td><td contenteditable="true" style="font-weight: bold;">3</td></tr>
+                            <tr><td contenteditable="true">27%</td><td contenteditable="true">41-49</td><td contenteditable="true">43-52</td><td contenteditable="true">54-65</td><td contenteditable="true" style="font-weight: bold;">2</td></tr>
+                            <tr><td contenteditable="true">20%</td><td contenteditable="true">30-40</td><td contenteditable="true">32-42</td><td contenteditable="true">40-53</td><td contenteditable="true" style="font-weight: bold;">1</td></tr>
+                            <tr><td contenteditable="true">0%</td><td contenteditable="true">0-29</td><td contenteditable="true">0-31</td><td contenteditable="true">0-39</td><td contenteditable="true" style="font-weight: bold;">0</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
 
             outputDiv.innerHTML = html;
         }
@@ -1101,6 +1208,16 @@
                 return;
             }
             generateWordHTML(currentContentData, 'odt');
+        }
+
+        function printAsPdf() {
+            if (!currentContentData) {
+                alert('Bitte erst einen Erwartungshorizont erstellen!');
+                return;
+            }
+
+            // Open print dialog which allows saving as PDF
+            window.print();
         }
 
         function generateWordHTML(contentData, format) {
@@ -1190,18 +1307,16 @@ ${isListening ? `
 
                 html += `
     <h3>${ta.name} (${ta.typ})</h3>
-    <table>
-        <colgroup>
-            <col width="5%" style="width: 5%;">
-            <col width="65%" style="width: 65%;">
-            <col width="15%" style="width: 15%;">
-            <col width="15%" style="width: 15%;">
-        </colgroup>
+    <table style="width: 17cm;">
+        <col style="width: 0.8cm;" />
+        <col style="width: 11cm;" />
+        <col style="width: 2.6cm;" />
+        <col style="width: 2.6cm;" />
         <tr>
-            <th style="width: 5%;">Nr.</th>
-            <th style="width: 65%;">Anforderungen</th>
-            <th style="width: 15%;">max. Punkte</th>
-            <th style="width: 15%;">Erreichte Punkte</th>
+            <th>Nr.</th>
+            <th>Anforderungen</th>
+            <th>max. Punkte</th>
+            <th>Erreichte Punkte</th>
         </tr>
         <tr>
             <td colspan="4"><strong>Die Schülerin/der Schüler...</strong></td>
