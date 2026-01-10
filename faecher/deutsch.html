@@ -142,7 +142,7 @@
                         <button class="download-btn btn-pdf" onclick="printAsPdfDeutsch()">
                             Als PDF speichern
                         </button>
-                        <button class="download-btn" onclick="copyToClipboardDeutsch()">
+                        <button class="download-btn" onclick="copyToClipboardDeutsch(event)">
                             Kopieren
                         </button>
                     </div>
@@ -349,6 +349,24 @@
             const outputDiv = document.getElementById('outputDeutsch');
             outputDiv.className = 'output';
 
+            // Calculate total points first
+            let inhaltsPunkte = 0;
+            if (data.aufgaben) {
+                data.aufgaben.forEach(aufgabe => {
+                    if (aufgabe.teilaufgaben) {
+                        aufgabe.teilaufgaben.forEach(ta => {
+                            if (ta.bewertung) {
+                                ta.bewertung.forEach(bew => {
+                                    inhaltsPunkte += (bew.p || bew.punkte || 0);
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+            const darstellungPunkte = 28;
+            const gesamtpunkte = inhaltsPunkte + darstellungPunkte;
+
             let html = `
                 <div class="preview-section">
                     <h2>Erwartungshorizont Deutsch</h2>
@@ -356,14 +374,14 @@
                         <strong>Stufe:</strong> ${data.klausurInfo?.stufe || 'Q2'} |
                         <strong>Kursart:</strong> ${data.klausurInfo?.kursart || 'GK'} |
                         <strong>Klausurtyp:</strong> ${data.klausurInfo?.klausurtyp || 'Textanalyse'} |
-                        <strong>Gesamtpunkte:</strong> ${data.klausurInfo?.gesamtpunkte || 100}
+                        <strong>Gesamtpunkte:</strong> ${gesamtpunkte}
                     </p>
             `;
 
             html += '<h3 class="preview-subtitle">Inhaltliche Leistung</h3>';
 
-            // Render each Aufgabe
-            let inhaltsPunkte = 0;
+            // Render each Aufgabe (reset inhaltsPunkte for rendering)
+            inhaltsPunkte = 0;
             if (data.aufgaben) {
                 data.aufgaben.forEach(aufgabe => {
                     html += `
@@ -525,10 +543,7 @@
                 </div>
             `;
 
-            // Gesamtuebersicht: Calculate actual points from Aufgabe 1 + Aufgabe 2 + Darstellungsleistung (28)
-            const darstellungPunkte = 28;
-            const gesamtpunkte = inhaltsPunkte + darstellungPunkte;
-
+            // Gesamtuebersicht: Use previously calculated points
             html += `
                 <div class="preview-section" style="margin-top: 40px;">
                     <h3 class="preview-subtitle">Gesamtuebersicht</h3>
