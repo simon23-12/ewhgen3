@@ -609,9 +609,19 @@
 
         function copyToClipboardDeutsch(event) {
             const outputDiv = document.getElementById('outputDeutsch');
+            const html = outputDiv.innerHTML;
             const text = outputDiv.innerText;
 
-            navigator.clipboard.writeText(text).then(() => {
+            // Create a ClipboardItem with both HTML and plain text formats
+            const blob = new Blob([html], { type: 'text/html' });
+            const textBlob = new Blob([text], { type: 'text/plain' });
+
+            const clipboardItem = new ClipboardItem({
+                'text/html': blob,
+                'text/plain': textBlob
+            });
+
+            navigator.clipboard.write([clipboardItem]).then(() => {
                 const btn = event.target;
                 const originalText = btn.textContent;
                 btn.textContent = 'Kopiert!';
