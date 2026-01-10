@@ -349,7 +349,7 @@
             const outputDiv = document.getElementById('outputDeutsch');
             outputDiv.className = 'output';
 
-            // Calculate total points first
+            // Calculate total points first (exclude disclaimer and "erfüllt ein weiteres")
             let inhaltsPunkte = 0;
             if (data.aufgaben) {
                 data.aufgaben.forEach(aufgabe => {
@@ -357,7 +357,16 @@
                         aufgabe.teilaufgaben.forEach(ta => {
                             if (ta.bewertung) {
                                 ta.bewertung.forEach(bew => {
-                                    inhaltsPunkte += (bew.p || bew.punkte || 0);
+                                    const anfText = bew.anf || bew.anforderung || '';
+                                    const anfPunkte = bew.p || bew.punkte || 0;
+
+                                    const isDisclaimer = anfText.includes('Angestrebt ist hier keine vollständige Darstellung');
+                                    const isErfuelltEinWeiteres = anfText.includes('erfüllt ein weiteres aufgabenbezogenes Kriterium');
+
+                                    // Only add points if not disclaimer and not "erfüllt ein weiteres"
+                                    if (!isDisclaimer && !isErfuelltEinWeiteres) {
+                                        inhaltsPunkte += anfPunkte;
+                                    }
                                 });
                             }
                         });
@@ -427,12 +436,12 @@
                                         inhaltsPunkte += anfPunkte;
                                     }
 
-                                    // Show points in brackets for "erfuellt ein weiteres", 0 for disclaimer
+                                    // Show points in brackets for "erfuellt ein weiteres", empty for disclaimer
                                     let punkteDisplay;
                                     if (isErfuelltEinWeiteres) {
                                         punkteDisplay = `(${anfPunkte})`;
                                     } else if (isDisclaimer) {
-                                        punkteDisplay = '0';
+                                        punkteDisplay = ''; // No points - just an instruction for teachers
                                     } else {
                                         punkteDisplay = anfPunkte;
                                     }
