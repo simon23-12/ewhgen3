@@ -396,15 +396,26 @@
                                             <th style="width: 15%;">Erreicht</th>
                                         </tr></thead><tbody>`;
 
-                                ta.bewertung.forEach(bew => {
+                                ta.bewertung.forEach((bew, index) => {
                                     const anfText = bew.anf || bew.anforderung || '';
                                     const anfPunkte = bew.p || bew.punkte || 0;
                                     inhaltsPunkte += anfPunkte;
 
-                                    // Check if this is the "erfuellt ein weiteres" criterion - show points in brackets
-                                    const punkteDisplay = anfText.includes('erfuellt ein weiteres aufgabenbezogenes Kriterium')
-                                        ? `(${anfPunkte})`
-                                        : anfPunkte;
+                                    // Check if this is the last item (erfuellt ein weiteres)
+                                    const isLastItem = index === ta.bewertung.length - 1;
+                                    const isErfuelltEinWeiteres = anfText.includes('erfuellt ein weiteres aufgabenbezogenes Kriterium');
+
+                                    // For Aufgabe 2: Show italic disclaimer BEFORE the last item
+                                    if (aufgabe.nummer === 2 && isLastItem && index > 0) {
+                                        html += `<tr style="background: rgba(255,255,255,0.02);">
+                                            <td contenteditable="true" colspan="3" style="font-style: italic; padding: 12px;">
+                                                Angestrebt ist hier keine vollständige Darstellung der beispielhaft genannten Aspekte, sondern eine differenzierte Schwerpunktsetzung durch den Prüfling, die allerdings mehrere Gesichtspunkte aufgreift.
+                                            </td>
+                                        </tr>`;
+                                    }
+
+                                    // Show points in brackets for "erfuellt ein weiteres"
+                                    const punkteDisplay = isErfuelltEinWeiteres ? `(${anfPunkte})` : anfPunkte;
 
                                     html += `<tr>
                                         <td contenteditable="true">${anfText}</td>
@@ -413,9 +424,9 @@
                                     </tr>`;
                                 });
 
-                                html += `<tr>
-                                    <td contenteditable="true"><em>Sachlich richtige Alternativlösung</em></td>
-                                    <td contenteditable="true">(${ta.punkte})</td>
+                                html += `<tr style="font-weight: bold; background: rgba(102, 126, 234, 0.1);">
+                                    <td contenteditable="true">Gesamtpunktzahl für die Aufgabe</td>
+                                    <td contenteditable="true">${ta.punkte}</td>
                                     <td contenteditable="true"></td>
                                 </tr></tbody></table>`;
                             }

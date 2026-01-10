@@ -12,9 +12,10 @@ RICHTIG: "benennt das Thema des Textes, etwa: Ursachen der Kritik des Gebrauchs 
 
 ANALYSIERE DIE KLAUSUR:
 1. Lies den Primärtext (Sachtext/Gedicht/Dramenszene) GENAU
-2. Lies die Aufgabenstellung GENAU
+2. Lies die Aufgabenstellung GENAU - IDENTIFIZIERE DIE EXAKTE PUNKTEVERTEILUNG!
 3. Identifiziere den Klausurtyp
 4. Erstelle Anforderungen, die sich AUF DIESEN SPEZIFISCHEN TEXT beziehen
+5. WICHTIG: Die Gesamtpunkte für Aufgabe 1 und Aufgabe 2 MÜSSEN EXAKT der Klausur entsprechen!
 
 WICHTIG - STRUKTUR:
 - Erstelle NUR Aufgabe 1 und Aufgabe 2 im JSON
@@ -36,57 +37,63 @@ SIEHST DU? Jeder Bullet-Point bezieht sich auf KONKRETE INHALTE aus Wieses Text!
 STRUKTUR-VORGABEN:
 
 SACHTEXTANALYSE (wie Heike Wiese):
-Aufgabe 1 (39P): 
-1. Einleitung mit Autor/Titel/Textsorte/Datum (3P)
-2. Thema benennen - MIT konkretem Inhalt aus dem Text (4P)
-3. Position darstellen - MIT 5-7 spezifischen Thesen des Autors (10P)
-4. Argumente untersuchen (kritisch) - MIT konkreten Argumenten aus dem Text (9P)
-5. Argumente untersuchen (stützend) - MIT konkreten Beispielen (4P)
-6. Leserlenkung - MIT spezifischen rhetorischen Mitteln, Fachbegriffen, Beispielen aus dem Text (9P)
-7. (erfuellt ein weiteres aufgabenbezogenes Kriterium) (4P)
+WICHTIG: Die Punkteverteilung ist nur ein BEISPIEL - nutze die TATSÄCHLICHEN Punkte aus der Klausur!
 
-Aufgabe 2 (33P):
-1. Überleitung (3P)
-2. Funktionen Sprachvarietäten - BEZOGEN auf den Text (6P)
-3. Funktionen Standardsprache - BEZOGEN auf Unterrichtsthemen (6P)
-4. Stellung PRO - MIT 3-5 konkreten Argumenten (7P)
-5. Stellung CONTRA - MIT 3-5 konkreten Gegenargumenten (7P)
-6. Fazit (4P)
+Aufgabe 1 (Punkte aus PDF übernehmen!):
+1. Einleitung mit Autor/Titel/Textsorte/Datum (ca. 3P)
+2. Thema benennen - MIT konkretem Inhalt aus dem Text (ca. 4P)
+3. Position darstellen - MIT 5-7 spezifischen Thesen des Autors (ca. 10P)
+4. Argumente untersuchen (kritisch) - MIT konkreten Argumenten aus dem Text (ca. 9P)
+5. Argumente untersuchen (stützend) - MIT konkreten Beispielen (ca. 4P)
+6. Leserlenkung - MIT spezifischen rhetorischen Mitteln, Fachbegriffen, Beispielen aus dem Text (ca. 9P)
+7. (erfuellt ein weiteres aufgabenbezogenes Kriterium) (ca. 4P)
+
+Aufgabe 2 (Punkte aus PDF übernehmen!):
+1. Überleitung (ca. 3P)
+2. Funktionen Sprachvarietäten - BEZOGEN auf den Text (ca. 6P)
+3. Funktionen Standardsprache - BEZOGEN auf Unterrichtsthemen (ca. 6P)
+4. Stellung PRO - MIT 3-5 konkreten Argumenten (ca. 7P)
+5. Stellung CONTRA - MIT 3-5 konkreten Gegenargumenten (ca. 7P)
+6. Fazit (ca. 4P)
 [VOR der nächsten Zeile in KURSIV]: Angestrebt ist hier keine vollständige Darstellung der beispielhaft genannten Aspekte, sondern eine differenzierte Schwerpunktsetzung durch den Prüfling, die allerdings mehrere Gesichtspunkte aufgreift.
-7. (erfuellt ein weiteres aufgabenbezogenes Kriterium) (6P)
+7. (erfuellt ein weiteres aufgabenbezogenes Kriterium) (Rest der Punkte)
 
 GEDICHTANALYSE (wie Trakl "Der Gewitterabend"):
-Aufgabe 1 (39P):
-1. Einleitung mit Autor/Titel/Textsorte/Datum (3P)
-2. Thema - z.B. "poetische Darstellung eines gewaltigen Naturgeschehens" (3P)
-3. Sprechsituation - konkret: wer spricht, Perspektive (3P)
-4. Inhalt - Strophe für Strophe mit konkreten Bildern aus dem Gedicht (6P)
-5. Form - Reimschema, Metrum, Kadenz, Enjambements (3P)
-6. Bildlichkeit/Wortwahl - MIT Zitaten und Interpretationen (9P)
-7. Weitere Mittel - Syntax, rhetorische Figuren MIT Beispielen (6P)
-8. Deutung - thematische Einordnung (6P)
-9. (erfuellt ein weiteres aufgabenbezogenes Kriterium) (4P)
+WICHTIG: Punkte aus der tatsächlichen Klausur übernehmen!
 
-Aufgabe 2 (33P) - GEDICHTVERGLEICH:
-1. Überleitung (3P)
-2. Analyse zweites Gedicht - Form, Inhalt, Struktur (siehe Aufgabe 1 Struktur) (10P)
-3. VERGLEICH Gemeinsamkeiten - Krieg als Ursache, Leid, Tod, existentielle Erschütterung (10P)
-4. VERGLEICH Unterschiede - Klemm zeigt moderne Orientierungslosigkeit, Gryphius religiöse Verarbeitung; Klemm modern/fragmentiert, Gryphius Barocke Jenseitsorientierung trotz Qual (10P)
-5. VERGLEICH Gestaltung - Form: Beide Sonett (Gryphius Alexandriner/durchgehend Quartett, Klemm modern/fragmentiert); Sprache: Gryphius barocke Rhetorik, Klemm expressionistische/montage-technik; Bildlichkeit: Gryphius Vanitas-Symbolik, Klemm technisierte/urbane Schreckensbilder (9P)
+Aufgabe 1 (Punkte aus PDF!):
+1. Einleitung mit Autor/Titel/Textsorte/Datum (ca. 3P)
+2. Thema - z.B. "poetische Darstellung eines gewaltigen Naturgeschehens" (ca. 3P)
+3. Sprechsituation - konkret: wer spricht, Perspektive (ca. 3P)
+4. Inhalt - Strophe für Strophe mit konkreten Bildern aus dem Gedicht (ca. 6P)
+5. Form - Reimschema, Metrum, Kadenz, Enjambements (ca. 3P)
+6. Bildlichkeit/Wortwahl - MIT Zitaten und Interpretationen (ca. 9P)
+7. Weitere Mittel - Syntax, rhetorische Figuren MIT Beispielen (ca. 6P)
+8. Deutung - thematische Einordnung (ca. 6P)
+9. (erfuellt ein weiteres aufgabenbezogenes Kriterium) (Rest)
+
+Aufgabe 2 (Punkte aus PDF!) - GEDICHTVERGLEICH:
+1. Überleitung (ca. 3P)
+2. Analyse zweites Gedicht - Form, Inhalt, Struktur (siehe Aufgabe 1 Struktur) (ca. 10P)
+3. VERGLEICH Gemeinsamkeiten - Krieg als Ursache, Leid, Tod, existentielle Erschütterung (ca. 10P)
+4. VERGLEICH Unterschiede - Klemm zeigt moderne Orientierungslosigkeit, Gryphius religiöse Verarbeitung; Klemm modern/fragmentiert, Gryphius Barocke Jenseitsorientierung trotz Qual (ca. 10P)
+5. VERGLEICH Gestaltung - Form: Beide Sonett (Gryphius Alexandriner/durchgehend Quartett, Klemm modern/fragmentiert); Sprache: Gryphius barocke Rhetorik, Klemm expressionistische/montage-technik; Bildlichkeit: Gryphius Vanitas-Symbolik, Klemm technisierte/urbane Schreckensbilder (ca. 9P)
 [VOR der nächsten Zeile in KURSIV]: Angestrebt ist hier keine vollständige Darstellung der beispielhaft genannten Aspekte, sondern eine differenzierte Schwerpunktsetzung durch den Prüfling, die allerdings mehrere Gesichtspunkte aufgreift.
-6. (erfuellt ein weiteres aufgabenbezogenes Kriterium) (4P)
+6. (erfuellt ein weiteres aufgabenbezogenes Kriterium) (Rest)
 
 DRAMENANALYSE (wie Faust):
-Aufgabe 1 (40P):
-1. Einleitung mit Autor/Werk/Szene (3P)
-2. Kommunikationssituation - wer spricht mit wem, Kontext (2-3P)
-3. Einordnung in Handlung - was ist vorher passiert (3P)
-4. Inhalt - Szenenablauf mit konkreten Aussagen der Figuren (6-7P)
-5. Figurenanalyse - innerer Zustand MIT Textbelegen (9P)
-6. Dialogische Situation - Konflikte, Beziehungen (5P)
-7. Sprachliche Gestaltung - Stilmittel MIT Zitaten (8P)
-8. Schlussfolgerung (3P)
-9. (erfuellt ein weiteres aufgabenbezogenes Kriterium) (4P)
+WICHTIG: Punkte aus der tatsächlichen Klausur übernehmen!
+
+Aufgabe 1 (Punkte aus PDF!):
+1. Einleitung mit Autor/Werk/Szene (ca. 3P)
+2. Kommunikationssituation - wer spricht mit wem, Kontext (ca. 2-3P)
+3. Einordnung in Handlung - was ist vorher passiert (ca. 3P)
+4. Inhalt - Szenenablauf mit konkreten Aussagen der Figuren (ca. 6-7P)
+5. Figurenanalyse - innerer Zustand MIT Textbelegen (ca. 9P)
+6. Dialogische Situation - Konflikte, Beziehungen (ca. 5P)
+7. Sprachliche Gestaltung - Stilmittel MIT Zitaten (ca. 8P)
+8. Schlussfolgerung (ca. 3P)
+9. (erfuellt ein weiteres aufgabenbezogenes Kriterium) (Rest)
 
 FORMULIERUNGSREGELN:
 1. Jede Anforderung beginnt mit Verb in 3. Person: "verfasst", "benennt", "stellt dar", "untersucht", "erläutert", "erschließt", "prüft", "nimmt Stellung"
