@@ -22,7 +22,9 @@ WICHTIG - STRUKTUR:
 - KEINE Aufgabe 3 (Darstellungsleistung) - wird automatisch generiert
 - KEINE "Sachlich richtige Alternativloesung" als Bewertungspunkt
 - Letzte Anforderung ist immer "(erfüllt ein weiteres aufgabenbezogenes Kriterium)" - PUNKTE IN KLAMMERN!
-- Bei Aufgabe 2: VOR der letzten Anforderung "(erfuellt ein weiteres...)" muss in KURSIV eine Zeile stehen
+- KRITISCH: Die Punkte ALLER Anforderungen (OHNE "erfüllt ein weiteres") müssen EXAKT die Gesamtpunkte der Aufgabe ergeben!
+  Beispiel: Aufgabe 1 hat 42 Punkte → Anf.1-6 zusammen = 42P, Anf.7 "(erfüllt...)" = (4) extra
+- Bei Aufgabe 2: Die kursive Zeile "Angestrebt ist..." erscheint NUR EINMAL als eigenständige Anforderung MIT 0 Punkten VOR "(erfüllt ein weiteres...)"
 
 BEISPIEL aus echter NRW-Klausur (Heike Wiese Text):
 Anforderung 3 (10 Punkte): "stellt Wieses Position dar, etwa:
@@ -48,15 +50,16 @@ Aufgabe 1 (Punkte aus PDF übernehmen!):
 6. Leserlenkung - MIT spezifischen rhetorischen Mitteln, Fachbegriffen, Beispielen aus dem Text (ca. 9P)
 7. (erfüllt ein weiteres aufgabenbezogenes Kriterium) (ca. 4P)
 
-Aufgabe 2 (Punkte aus PDF übernehmen!):
+Aufgabe 2 (Punkte aus PDF übernehmen! z.B. 30P):
 1. Überleitung (ca. 3P)
 2. Funktionen Sprachvarietäten - BEZOGEN auf den Text (ca. 6P)
 3. Funktionen Standardsprache - BEZOGEN auf Unterrichtsthemen (ca. 6P)
-4. Stellung PRO - MIT 3-5 konkreten Argumenten (ca. 7P)
-5. Stellung CONTRA - MIT 3-5 konkreten Gegenargumenten (ca. 7P)
-6. Fazit (ca. 4P)
-[VOR der nächsten Zeile in KURSIV]: Angestrebt ist hier keine vollständige Darstellung der beispielhaft genannten Aspekte, sondern eine differenzierte Schwerpunktsetzung durch den Prüfling, die allerdings mehrere Gesichtspunkte aufgreift.
-7. (erfüllt ein weiteres aufgabenbezogenes Kriterium) (Rest der Punkte)
+4. Stellung PRO - MIT 3-5 konkreten Argumenten (ca. 6P)
+5. Stellung CONTRA - MIT 3-5 konkreten Gegenargumenten (ca. 6P)
+6. Fazit (ca. 3P)
+→ SUMME Anf.1-6 = 30P (entspricht Gesamtpunkte der Aufgabe!)
+7. [KURSIV, 0 Punkte]: "Angestrebt ist hier keine vollständige Darstellung der beispielhaft genannten Aspekte, sondern eine differenzierte Schwerpunktsetzung durch den Prüfling, die allerdings mehrere Gesichtspunkte aufgreift."
+8. (erfüllt ein weiteres aufgabenbezogenes Kriterium) (4P in Klammern)
 
 GEDICHTANALYSE (wie Trakl "Der Gewitterabend"):
 WICHTIG: Punkte aus der tatsächlichen Klausur übernehmen!
@@ -72,14 +75,15 @@ Aufgabe 1 (Punkte aus PDF!):
 8. Deutung - thematische Einordnung (ca. 6P)
 9. (erfüllt ein weiteres aufgabenbezogenes Kriterium) (Rest)
 
-Aufgabe 2 (Punkte aus PDF!) - GEDICHTVERGLEICH:
-1. Überleitung (ca. 3P)
+Aufgabe 2 (Punkte aus PDF! z.B. 36P) - GEDICHTVERGLEICH:
+1. Überleitung (ca. 2P)
 2. Analyse zweites Gedicht - Form, Inhalt, Struktur (siehe Aufgabe 1 Struktur) (ca. 10P)
 3. VERGLEICH Gemeinsamkeiten - Krieg als Ursache, Leid, Tod, existentielle Erschütterung (ca. 10P)
 4. VERGLEICH Unterschiede - Klemm zeigt moderne Orientierungslosigkeit, Gryphius religiöse Verarbeitung; Klemm modern/fragmentiert, Gryphius Barocke Jenseitsorientierung trotz Qual (ca. 10P)
-5. VERGLEICH Gestaltung - Form: Beide Sonett (Gryphius Alexandriner/durchgehend Quartett, Klemm modern/fragmentiert); Sprache: Gryphius barocke Rhetorik, Klemm expressionistische/montage-technik; Bildlichkeit: Gryphius Vanitas-Symbolik, Klemm technisierte/urbane Schreckensbilder (ca. 9P)
-[VOR der nächsten Zeile in KURSIV]: Angestrebt ist hier keine vollständige Darstellung der beispielhaft genannten Aspekte, sondern eine differenzierte Schwerpunktsetzung durch den Prüfling, die allerdings mehrere Gesichtspunkte aufgreift.
-6. (erfüllt ein weiteres aufgabenbezogenes Kriterium) (Rest)
+5. VERGLEICH Gestaltung - Form: Beide Sonett (Gryphius Alexandriner/durchgehend Quartett, Klemm modern/fragmentiert); Sprache: Gryphius barocke Rhetorik, Klemm expressionistische/montage-technik; Bildlichkeit: Gryphius Vanitas-Symbolik, Klemm technisierte/urbane Schreckensbilder (ca. 4P)
+→ SUMME Anf.1-5 = 36P (entspricht Gesamtpunkte!)
+6. [KURSIV, 0 Punkte]: "Angestrebt ist hier keine vollständige Darstellung der beispielhaft genannten Aspekte, sondern eine differenzierte Schwerpunktsetzung durch den Prüfling, die allerdings mehrere Gesichtspunkte aufgreift."
+7. (erfüllt ein weiteres aufgabenbezogenes Kriterium) (4P in Klammern)
 
 DRAMENANALYSE (wie Faust):
 WICHTIG: Punkte aus der tatsächlichen Klausur übernehmen!
@@ -99,8 +103,10 @@ FORMULIERUNGSREGELN:
 1. Jede Anforderung beginnt mit Verb in 3. Person: "verfasst", "benennt", "stellt dar", "untersucht", "erläutert", "erschließt", "prüft", "nimmt Stellung"
 2. Nach dem Hauptsatz kommt "etwa:" und dann 3-8 Bullet-Points
 3. Bullet-Points sind MIT KONKRETEN Textbezügen, Zitaten, Beispielen
-4. Bei umfangreichen Anforderungen (8+ Bullets): "Angestrebt ist hier keine vollständige Darstellung der beispielhaft genannten Aspekte, sondern eine differenzierte Schwerpunktsetzung durch den Prüfling, die allerdings mehrere Aspekte aufgreift."
-5. WICHTIG: Bei Aufgabe 2 - VOR der Zeile "(erfüllt ein weiteres aufgabenbezogenes Kriterium)" muss in KURSIV stehen: "Angestrebt ist hier keine vollständige Darstellung der beispielhaft genannten Aspekte, sondern eine differenzierte Schwerpunktsetzung durch den Prüfling, die allerdings mehrere Gesichtspunkte aufgreift."
+4. NIEMALS bei einzelnen Anforderungen "Angestrebt ist hier..." verwenden - das kommt NUR als separate Anforderung!
+5. KRITISCH für Aufgabe 2:
+   - Vorletzte Anforderung: "Angestrebt ist hier keine vollständige Darstellung der beispielhaft genannten Aspekte, sondern eine differenzierte Schwerpunktsetzung durch den Prüfling, die allerdings mehrere Gesichtspunkte aufgreift." MIT 0 Punkten
+   - Letzte Anforderung: "(erfüllt ein weiteres aufgabenbezogenes Kriterium)" MIT (4) Punkten in Klammern
 
 KRITISCH - WAS DU TUN MUSST:
 - Lies den Text und nenne KONKRETE Thesen/Argumente/Motive

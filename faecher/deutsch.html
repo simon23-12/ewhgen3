@@ -417,26 +417,32 @@
                                 ta.bewertung.forEach((bew, index) => {
                                     const anfText = bew.anf || bew.anforderung || '';
                                     const anfPunkte = bew.p || bew.punkte || 0;
-                                    inhaltsPunkte += anfPunkte;
 
-                                    // Check if this is the last item (erfuellt ein weiteres)
-                                    const isLastItem = index === ta.bewertung.length - 1;
+                                    // Check if this is the disclaimer row or "erfuellt ein weiteres"
+                                    const isDisclaimer = anfText.includes('Angestrebt ist hier keine vollständige Darstellung');
                                     const isErfuelltEinWeiteres = anfText.includes('erfüllt ein weiteres aufgabenbezogenes Kriterium');
 
-                                    // For Aufgabe 2: Show italic disclaimer BEFORE the last item
-                                    if (aufgabe.nummer === 2 && isLastItem && index > 0) {
-                                        html += `<tr style="background: rgba(255,255,255,0.02);">
-                                            <td contenteditable="true" colspan="3" style="font-style: italic; padding: 12px;">
-                                                Angestrebt ist hier keine vollständige Darstellung der beispielhaft genannten Aspekte, sondern eine differenzierte Schwerpunktsetzung durch den Prüfling, die allerdings mehrere Gesichtspunkte aufgreift.
-                                            </td>
-                                        </tr>`;
+                                    // Only add points if not disclaimer and not "erfuellt ein weiteres"
+                                    if (!isDisclaimer && !isErfuelltEinWeiteres) {
+                                        inhaltsPunkte += anfPunkte;
                                     }
 
-                                    // Show points in brackets for "erfuellt ein weiteres"
-                                    const punkteDisplay = isErfuelltEinWeiteres ? `(${anfPunkte})` : anfPunkte;
+                                    // Show points in brackets for "erfuellt ein weiteres", 0 for disclaimer
+                                    let punkteDisplay;
+                                    if (isErfuelltEinWeiteres) {
+                                        punkteDisplay = `(${anfPunkte})`;
+                                    } else if (isDisclaimer) {
+                                        punkteDisplay = '0';
+                                    } else {
+                                        punkteDisplay = anfPunkte;
+                                    }
 
-                                    html += `<tr>
-                                        <td contenteditable="true">${anfText}</td>
+                                    // Apply italic style for disclaimer
+                                    const rowStyle = isDisclaimer ? 'font-style: italic; background: rgba(255,255,255,0.02);' : '';
+                                    const cellStyle = isDisclaimer ? 'font-style: italic;' : '';
+
+                                    html += `<tr style="${rowStyle}">
+                                        <td contenteditable="true" style="${cellStyle}">${anfText}</td>
                                         <td contenteditable="true">${punkteDisplay}</td>
                                         <td contenteditable="true"></td>
                                     </tr>`;
