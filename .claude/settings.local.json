@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(vercel:*)",
+      "Bash(git pull:*)",
+      "Bash(git stash:*)",
+      "Skill(frontend-design)",
+      "Skill(frontend-design:*)",
+      "Bash(node -e:*)",
+      "Bash(git remote add origin https://github.com/simon23-12/ewhgen3.git)",
+      "Bash({...})",
+      "Bash(Zusätzlich benötigt man...\"\n\nThe old regex was greedy and captured everything between\nfirst { and last }, including text after the JSON.\n\nSolution:\n1. Non-greedy JSON extraction using brace/bracket counting\n   - Tracks opening/closing braces while respecting strings\n   - Stops at first complete JSON block\n   - Ignores all text after the JSON\n\n2. Improved prompt clarity:\n   - \"ABSOLUT NUR JSON\" \\(no introductions\\)\n   - \"KEIN Text nach dem JSON\"\n   - Lists forbidden patterns: \"Hier ist...\", \"Der API Call...\"\n\nThis prevents \"Unexpected non-whitespace character after JSON\"\nerrors when DeepSeek adds explanations after the JSON.\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+    ]
+  }
+}

@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erwartungshorizont Generator - Mathematik</title>
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <link rel="stylesheet" href="../shared/styles.css">
+    <!-- MathJax for rendering mathematical notation -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        .aufgaben-preview {
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .aufgabe-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+        .aufgabe-header {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .teilaufgabe {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .teilaufgabe:last-child {
+            border-bottom: none;
+        }
+        .punkte-badge {
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            margin-left: 10px;
+        }
+        .modelloesung {
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .modelloesung h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .rechenschritt {
+            padding: 8px 0;
+            border-left: 3px solid #667eea;
+            padding-left: 15px;
+            margin: 8px 0;
+        }
+        .endergebnis {
+            background: rgba(76, 175, 80, 0.2);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        .bewertung-table {
+            width: 100%;
+            margin-top: 15px;
+        }
+        .bewertung-table th {
+            background: rgba(102, 126, 234, 0.3);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <img src="../images/schoollogoonly.png" alt="School Logo" class="header-logo">
+                <h1>Erwartungshorizont Generator</h1>
+            </div>
+            <p>für Klausuren Sek II NRW</p>
+        </div>
+
+        <!-- Subject Tabs -->
+        <div class="subject-tabs">
+            <div class="subject-tabs-container">
+                <a href="englisch.html" class="subject-tab">Englisch</a>
+                <a href="philosophie.html" class="subject-tab">Philosophie</a>
+                <a href="mathematik.html" class="subject-tab active">Mathematik</a>
+                <a href="deutsch.html" class="subject-tab">Deutsch</a>
+            </div>
+        </div>
+
+        <!-- Mathematik Content -->
+        <div class="subject-content">
+            <div style="max-width: 1200px; margin: 0 auto;">
+                <div class="glass-card">
+                    <div class="info-box">
+                        <h3>So funktioniert's:</h3>
+                        <ul>
+                            <li>Lade deine Mathe-Klausur als PDF hoch (mit Aufgaben und Punkteverteilung)</li>
+                            <li>Du erhältst Modelllösung mit Rechenweg + Bewertungsbogen</li>
+                        </ul>
+                        <p style="margin-top: 12px;">
+                            WICHTIG: Das PDF muss textbasiert sein, nicht gescannt. Check: Kannst du Text im PDF markieren? Nur dann funktioniert der Generator.
+                        </p>
+                        <p style="margin-top: 8px;">
+                            Der Generator kann Fehler machen: Bitte überprüfe alle Lösungen.
+                        </p>
+                    </div>
+
+                    <div class="pdf-upload-section">
+                        <label style="font-size: 1.05em; font-weight: 600; margin-bottom: 12px; display: block;">
+                            Klausur-PDF hochladen (Pflicht)
+                        </label>
+                        <p style="color: rgba(255,255,255,0.8); font-size: 0.9em; margin-bottom: 15px;">
+                            Lade die vollständige Klausur mit allen Aufgaben und Punktangaben hoch
+                        </p>
+                        <div id="pdfDropZone" class="pdf-drop-zone">
+                            <div style="font-size: 3em; margin-bottom: 10px;">&#128202;</div>
+                            <p style="color: white; font-weight: 500; margin-bottom: 5px;">Mathe-Klausur PDF hier ablegen</p>
+                            <p style="color: rgba(255,255,255,0.7); font-size: 0.9em;">oder klicken zum Auswählen</p>
+                        </div>
+                        <input type="file" id="pdfUpload" accept=".pdf" style="display: none;">
+                        <button type="button" class="pdf-select-btn" onclick="document.getElementById('pdfUpload').click()">
+                            Datei auswählen
+                        </button>
+                        <p id="pdfStatus" style="color: rgba(255,255,255,0.7); font-size: 0.85em; margin-top: 10px; display: none;"></p>
+                    </div>
+
+                    <div class="button-container">
+                        <button class="generate-btn" id="generateBtn" onclick="generateErwartungshorizontMathe()" disabled>
+                            Erwartungshorizont erstellen
+                        </button>
+                    </div>
+                </div>
+
+                <div class="glass-card-strong output-section">
+                    <label>Generierter Erwartungshorizont mit Modelllösung:</label>
+                    <div id="outputMathe" class="output empty">
+                        Hier erscheint dein Erwartungshorizont mit exakten Lösungen...
+                    </div>
+                    <div class="download-buttons hidden" id="downloadButtonsMathe">
+                        <button class="download-btn btn-pdf" onclick="printAsPdfMathe()">
+                            Als PDF speichern
+                        </button>
+                        <button class="download-btn" onclick="copyToClipboardMathe()">
+                            Kopieren
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMatheData = null;
+        let pdfBase64Data = null;
+
+        // NRW Notenschluessel: Berechnet Punktebereiche basierend auf Gesamtpunktzahl
+        function berechneNotenschluessel(gesamtpunkte) {
+            // Prozentgrenzen nach NRW-Vorgabe
+            const noten = [
+                { note: 15, prozentMin: 95, prozentMax: 100 },
+                { note: 14, prozentMin: 90, prozentMax: 94 },
+                { note: 13, prozentMin: 85, prozentMax: 89 },
+                { note: 12, prozentMin: 80, prozentMax: 84 },
+                { note: 11, prozentMin: 75, prozentMax: 79 },
+                { note: 10, prozentMin: 70, prozentMax: 74 },
+                { note: 9, prozentMin: 65, prozentMax: 69 },
+                { note: 8, prozentMin: 60, prozentMax: 64 },
+                { note: 7, prozentMin: 55, prozentMax: 59 },
+                { note: 6, prozentMin: 50, prozentMax: 54 },
+                { note: 5, prozentMin: 45, prozentMax: 49 },
+                { note: 4, prozentMin: 40, prozentMax: 44 },
+                { note: 3, prozentMin: 33, prozentMax: 39 },
+                { note: 2, prozentMin: 27, prozentMax: 32 },
+                { note: 1, prozentMin: 20, prozentMax: 26 },
+                { note: 0, prozentMin: 0, prozentMax: 19 }
+            ];
+
+            return noten.map(n => {
+                const punkteMin = Math.ceil(gesamtpunkte * n.prozentMin / 100);
+                const punkteMax = n.prozentMax === 100
+                    ? gesamtpunkte
+                    : Math.floor(gesamtpunkte * n.prozentMax / 100);
+
+                // Sonderfall fuer Note 15: >= 95%
+                const prozentText = n.note === 15
+                    ? `>= ${n.prozentMin}%`
+                    : `${n.prozentMin}% - ${n.prozentMax}%`;
+
+                const bereichText = n.note === 15
+                    ? `${punkteMin} - ${punkteMax}`
+                    : `${punkteMin} - ${punkteMax}`;
+
+                return {
+                    note: n.note,
+                    prozent: prozentText,
+                    bereich: bereichText
+                };
+            });
+        }
+
+        // Custom PDF upload handler for Mathematik
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing PDF upload...');
+            const fileInput = document.getElementById('pdfUpload');
+            const dropZone = document.getElementById('pdfDropZone');
+            const statusEl = document.getElementById('pdfStatus');
+
+            if (!fileInput || !dropZone || !statusEl) {
+                console.error('Missing elements:', { fileInput, dropZone, statusEl });
+                return;
+            }
+
+            // Enable experimental button when PDF is loaded
+            const experimentalBtn = document.getElementById('generateExperimentalBtn');
+            if (experimentalBtn) {
+                experimentalBtn.disabled = !pdfBase64Data;
+            }
+
+            console.log('All elements found, attaching listeners...');
+
+            // File input change
+            fileInput.addEventListener('change', handleFileSelect);
+
+            // Drag and drop
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('drag-over');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('drag-over');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('drag-over');
+                const files = e.dataTransfer.files;
+                if (files.length > 0 && files[0].type === 'application/pdf') {
+                    handleFile(files[0]);
+                }
+            });
+
+            dropZone.addEventListener('click', () => {
+                fileInput.click();
+            });
+        });
+
+        function handleFileSelect(e) {
+            console.log('handleFileSelect called', e.target.files);
+            const file = e.target.files[0];
+            if (file) {
+                console.log('Processing file:', file.name, file.size, 'bytes');
+                handleFile(file);
+            } else {
+                console.error('No file selected');
+            }
+        }
+
+        async function handleFile(file) {
+            console.log('handleFile called with:', file.name);
+            const statusEl = document.getElementById('pdfStatus');
+            const generateBtn = document.getElementById('generateBtn');
+            const outputDiv = document.getElementById('outputMathe');
+            const downloadButtons = document.getElementById('downloadButtonsMathe');
+
+            // WICHTIG: Reset bei neuem Upload
+            pdfBase64Data = null;
+            currentMatheData = null;
+            outputDiv.className = 'output empty';
+            outputDiv.innerHTML = 'Hier erscheint dein Erwartungshorizont mit exakten Lösungen...';
+            downloadButtons.classList.add('hidden');
+
+            statusEl.style.display = 'block';
+            statusEl.textContent = 'PDF wird geladen...';
+            statusEl.style.color = '#ffd700';
+
+            try {
+                // Convert PDF to Base64 for Gemini Vision
+                const arrayBuffer = await file.arrayBuffer();
+                console.log('PDF size:', arrayBuffer.byteLength, 'bytes');
+
+                // Check file size (max ~20MB for Gemini)
+                if (arrayBuffer.byteLength > 20 * 1024 * 1024) {
+                    statusEl.innerHTML = '⚠️ <strong>PDF zu groß!</strong> Maximum: 20 MB';
+                    statusEl.style.color = '#ff6b6b';
+                    generateBtn.disabled = true;
+                    return;
+                }
+
+                // Convert to Base64
+                const bytes = new Uint8Array(arrayBuffer);
+                let binary = '';
+                for (let i = 0; i < bytes.length; i++) {
+                    binary += String.fromCharCode(bytes[i]);
+                }
+                pdfBase64Data = btoa(binary);
+                console.log('PDF converted to Base64, length:', pdfBase64Data.length);
+
+                const fileSizeMB = (arrayBuffer.byteLength / (1024 * 1024)).toFixed(2);
+                statusEl.innerHTML = `✓ PDF geladen (${fileSizeMB} MB) - Klicke auf "Erwartungshorizont erstellen"<br><small style="color: rgba(255,255,255,0.7);">Gemini analysiert Formeln, Graphen und Text visuell</small>`;
+                statusEl.style.color = '#4caf50';
+                generateBtn.disabled = false;
+
+
+            } catch (error) {
+                console.error('PDF Read Error:', error);
+                statusEl.textContent = 'Fehler beim Lesen der PDF: ' + error.message;
+                statusEl.style.color = '#ff6b6b';
+                generateBtn.disabled = true;
+            }
+        }
+
+        async function generateErwartungshorizontMathe() {
+            if (!pdfBase64Data) {
+                alert('Bitte zuerst eine Klausur-PDF hochladen!');
+                return;
+            }
+
+            const outputDiv = document.getElementById('outputMathe');
+            const generateBtn = document.getElementById('generateBtn');
+            const downloadButtons = document.getElementById('downloadButtonsMathe');
+
+            generateBtn.disabled = true;
+            generateBtn.textContent = 'Wird generiert...';
+            outputDiv.className = 'output loading';
+            outputDiv.innerHTML = 'Klausur wird visuell analysiert...<br><small>Gemini liest Formeln, Graphen und Text direkt aus der PDF.</small>';
+            downloadButtons.classList.add('hidden');
+
+            try {
+                // Send PDF as Base64 to Gemini Vision API
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        subject: 'mathematik',
+                        pdfBase64: pdfBase64Data,
+                        timestamp: Date.now()
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Fehler bei der Generierung');
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    currentMatheData = data.data;
+                    renderMathematikOutput(data.data);
+                    downloadButtons.classList.remove('hidden');
+
+                    // Re-render MathJax
+                    if (window.MathJax) {
+                        MathJax.typesetPromise();
+                    }
+                } else {
+                    throw new Error(data.error || 'Unbekannter Fehler');
+                }
+
+            } catch (error) {
+                console.error('Generation Error:', error);
+                outputDiv.className = 'output';
+                outputDiv.innerHTML = `<p style="color: #d32f2f;">Fehler: ${error.message}</p>`;
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.textContent = 'Erwartungshorizont mit Lösungen erstellen';
+            }
+        }
+
+        function renderMathematikOutput(data) {
+            const outputDiv = document.getElementById('outputMathe');
+            outputDiv.className = 'output';
+
+            let html = `
+                <div class="preview-section">
+                    <h2>Erwartungshorizont Mathematik</h2>
+                    <p style="margin-bottom: 20px;">
+                        <strong>Stufe:</strong> ${data.klausurInfo?.stufe || 'EF'} |
+                        <strong>Kursart:</strong> ${data.klausurInfo?.kursart || 'GK'} |
+                        <strong>Gesamtpunkte:</strong> ${data.klausurInfo?.gesamtpunkte || 60}
+                    </p>
+            `;
+
+            // Render each Aufgabe - supports both compact and legacy format
+            if (data.aufgaben) {
+                data.aufgaben.forEach(aufgabe => {
+                    html += `
+                        <div class="preview-section" style="margin-top: 30px;">
+                            <h3 class="preview-subtitle">Aufgabe ${aufgabe.nummer}: ${aufgabe.titel || ''}</h3>
+                    `;
+
+                    if (aufgabe.teilaufgaben) {
+                        aufgabe.teilaufgaben.forEach(ta => {
+                            const verificationBadge = ta.verification?.verified
+                                ? `<span class="punkte-badge" style="background: #4caf50; margin-left: 5px;" title="Mathematisch verifiziert mit SymPy">✓ Verified</span>`
+                                : '';
+                            html += `
+                                <div style="margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                                    <h4 style="color: #667eea;">${ta.bezeichnung}) <span class="punkte-badge">${ta.punkte} Punkte</span>${verificationBadge}</h4>
+                            `;
+
+                            // Modelloesung from verified mode (string format)
+                            if (ta.modelloesung && typeof ta.modelloesung === 'string') {
+                                html += `<div class="modelloesung">
+                                    <h4>Modelllösung:</h4>
+                                    <p>${ta.modelloesung}</p>
+                                    ${ta.endergebnis ? `<div class="endergebnis">Endergebnis: ${ta.endergebnis}</div>` : ''}
+                                </div>`;
+                            }
+                            // Compact format: "loesung" field
+                            else if (ta.loesung) {
+                                html += `<div class="modelloesung">
+                                    <h4>Lösung:</h4>
+                                    <div class="endergebnis">${ta.loesung}</div>
+                                </div>`;
+                            }
+                            // Legacy format: "modelloesung" object with steps
+                            else if (ta.modelloesung && typeof ta.modelloesung === 'object') {
+                                html += `<div class="modelloesung"><h4>Modelllösung:</h4>`;
+                                if (ta.modelloesung.schritte) {
+                                    ta.modelloesung.schritte.forEach(schritt => {
+                                        html += `<div class="rechenschritt">
+                                            <strong>Schritt ${schritt.schritt}:</strong> ${schritt.beschreibung}<br>
+                                            <code style="color: #ffd700;">${schritt.rechnung || ''}</code>
+                                        </div>`;
+                                    });
+                                }
+                                if (ta.modelloesung.endergebnis) {
+                                    html += `<div class="endergebnis">${ta.modelloesung.endergebnis}</div>`;
+                                }
+                                html += `</div>`;
+                            }
+
+                            // Bewertung - supports both compact {"anf","p"} and legacy {"anforderung","punkte"}
+                            if (ta.bewertung && ta.bewertung.length > 0) {
+                                html += `
+                                    <table class="preview-table bewertung-table">
+                                        <thead><tr>
+                                            <th style="width: 70%;">Anforderung</th>
+                                            <th style="width: 15%;">Max.</th>
+                                            <th style="width: 15%;">Erreicht</th>
+                                        </tr></thead><tbody>`;
+
+                                ta.bewertung.forEach(bew => {
+                                    const anfText = bew.anf || bew.anforderung || '';
+                                    const anfPunkte = bew.p || bew.punkte || 0;
+                                    html += `<tr>
+                                        <td contenteditable="true">${anfText}</td>
+                                        <td contenteditable="true">${anfPunkte}</td>
+                                        <td contenteditable="true"></td>
+                                    </tr>`;
+                                });
+
+                                html += `<tr>
+                                    <td contenteditable="true"><em>Sachlich richtige Lösungsalternative</em></td>
+                                    <td contenteditable="true">(${ta.punkte})</td>
+                                    <td contenteditable="true"></td>
+                                </tr></tbody></table>`;
+                            }
+
+                            html += `</div>`;
+                        });
+                    }
+
+                    html += `</div>`;
+                });
+            }
+
+            // Gesamtuebersicht
+            html += `
+                <div class="preview-section" style="margin-top: 40px;">
+                    <h3 class="preview-subtitle">Gesamtübersicht</h3>
+                    <table class="preview-table">
+                        <thead>
+                            <tr>
+                                <th>Aufgabe</th>
+                                <th>Max. Punkte</th>
+                                <th>Erreichte Punkte</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            if (data.aufgaben) {
+                data.aufgaben.forEach(aufgabe => {
+                    const aufgabePunkte = aufgabe.teilaufgaben?.reduce((sum, ta) => sum + (ta.punkte || 0), 0) || 0;
+                    html += `
+                        <tr>
+                            <td contenteditable="true">Aufgabe ${aufgabe.nummer}</td>
+                            <td contenteditable="true">${aufgabePunkte}</td>
+                            <td contenteditable="true"></td>
+                        </tr>
+                    `;
+                });
+            }
+
+            html += `
+                        <tr style="background: #f0f0f0; font-weight: bold;">
+                            <td contenteditable="true">GESAMT</td>
+                            <td contenteditable="true">${data.klausurInfo?.gesamtpunkte || 60}</td>
+                            <td contenteditable="true"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            // Notenschluessel - dynamisch berechnet basierend auf Gesamtpunktzahl
+            const gesamtpunkte = data.klausurInfo?.gesamtpunkte || 60;
+            const notentabelle = berechneNotenschluessel(gesamtpunkte);
+
+            html += `
+                <div class="preview-section" style="page-break-before: always; margin-top: 40px;">
+                    <h3 class="preview-subtitle">Notenschlüssel (${gesamtpunkte} Punkte)</h3>
+                    <table class="preview-table">
+                        <thead>
+                            <tr>
+                                <th>Notenpunkte</th>
+                                <th>Prozent</th>
+                                <th>Punktebereich</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${notentabelle.map(n => `
+                                <tr>
+                                    <td contenteditable="true" style="font-weight: bold;">${n.note}</td>
+                                    <td contenteditable="true">${n.prozent}</td>
+                                    <td contenteditable="true">${n.bereich}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            html += `</div>`;
+            outputDiv.innerHTML = html;
+        }
+
+        function copyToClipboardMathe(event) {
+            const outputDiv = document.getElementById('outputMathe');
+            const text = outputDiv.innerText;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = 'Kopiert!';
+                btn.style.background = '#4caf50';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                alert('Fehler beim Kopieren: ' + err);
+            });
+        }
+
+        function printAsPdfMathe() {
+            if (!currentMatheData) {
+                alert('Bitte erst einen Erwartungshorizont erstellen!');
+                return;
+            }
+            window.print();
+        }
+
+    </script>
+
+    <footer style="text-align: center; padding: 20px 0; color: rgba(255,255,255,0.5); font-size: 0.85em;">
+        From Simon with love ❤️
+    </footer>
+</body>
+</html>

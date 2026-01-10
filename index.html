@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erwartungshorizont Generator - NRW Sek II</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="shared/styles.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .landing-container {
+            max-width: 900px;
+            width: 100%;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 50px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 12px;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .header-logo {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 12px;
+            padding: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            font-weight: 700;
+            margin: 0;
+            color: white;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 1.15em;
+            font-weight: 400;
+            color: white;
+            opacity: 0.95;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            opacity: 0;
+            animation: fadeInUp 0.6s 0.2s ease forwards;
+        }
+
+        .description {
+            max-width: 600px;
+            margin: 0 auto 50px;
+            font-size: 1.05em;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.9);
+            opacity: 0;
+            animation: fadeInUp 0.6s 0.4s ease forwards;
+        }
+
+        .subjects-container {
+            display: flex;
+            gap: 20px;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            justify-content: center;
+        }
+
+        .subject-btn {
+            flex: 1;
+            padding: 20px 30px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            text-decoration: none;
+            color: white;
+            font-size: 1.3em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: block;
+            opacity: 0;
+        }
+
+        .subject-btn:nth-child(1) {
+            animation: fadeInUp 0.6s 0.6s ease forwards;
+        }
+
+        .subject-btn:nth-child(2) {
+            animation: fadeInUp 0.6s 0.7s ease forwards;
+        }
+
+        .subject-btn:nth-child(3) {
+            animation: fadeInUp 0.6s 0.8s ease forwards;
+        }
+
+        .subject-btn:nth-child(4) {
+            animation: fadeInUp 0.6s 0.9s ease forwards;
+        }
+
+        .subject-btn:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 16px 48px 0 rgba(31, 38, 135, 0.3);
+        }
+
+        footer {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.85em;
+            opacity: 0;
+            animation: fadeInUp 0.6s 1s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .subjects-container {
+                flex-direction: column;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            body {
+                overflow: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="landing-container">
+        <div class="header">
+            <div class="header-content">
+                <img src="images/schoollogoonly.png" alt="School Logo" class="header-logo">
+                <h1>Erwartungshorizont Generator</h1>
+            </div>
+            <p>für Klausuren Sek II NRW</p>
+        </div>
+
+        <p class="description">
+            Erstelle strukturierte Erwartungshorizonte nach NRW-Kriterien für Oberstufenklausuren.
+            Wähle dein Fach und lade deine Klausur als PDF hoch oder füge die Texte manuell ein.
+        </p>
+
+        <div class="subjects-container">
+            <a href="faecher/englisch.html" class="subject-btn">Englisch</a>
+            <a href="faecher/philosophie.html" class="subject-btn">Philosophie</a>
+            <a href="faecher/mathematik.html" class="subject-btn">Mathematik</a>
+            <a href="faecher/deutsch.html" class="subject-btn">Deutsch</a>
+        </div>
+    </div>
+
+    <footer>
+        From Simon with love ❤️
+    </footer>
+</body>
+</html>
