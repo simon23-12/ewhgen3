@@ -48,6 +48,46 @@ export function generatePrompt(data) {
 }
 ```
 
+**⚠️ KRITISCH: Punkteverteilungs-Regel für NRW-Erwartungshorizonte**
+
+Die meisten NRW-Fächer (Deutsch, Englisch) nutzen **"Zusatzkriterien"** die NICHT zur regulären Punktsumme zählen:
+
+**Beispiel Deutsch:**
+- Aufgabe 1: 42 Punkte gesamt
+  - Anforderung 1-6: **42 Punkte** (regulär)
+  - Anforderung 7: `"(erfüllt ein weiteres aufgabenbezogenes Kriterium)"` → **`(4)` in Klammern** (EXTRA)
+
+**Beispiel Englisch:**
+- Aufgabe 1: 16 Punkte gesamt
+  - Anforderung 1-N: **16 Punkte** (regulär)
+  - Letzte Anforderung: `"Weiteres Kriterium"` → **`(2)` in Klammern** (EXTRA)
+
+**Im Prompt EXPLIZIT fordern:**
+```javascript
+return `...
+KRITISCHE PUNKTEVERTEILUNGS-REGEL:
+Die Punkte ALLER regulären Anforderungen (OHNE "Weiteres Kriterium"/"erfüllt ein weiteres...")
+müssen EXAKT die Gesamtpunkte der Aufgabe ergeben!
+
+Beispiel: Aufgabe 1 hat 42 Punkte
+→ Anforderung 1-N zusammen = 42P (regulär)
+→ LETZTE Anforderung: "[Name des Zusatzkriteriums]" = (3-4) in Klammern EXTRA
+
+JEDE Aufgabe MUSS als LETZTE Zeile haben:
+{"nr": X, "text": "[Zusatzkriterium-Text]", "punkte": "(3)"}
+→ Diese Punkte stehen IN KLAMMERN und zählen NICHT zur Aufgabensumme!
+...`;
+```
+
+**Ausnahmen (kein Zusatzkriterium):**
+- **Mathematik:** Stattdessen `"Sachlich richtige Lösungsalternative"` mit `(Punkte)` in Klammern
+- **Philosophie:** Keine Extra-Zeile, fixe Darstellungsleistung (5+4+3+4+4=20P)
+
+**Wichtig für Frontend-Rendering:**
+- String-Punkte wie `"(3)"` → als Klammern anzeigen
+- Bei Summenberechnung: Diese Zeilen NICHT mitzählen
+- Siehe `faecher/deutsch.html` und `faecher/englisch.html` für Referenz-Implementierung
+
 ### 2. Backend: `api/generate.js` updaten
 Import und Registry hinzufügen:
 
