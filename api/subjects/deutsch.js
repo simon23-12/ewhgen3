@@ -21,7 +21,7 @@ WICHTIG - STRUKTUR:
 - Erstelle NUR Aufgabe 1 und Aufgabe 2 im JSON
 - KEINE Aufgabe 3 (Darstellungsleistung) - wird automatisch generiert
 - KEINE "Sachlich richtige Alternativloesung" als Bewertungspunkt
-- Letzte Anforderung ist immer "(erfuellt ein weiteres aufgabenbezogenes Kriterium)" - PUNKTE IN KLAMMERN!
+- Letzte Anforderung ist immer "(erfüllt ein weiteres aufgabenbezogenes Kriterium)" - PUNKTE IN KLAMMERN!
 - Bei Aufgabe 2: VOR der letzten Anforderung "(erfuellt ein weiteres...)" muss in KURSIV eine Zeile stehen
 
 BEISPIEL aus echter NRW-Klausur (Heike Wiese Text):
@@ -46,7 +46,7 @@ Aufgabe 1 (Punkte aus PDF übernehmen!):
 4. Argumente untersuchen (kritisch) - MIT konkreten Argumenten aus dem Text (ca. 9P)
 5. Argumente untersuchen (stützend) - MIT konkreten Beispielen (ca. 4P)
 6. Leserlenkung - MIT spezifischen rhetorischen Mitteln, Fachbegriffen, Beispielen aus dem Text (ca. 9P)
-7. (erfuellt ein weiteres aufgabenbezogenes Kriterium) (ca. 4P)
+7. (erfüllt ein weiteres aufgabenbezogenes Kriterium) (ca. 4P)
 
 Aufgabe 2 (Punkte aus PDF übernehmen!):
 1. Überleitung (ca. 3P)
@@ -56,7 +56,7 @@ Aufgabe 2 (Punkte aus PDF übernehmen!):
 5. Stellung CONTRA - MIT 3-5 konkreten Gegenargumenten (ca. 7P)
 6. Fazit (ca. 4P)
 [VOR der nächsten Zeile in KURSIV]: Angestrebt ist hier keine vollständige Darstellung der beispielhaft genannten Aspekte, sondern eine differenzierte Schwerpunktsetzung durch den Prüfling, die allerdings mehrere Gesichtspunkte aufgreift.
-7. (erfuellt ein weiteres aufgabenbezogenes Kriterium) (Rest der Punkte)
+7. (erfüllt ein weiteres aufgabenbezogenes Kriterium) (Rest der Punkte)
 
 GEDICHTANALYSE (wie Trakl "Der Gewitterabend"):
 WICHTIG: Punkte aus der tatsächlichen Klausur übernehmen!
@@ -70,7 +70,7 @@ Aufgabe 1 (Punkte aus PDF!):
 6. Bildlichkeit/Wortwahl - MIT Zitaten und Interpretationen (ca. 9P)
 7. Weitere Mittel - Syntax, rhetorische Figuren MIT Beispielen (ca. 6P)
 8. Deutung - thematische Einordnung (ca. 6P)
-9. (erfuellt ein weiteres aufgabenbezogenes Kriterium) (Rest)
+9. (erfüllt ein weiteres aufgabenbezogenes Kriterium) (Rest)
 
 Aufgabe 2 (Punkte aus PDF!) - GEDICHTVERGLEICH:
 1. Überleitung (ca. 3P)
@@ -79,7 +79,7 @@ Aufgabe 2 (Punkte aus PDF!) - GEDICHTVERGLEICH:
 4. VERGLEICH Unterschiede - Klemm zeigt moderne Orientierungslosigkeit, Gryphius religiöse Verarbeitung; Klemm modern/fragmentiert, Gryphius Barocke Jenseitsorientierung trotz Qual (ca. 10P)
 5. VERGLEICH Gestaltung - Form: Beide Sonett (Gryphius Alexandriner/durchgehend Quartett, Klemm modern/fragmentiert); Sprache: Gryphius barocke Rhetorik, Klemm expressionistische/montage-technik; Bildlichkeit: Gryphius Vanitas-Symbolik, Klemm technisierte/urbane Schreckensbilder (ca. 9P)
 [VOR der nächsten Zeile in KURSIV]: Angestrebt ist hier keine vollständige Darstellung der beispielhaft genannten Aspekte, sondern eine differenzierte Schwerpunktsetzung durch den Prüfling, die allerdings mehrere Gesichtspunkte aufgreift.
-6. (erfuellt ein weiteres aufgabenbezogenes Kriterium) (Rest)
+6. (erfüllt ein weiteres aufgabenbezogenes Kriterium) (Rest)
 
 DRAMENANALYSE (wie Faust):
 WICHTIG: Punkte aus der tatsächlichen Klausur übernehmen!
@@ -93,14 +93,14 @@ Aufgabe 1 (Punkte aus PDF!):
 6. Dialogische Situation - Konflikte, Beziehungen (ca. 5P)
 7. Sprachliche Gestaltung - Stilmittel MIT Zitaten (ca. 8P)
 8. Schlussfolgerung (ca. 3P)
-9. (erfuellt ein weiteres aufgabenbezogenes Kriterium) (Rest)
+9. (erfüllt ein weiteres aufgabenbezogenes Kriterium) (Rest)
 
 FORMULIERUNGSREGELN:
 1. Jede Anforderung beginnt mit Verb in 3. Person: "verfasst", "benennt", "stellt dar", "untersucht", "erläutert", "erschließt", "prüft", "nimmt Stellung"
 2. Nach dem Hauptsatz kommt "etwa:" und dann 3-8 Bullet-Points
 3. Bullet-Points sind MIT KONKRETEN Textbezügen, Zitaten, Beispielen
 4. Bei umfangreichen Anforderungen (8+ Bullets): "Angestrebt ist hier keine vollständige Darstellung der beispielhaft genannten Aspekte, sondern eine differenzierte Schwerpunktsetzung durch den Prüfling, die allerdings mehrere Aspekte aufgreift."
-5. WICHTIG: Bei Aufgabe 2 - VOR der Zeile "(erfuellt ein weiteres aufgabenbezogenes Kriterium)" muss in KURSIV stehen: "Angestrebt ist hier keine vollständige Darstellung der beispielhaft genannten Aspekte, sondern eine differenzierte Schwerpunktsetzung durch den Prüfling, die allerdings mehrere Gesichtspunkte aufgreift."
+5. WICHTIG: Bei Aufgabe 2 - VOR der Zeile "(erfüllt ein weiteres aufgabenbezogenes Kriterium)" muss in KURSIV stehen: "Angestrebt ist hier keine vollständige Darstellung der beispielhaft genannten Aspekte, sondern eine differenzierte Schwerpunktsetzung durch den Prüfling, die allerdings mehrere Gesichtspunkte aufgreift."
 
 KRITISCH - WAS DU TUN MUSST:
 - Lies den Text und nenne KONKRETE Thesen/Argumente/Motive
@@ -158,7 +158,7 @@ JSON-STRUKTUR (EXAKT):
               "p": 9
             },
             {
-              "anf": "(erfuellt ein weiteres aufgabenbezogenes Kriterium)",
+              "anf": "(erfüllt ein weiteres aufgabenbezogenes Kriterium)",
               "p": 4
             }
           ]
@@ -219,7 +219,7 @@ Erstelle den Erwartungshorizont mit der Struktur:
 - Teilaufgabe 1: 39-40 Punkte (Analyse)
 - Teilaufgabe 2: 32-33 Punkte (Transfer/Stellungnahme)
 - Je 6-9 nummerierte Anforderungen pro Teilaufgabe
-- Letzte Anforderung: "(erfuellt ein weiteres aufgabenbezogenes Kriterium)"
+- Letzte Anforderung: "(erfüllt ein weiteres aufgabenbezogenes Kriterium)"
 - Konkrete, textbezogene Sub-Bullets mit "etwa:" eingeleitet
 
 AUSGABE - NUR valides JSON ohne Kommentare:
@@ -248,7 +248,7 @@ Erstelle einen Erwartungshorizont mit:
 - Konkrete, textbezogene Erwartungen mit "etwa:" und Bullet-Points
 - Sub-Bullets mit spezifischen Textinhalten
 - Trennung von Pro/Contra bei Stellungnahmen
-- "(erfuellt ein weiteres aufgabenbezogenes Kriterium)" als letzte Anforderung
+- "(erfüllt ein weiteres aufgabenbezogenes Kriterium)" als letzte Anforderung
 
 AUSGABE - NUR valides JSON:
 {
