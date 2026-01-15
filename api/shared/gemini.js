@@ -13,6 +13,28 @@ export function setCORSHeaders(res) {
   res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 }
 
+// Model fallback pairs - when one model fails, try the other
+const MODEL_FALLBACKS = {
+  'gemini-2.5-flash': 'gemini-3-flash-preview',
+  'gemini-3-flash-preview': 'gemini-2.5-flash'
+};
+
+// Check if error is a quota/overload error that should trigger fallback
+function isQuotaOrOverloadError(status) {
+  return status === 429 || status === 503;
+}
+
+// Extract model name from URL
+function extractModelFromUrl(url) {
+  const match = url.match(/models\/([^:]+):/);
+  return match ? match[1] : null;
+}
+
+// Replace model in URL
+function replaceModelInUrl(url, newModel) {
+  return url.replace(/models\/[^:]+:/, `models/${newModel}:`);
+}
+
 // Fetch with exponential backoff retry for rate limit errors
 async function fetchWithRetry(url, options, maxRetries = 3) {
   for (let attempt = 0; attempt < maxRetries; attempt++) {
@@ -52,6 +74,39 @@ async function fetchWithRetry(url, options, maxRetries = 3) {
   throw new Error('Max retries exceeded');
 }
 
+// Fetch with model fallback - tries alternate model on 429/503 after retries exhausted
+async function fetchWithModelFallback(url, options, maxRetries = 3) {
+  try {
+    const response = await fetchWithRetry(url, options, maxRetries);
+
+    // If quota/overload error after all retries, try fallback model
+    if (isQuotaOrOverloadError(response.status)) {
+      const currentModel = extractModelFromUrl(url);
+      const fallbackModel = MODEL_FALLBACKS[currentModel];
+
+      if (fallbackModel) {
+        console.log(`Model ${currentModel} exhausted (${response.status}). Trying fallback: ${fallbackModel}`);
+        const fallbackUrl = replaceModelInUrl(url, fallbackModel);
+        return await fetchWithRetry(fallbackUrl, options, maxRetries);
+      }
+    }
+
+    return response;
+  } catch (error) {
+    // If max retries exceeded, try fallback model
+    const currentModel = extractModelFromUrl(url);
+    const fallbackModel = MODEL_FALLBACKS[currentModel];
+
+    if (fallbackModel && error.message === 'Max retries exceeded') {
+      console.log(`Model ${currentModel} max retries exceeded. Trying fallback: ${fallbackModel}`);
+      const fallbackUrl = replaceModelInUrl(url, fallbackModel);
+      return await fetchWithRetry(fallbackUrl, options, maxRetries);
+    }
+
+    throw error;
+  }
+}
+
 // Queue requests to avoid hitting rate limits
 async function queueRequest(fn) {
   // Add to queue
@@ -83,7 +138,7 @@ export async function callGeminiAPI(prompt, apiKey, options = {}) {
       throw new Error('GEMINI_API_KEY not configured');
     }
 
-    const response = await fetchWithRetry(
+    const response = await fetchWithModelFallback(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
@@ -208,7 +263,7 @@ export async function callGeminiWithPDF(prompt, pdfBase64, apiKey, options = {})
       throw new Error('GEMINI_API_KEY not configured');
     }
 
-    const response = await fetchWithRetry(
+    const response = await fetchWithModelFallback(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`,
       {
         method: 'POST',
@@ -266,7 +321,7 @@ export async function callGeminiWithCodeExecution(prompt, apiKey) {
       throw new Error('GEMINI_API_KEY not configured');
     }
 
-    const response = await fetchWithRetry(
+    const response = await fetchWithModelFallback(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
