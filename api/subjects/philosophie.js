@@ -4,7 +4,6 @@
 export function generatePrompt(data) {
   const { primaryText, teilaufgabeA, teilaufgabeB, teilaufgabeC } = data;
 
-  // Automatische Erkennung des Aufgabentyps basierend auf Aufgabe 1
   const isTexterschliessung = teilaufgabeA.toLowerCase().includes('text') ||
                                teilaufgabeA.toLowerCase().includes('gedankengang') ||
                                teilaufgabeA.toLowerCase().includes('autor');
@@ -15,11 +14,11 @@ export function generatePrompt(data) {
 
   const typName = isTexterschliessung
     ? 'Erschließung eines philosophischen Textes mit Vergleich und Beurteilung'
-    : 'Erörterung eines philosophischen Problems';
+    : 'Erörterung eines philosophischen Problems auf der Grundlage einer oder mehrerer philosophischer Aussagen';
 
-  return `Du bist ein Erwartungshorizont-Generator für Philosophie Abitur in NRW.
+  return `Du bist ein Erwartungshorizont-Generator für Philosophie Abitur NRW.
 
-AUFGABE: Erstelle einen Erwartungshorizont für folgenden Aufgabentyp: ${typName}
+AUFGABENTYP: ${typName}
 
 PRIMÄRTEXT/ZITAT:
 ${primaryText}
@@ -35,99 +34,108 @@ ${teilaufgabeC}
 
 ANWEISUNG: Antworte AUSSCHLIESSLICH mit validem JSON. Keine Erklärungen, keine Markdown-Formatierung.
 
-WICHTIG - KEINE HALBEN PUNKTE:
-- Verwende NIEMALS halbe Punkte (z.B. 1.5, 2.5)
-- Nur ganze Zahlen (1, 2, 3, 4, etc.)
+WICHTIG - KEINE HALBEN PUNKTE: Nur ganze Zahlen (1, 2, 3, ...).
+
+DETAILGRAD - ORIENTIERE DICH AM NRW-ABITUR-ORIGINAL:
+Jedes Kriterium besteht aus drei Teilen:
+1. "text": Die übergeordnete Anforderungsformulierung in der NRW-Sprache (z.B. "stellt als zentrale These dar, dass...", "erarbeitet den Gedankengang des Textes:", "arbeitet als Unterschiede heraus:")
+2. "bulletpoints": Liste konkreter inhaltlicher Stichpunkte, WAS der Prüfling leisten muss (3-8 Punkte). Orientiere dich eng am Primärtext/Zitat.
+3. "orientierungHalb": Text der beschreibt, was eine ~50%-Leistung kennzeichnet. Beginnt mit "Der Prüfling erarbeitet/stellt..." (leer "" bei Kriterien ≤3 Punkte)
+4. "orientierungVoll": Text der beschreibt, was eine Vollleistung (100%) kennzeichnet. Beginnt mit "Der Prüfling erarbeitet/stellt..." (leer "" bei Kriterien ≤3 Punkte)
 
 PUNKTEVERTEILUNG:
 ${isTexterschliessung ?
-`- Aufgabe 1 (Texterschließung): ${punkteA} Punkte - GROBE Unterteilung in 4-6 Kriterien
-  * Ausgangsfrage (3 Punkte)
-  * Zentrale These (4 Punkte)
-  * Gedankengang in Hauptargumenten (ca. 12-13 Punkte, aufgeteilt in 4-6 größere Argumentblöcke)
-  * Gedanklichen Aufbau kennzeichnen (6 Punkte)
-- Aufgabe 2 (Vergleich): ${punkteB} Punkte
-  * Vergleichsposition darstellen (10-12 Punkte)
-  * Position kennzeichnen (2 Punkte)
-  * Gemeinsamkeiten (4 Punkte)
-  * Unterschiede (12-16 Punkte)
-- Aufgabe 3 (Beurteilung): ${punkteC} Punkte
-  * Überzeugungskraft Position 1 (8 Punkte)
-  * Überzeugungskraft Position 2 (8 Punkte)
-  * Stellungnahme zur Leitfrage (8 Punkte)` :
-`- Aufgabe 1 (Zitatsanalyse): ${punkteA} Punkte - GROBE Unterteilung in 3-4 Kriterien
-  * Problem identifizieren (3-4 Punkte)
-  * Aussage des Zitats differenziert darstellen (6-7 Punkte)
-- Aufgabe 2 (Problemerörterung): ${punkteB} Punkte
-  * Problem aus Sicht von Position 1: ca. 10-12 Punkte
-  * Problem aus Sicht von Position 2: ca. 10-12 Punkte
-  * Vergleich/Kontrastierung: ca. 18-22 Punkte
-- Aufgabe 3 (Stellungnahme): ${punkteC} Punkte
-  * Abwägende Argumentation für beide Seiten (14 Punkte)
-  * Eigene begründete Position (14 Punkte)`}
-- Darstellungsleistung: 20 Punkte (wird automatisch hinzugefügt)
-- GESAMTSUMME: 100 Punkte
+`- Aufgabe 1 (Texterschließung): ${punkteA} Punkte, aufgeteilt in 4-5 Kriterien:
+  * Ausgangsfrage darstellen (2-3 Punkte) - keine Orientierungstexte nötig
+  * Zentrale These darstellen (3-4 Punkte)
+  * Gedankengang erarbeiten (~13-14 Punkte) - mit 6-10 Bulletpoints zum Inhalt + beide Orientierungstexte
+  * Gedanklichen Aufbau kennzeichnen / Konnektoren (6 Punkte) - kurze Orientierungen
+- Aufgabe 2 (Vergleich): ${punkteB} Punkte, aufgeteilt in 4-5 Kriterien:
+  * Vergleichsposition in Grundzügen darstellen (10-12 Punkte) - mit philosophischen Bulletpoints + beide Orientierungen
+  * Position kennzeichnen/einordnen (2 Punkte) - keine Orientierungstexte
+  * Gemeinsamkeiten herausarbeiten (4 Punkte)
+  * Unterschiede herausarbeiten (12-16 Punkte) - mit Bulletpoints zu konkreten Gegensätzen + beide Orientierungen
+- Aufgabe 3 (Beurteilung): ${punkteC} Punkte, aufgeteilt in 3 Kriterien:
+  * Überzeugungskraft Position 1 beurteilen (8 Punkte) - mit konkreten Argumenten als Bulletpoints
+  * Überzeugungskraft Position 2 beurteilen (8 Punkte)
+  * Stellung nehmen zur Leitfrage (8 Punkte) - mit möglichen Argumentationslinien als Bulletpoints` :
+`- Aufgabe 1 (Zitatsanalyse): ${punkteA} Punkte, aufgeteilt in 2 Kriterien:
+  * Aussage des Zitats differenziert darstellen (8-10 Punkte) - mit Bulletpoints zu: zentralem Problem, Definition, Beispielen aus dem Zitat, zynischer Interpretation
+- Aufgabe 2 (Problemerörterung): ${punkteB} Punkte, EXAKT 4 Kriterien - KEIN "Vergleich"-Kriterium:
+  * Position 1 (z.B. Kant) Grundzüge darstellen (10 Punkte) - philosophische Kernbegriffe als Bulletpoints
+  * Problem aus Sicht von Position 1 erläutern (12 Punkte) - konkrete Bezüge zum Zitat als Bulletpoints
+  * Position 2 (z.B. Utilitarismus) Grundzüge darstellen (10 Punkte)
+  * Problem aus Sicht von Position 2 erläutern (10 Punkte) - konkrete Bezüge zum Zitat
+  SUMME MUSS EXAKT ${punkteB} PUNKTE ERGEBEN (10+12+10+10=42)
+- Aufgabe 3 (Stellungnahme): ${punkteC} Punkte, EXAKT 3 Kriterien:
+  * Abwägend Stellung nehmen FÜR die Berücksichtigung von [Thema] (10 Punkte) - 3 konkrete Pro-Argumente als Bulletpoints
+  * Abwägend Stellung nehmen GEGEN die Berücksichtigung von [Thema] (10 Punkte) - 3 konkrete Contra-Argumente
+  * Eigene begründete Stellungnahme entwickeln (8 Punkte)
+  SUMME MUSS EXAKT ${punkteC} PUNKTE ERGEBEN (10+10+8=28)`}
 
-FORMAT:
+FORMAT (GENAU 3 Teilaufgaben - KEINE Darstellungsleistung generieren):
 {
   "teilaufgaben": [
     {
-      "name": "Aufgabe 1: [Erkenne aus Aufgabenstellung]",
-      "typ": "[z.B. Texterschließung, Zitatsanalyse]",
+      "name": "Aufgabe 1: [Kurzname aus Aufgabenstellung, max. 8 Wörter]",
+      "typ": "[z.B. Texterschließung / Zitatsanalyse]",
       "kriterien": [
-        {"nr": 1, "text": "[Spezifisches Kriterium]", "punkte": 4},
-        {"nr": 2, "text": "[Weiteres Kriterium]", "punkte": 4},
-        ...
+        {
+          "nr": 1,
+          "text": "stellt als Ausgangsfrage des Textes dar, ob...",
+          "punkte": 2,
+          "bulletpoints": [],
+          "orientierungHalb": "",
+          "orientierungVoll": ""
+        },
+        {
+          "nr": 2,
+          "text": "stellt als zentrale These dar, dass...",
+          "punkte": 4,
+          "bulletpoints": [
+            "Der Mensch kann nicht für seine Handlungen verantwortlich gemacht werden, da...",
+            "Sein Charakter ist durch Erbanlagen und frühkindliche Umwelt determiniert",
+            "Diese Faktoren hat er nicht selbst gewählt"
+          ],
+          "orientierungHalb": "Der Prüfling stellt die zentrale These nur ansatzweise dar oder paraphrasiert den Text ohne eigenständige Formulierungen.",
+          "orientierungVoll": "Der Prüfling stellt die zentrale These präzise und differenziert dar, unter Verwendung eigenständiger Formulierungen und philosophischer Fachbegriffe."
+        },
+        {
+          "nr": 3,
+          "text": "erarbeitet den Gedankengang des Textes:",
+          "punkte": 14,
+          "bulletpoints": [
+            "Ausgangspunkt ist die Frage nach der moralischen Verantwortung des Menschen",
+            "...",
+            "..."
+          ],
+          "orientierungHalb": "Der Prüfling erarbeitet nur einige der o. g. Argumente und/oder beschreibt den Gedankengang in weitgehend reproduktiver Form (gelegentliche Paraphrasen, aneinandergereihte Textzitate).",
+          "orientierungVoll": "Der Prüfling erarbeitet die o. g. Argumente umfassend und strukturiert (eigenständige Formulierungen, funktionale Zitate), erläutert seine Ausführungen sachgerecht und orientiert sich eher an der gedanklichen Struktur des Textes als an seiner linearen Abfolge."
+        }
       ]
     },
     {
-      "name": "Aufgabe 2: [Erkenne aus Aufgabenstellung]",
-      "typ": "[z.B. Vergleich, Problemerörterung]",
+      "name": "Aufgabe 2: [Kurzname]",
+      "typ": "[z.B. Vergleich / Problemerörterung]",
       "kriterien": [...]
     },
     {
-      "name": "Aufgabe 3: [Erkenne aus Aufgabenstellung]",
-      "typ": "[z.B. Beurteilung, Stellungnahme]",
+      "name": "Aufgabe 3: [Kurzname]",
+      "typ": "[z.B. Beurteilung / Stellungnahme]",
       "kriterien": [...]
-    },
-    {
-      "name": "Darstellungsleistung",
-      "typ": "Sprachliche Darstellung",
-      "kriterien": [
-        {"nr": 1, "text": "strukturiert seinen Text schlüssig, stringent sowie gedanklich klar und bezieht sich dabei genau und konsequent auf die Aufgabenstellung.", "punkte": 5},
-        {"nr": 2, "text": "bezieht beschreibende, deutende und wertende Aussagen schlüssig aufeinander.", "punkte": 4},
-        {"nr": 3, "text": "belegt seine Aussagen durch angemessene und korrekte Nachweise (Bezugnahmen auf die philosophische Aussage, unterrichtlich bearbeitete Autoren, ggf. durch Zitate u. a.).", "punkte": 3},
-        {"nr": 4, "text": "formuliert unter Beachtung der Fachsprache präzise und begrifflich differenziert.", "punkte": 4},
-        {"nr": 5, "text": "schreibt sprachlich richtig (Grammatik, Orthographie, Zeichensetzung) sowie syntaktisch und stilistisch sicher.", "punkte": 4}
-      ]
     }
   ]
 }
 
 KRITISCHE ANFORDERUNGEN:
-- NIEMALS halbe Punkte verwenden - nur ganze Zahlen
-- Analysiere die Aufgabenstellungen genau und erkenne den Aufgabentyp automatisch
-- Erstelle spezifische Kriterien basierend auf den konkreten Aufgabenstellungen
+- Nur ganze Zahlen, keine halben Punkte
 - Aufgabe 1 MUSS EXAKT ${punkteA} Punkte ergeben
 - Aufgabe 2 MUSS EXAKT ${punkteB} Punkte ergeben
 - Aufgabe 3 MUSS EXAKT ${punkteC} Punkte ergeben
-- Darstellungsleistung hat IMMER exakt die 5 vorgegebenen Kriterien mit EXAKT 20 Punkten (5+4+3+4+4)
-- Gesamtsumme: 100 Punkte (80 inhaltlich + 20 Darstellung)
-${isTexterschliessung ?
-`- Bei Texterschließung:
-  * Fokus auf Textanalyse und philosophischen Vergleich
-  * Konkrete Bezüge zum Primärtext und Vergleichsphilosophen
-  * Gedankengang in 4-6 GROBE Argumentblöcke aufteilen (nicht zu detailliert!)
-  * Vergleich muss Gemeinsamkeiten UND Unterschiede enthalten` :
-`- Bei Problemerörterung:
-  * Fokus auf eigenständige Problemerörterung aus verschiedenen Perspektiven
-  * Argumentative Auseinandersetzung mit dem philosophischen Problem
-  * Mindestens 2 philosophische Positionen einbeziehen
-  * Abwägende Stellungnahme mit eigener Position`}
-- Schliesse ALLE JSON-Klammern korrekt
-- Keine Sonderzeichen die JSON brechen
-- Verwende \\n für Zeilenumbrüche
-- Erstelle GENAU 4 Teilaufgaben (3 inhaltliche + 1 Darstellungsleistung)
-- Die Darstellungsleistung muss EXAKT wie im Format-Beispiel sein
-- Jedes inhaltliche Kriterium muss konkret und spezifisch auf die Aufgabenstellung bezogen sein`;
+- GENAU 3 Teilaufgaben im JSON - keine Darstellungsleistung
+- Bulletpoints enthalten konkrete, aus dem Primärtext/Zitat destillierte Inhalte
+- Orientierungstexte beschreiben qualitativ den Unterschied zwischen ~50% und 100% Leistung
+- Philosophische Fachsprache verwenden (Determinismus, kategorischer Imperativ, Deontologie, Konsequenzprinzip, etc.)
+- Alle JSON-Klammern korrekt schließen
+- Keine Sonderzeichen die JSON brechen`;
 }
