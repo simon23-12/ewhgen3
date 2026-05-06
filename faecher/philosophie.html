@@ -219,7 +219,7 @@
                     <h2>Erwartungshorizont Philosophie</h2>
             `;
 
-            // Render each Teilaufgabe
+            // Render each Teilaufgabe (JSON contains exactly 3, no Darstellungsleistung)
             contentData.teilaufgaben.forEach((ta, index) => {
                 const totalPoints = ta.kriterien.reduce((sum, k) => {
                     return sum + (typeof k.punkte === 'number' ? k.punkte : 0);
@@ -231,7 +231,7 @@
                         <table class="preview-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 60%;">Kriterium</th>
+                                    <th style="width: 60%;">Anforderungen – Der Prüfling</th>
                                     <th style="width: 15%;">Max. Punkte</th>
                                     <th style="width: 25%;">Erreichte Punkte</th>
                                 </tr>
@@ -241,9 +241,28 @@
 
                 ta.kriterien.forEach(krit => {
                     const punkteStr = typeof krit.punkte === 'number' ? krit.punkte : `(${krit.punkte})`;
+                    const halfPts = typeof krit.punkte === 'number' ? Math.round(krit.punkte / 2) : 0;
+
+                    let cellContent = krit.text;
+
+                    if (krit.bulletpoints && krit.bulletpoints.length > 0) {
+                        cellContent += '<ul style="margin: 5px 0 5px 18px; padding: 0;">';
+                        krit.bulletpoints.forEach(bp => {
+                            cellContent += `<li style="margin-bottom: 2px;">${bp}</li>`;
+                        });
+                        cellContent += '</ul>';
+                    }
+
+                    if (krit.orientierungHalb) {
+                        cellContent += `<p style="margin: 8px 0 3px; font-style: italic; font-size: 0.92em;"><strong>Orientierung für eine ${halfPts} Gewichtungspunkten entsprechende Lösungsqualität:</strong><br>${krit.orientierungHalb}</p>`;
+                    }
+                    if (krit.orientierungVoll) {
+                        cellContent += `<p style="margin: 3px 0 0; font-style: italic; font-size: 0.92em;"><strong>Orientierung für eine ${punkteStr} Gewichtungspunkten entsprechende Lösungsqualität:</strong><br>${krit.orientierungVoll}</p>`;
+                    }
+
                     html += `
                         <tr>
-                            <td contenteditable="true">${krit.text}</td>
+                            <td contenteditable="true">${cellContent}</td>
                             <td contenteditable="true">${punkteStr}</td>
                             <td contenteditable="true"></td>
                         </tr>
@@ -257,37 +276,42 @@
                 `;
             });
 
-            // Add Darstellungsleistung table
+            // Darstellungsleistung – NRW-Standardkriterien (5+4+3+4+4 = 20)
             html += `
                 <div class="preview-section">
                     <h3 class="preview-subtitle">Darstellungsleistung (20 Punkte)</h3>
                     <table class="preview-table">
                         <thead>
                             <tr>
-                                <th style="width: 60%;">Kriterium</th>
+                                <th style="width: 60%;">Anforderungen – Der Prüfling</th>
                                 <th style="width: 15%;">Max. Punkte</th>
                                 <th style="width: 25%;">Erreichte Punkte</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td contenteditable="true">strukturiert den Text schlüssig, stringent und gedanklich klar</td>
+                                <td contenteditable="true">strukturiert seinen Text schlüssig, stringent sowie gedanklich klar und bezieht sich dabei genau und konsequent auf die Aufgabenstellung.</td>
                                 <td contenteditable="true">5</td>
                                 <td contenteditable="true"></td>
                             </tr>
                             <tr>
-                                <td contenteditable="true">formuliert unter Beachtung der Fachsprache präzise und begrifflich differenziert</td>
-                                <td contenteditable="true">5</td>
+                                <td contenteditable="true">bezieht beschreibende, deutende und wertende Aussagen schlüssig aufeinander.</td>
+                                <td contenteditable="true">4</td>
                                 <td contenteditable="true"></td>
                             </tr>
                             <tr>
-                                <td contenteditable="true">schreibt sprachlich richtig (Grammatik, Orthographie, Zeichensetzung) sowie syntaktisch und stilistisch sicher</td>
-                                <td contenteditable="true">5</td>
+                                <td contenteditable="true">belegt seine Aussagen durch angemessene und korrekte Nachweise (Bezugnahmen auf die philosophische Aussage, unterrichtlich bearbeitete Autoren, ggf. durch Zitate u. a.).</td>
+                                <td contenteditable="true">3</td>
                                 <td contenteditable="true"></td>
                             </tr>
                             <tr>
-                                <td contenteditable="true">belegt Aussagen durch angemessenes und korrektes Zitieren</td>
-                                <td contenteditable="true">5</td>
+                                <td contenteditable="true">formuliert unter Beachtung der Fachsprache präzise und begrifflich differenziert.</td>
+                                <td contenteditable="true">4</td>
+                                <td contenteditable="true"></td>
+                            </tr>
+                            <tr>
+                                <td contenteditable="true">schreibt sprachlich richtig (Grammatik, Orthographie, Zeichensetzung) sowie syntaktisch und stilistisch sicher.</td>
+                                <td contenteditable="true">4</td>
                                 <td contenteditable="true"></td>
                             </tr>
                         </tbody>
@@ -295,7 +319,7 @@
                 </div>
             `;
 
-            // Add summary table
+            // Add summary table (inhaltTotal = sum of 3 content tasks, Darstellungsleistung is hardcoded = 20)
             const inhaltTotal = contentData.teilaufgaben.reduce((sum, ta) => {
                 return sum + ta.kriterien.reduce((s, k) => {
                     return s + (typeof k.punkte === 'number' ? k.punkte : 0);
