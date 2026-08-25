@@ -152,7 +152,7 @@ Antworte AUSSCHLIESSLICH mit validem JSON in diesem Format (keine Erklärungen):
 
     // Google Gemini API aufrufen
     const geminiResponse = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key=${GEMINI_API_KEY}`,
       {
         method: 'POST',
         headers: {

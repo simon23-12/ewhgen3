@@ -209,7 +209,7 @@ In ALLEN bestehenden `faecher/*.html` den neuen Tab hinzufügen:
 
 ## API Notes
 
-- Gemini Modell: `gemini-2.5-flash` (in `api/shared/gemini.js`)
+- Gemini Modell: `gemini-3.7-flash` (in `api/shared/gemini.js`)
 - Jedes Gemini-Modell hat separate Quotas
 - Bei Quota-Errors: Google AI Studio checken welches Modell noch Quota hat
 
@@ -240,7 +240,7 @@ Gemini 2.0 Flash unterstützt Code Execution mit SymPy für exakte Berechnungen:
 export const requiresCodeExecution = true;
 ```
 ⚠️ ACHTUNG: Code Execution hat STRIKTE Rate Limits (ca. 10 req/min Free Tier).
-Für Production besser auf gemini-2.5-flash ohne Code Execution wechseln.
+Für Production besser auf gemini-3.7-flash ohne Code Execution wechseln.
 
 ### 5. Strukturiertes JSON-Format für Lösungen
 ```json
@@ -317,7 +317,7 @@ fetch('/api/generate', {
 ```javascript
 export async function callGeminiWithPDF(prompt, pdfBase64, apiKey, options = {}) {
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key=${apiKey}`,
     {
       method: 'POST',
       body: JSON.stringify({

@@ -13,10 +13,11 @@ export function setCORSHeaders(res) {
   res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 }
 
-// Model fallback pairs - when one model fails, try the other
+// Model fallback chains - when one model fails, try the next (each model has its own quota)
 const MODEL_FALLBACKS = {
-  'gemini-2.5-flash': 'gemini-3-flash-preview',
-  'gemini-3-flash-preview': 'gemini-2.5-flash'
+  'gemini-3.7-flash': ['gemini-3.6-flash', 'gemini-2.5-flash'],
+  'gemini-3.6-flash': ['gemini-3.7-flash', 'gemini-2.5-flash'],
+  'gemini-2.5-flash': ['gemini-3.7-flash', 'gemini-3.6-flash']
 };
 
 // Check if error is a quota/overload error that should trigger fallback
@@ -74,33 +75,48 @@ async function fetchWithRetry(url, options, maxRetries = 3) {
   throw new Error('Max retries exceeded');
 }
 
-// Fetch with model fallback - tries alternate model on 429/503 after retries exhausted
+// Walk the fallback chain - returns null if no fallback model worked out
+async function tryFallbackModels(url, options, maxRetries, reason) {
+  const currentModel = extractModelFromUrl(url);
+  const fallbackModels = MODEL_FALLBACKS[currentModel] || [];
+  let lastResponse = null;
+  let lastError = null;
+
+  for (const fallbackModel of fallbackModels) {
+    console.log(`Model ${currentModel} ${reason}. Trying fallback: ${fallbackModel}`);
+    try {
+      const response = await fetchWithRetry(replaceModelInUrl(url, fallbackModel), options, maxRetries);
+      if (!isQuotaOrOverloadError(response.status)) {
+        return response;
+      }
+      lastResponse = response;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  if (lastResponse) return lastResponse;
+  if (lastError) throw lastError;
+  return null;
+}
+
+// Fetch with model fallback - tries alternate models on 429/503 after retries exhausted
 async function fetchWithModelFallback(url, options, maxRetries = 3) {
   try {
     const response = await fetchWithRetry(url, options, maxRetries);
 
-    // If quota/overload error after all retries, try fallback model
+    // If quota/overload error after all retries, walk the fallback chain
     if (isQuotaOrOverloadError(response.status)) {
-      const currentModel = extractModelFromUrl(url);
-      const fallbackModel = MODEL_FALLBACKS[currentModel];
-
-      if (fallbackModel) {
-        console.log(`Model ${currentModel} exhausted (${response.status}). Trying fallback: ${fallbackModel}`);
-        const fallbackUrl = replaceModelInUrl(url, fallbackModel);
-        return await fetchWithRetry(fallbackUrl, options, maxRetries);
-      }
+      const fallbackResponse = await tryFallbackModels(url, options, maxRetries, `exhausted (${response.status})`);
+      if (fallbackResponse) return fallbackResponse;
     }
 
     return response;
   } catch (error) {
-    // If max retries exceeded, try fallback model
-    const currentModel = extractModelFromUrl(url);
-    const fallbackModel = MODEL_FALLBACKS[currentModel];
-
-    if (fallbackModel && error.message === 'Max retries exceeded') {
-      console.log(`Model ${currentModel} max retries exceeded. Trying fallback: ${fallbackModel}`);
-      const fallbackUrl = replaceModelInUrl(url, fallbackModel);
-      return await fetchWithRetry(fallbackUrl, options, maxRetries);
+    // If max retries exceeded, walk the fallback chain
+    if (error.message === 'Max retries exceeded') {
+      const fallbackResponse = await tryFallbackModels(url, options, maxRetries, 'max retries exceeded');
+      if (fallbackResponse) return fallbackResponse;
     }
 
     throw error;
@@ -139,7 +155,7 @@ export async function callGeminiAPI(prompt, apiKey, options = {}) {
     }
 
     const response = await fetchWithModelFallback(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: {
@@ -255,7 +271,7 @@ export function cleanJSONResponse(responseText) {
 
 // Gemini call with PDF Vision (for Mathematik)
 // Sends PDF as base64 inline data for visual understanding
-// Uses Gemini 3 Flash for better math reasoning (separate quota from 2.5)
+// Uses Gemini 3.6 Flash for better math reasoning (separate quota from 3.7)
 export async function callGeminiWithPDF(prompt, pdfBase64, apiKey, options = {}) {
   return queueRequest(async () => {
     const maxTokens = options.maxOutputTokens || 65536;
@@ -264,7 +280,7 @@ export async function callGeminiWithPDF(prompt, pdfBase64, apiKey, options = {})
     }
 
     const response = await fetchWithModelFallback(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: {
@@ -322,7 +338,7 @@ export async function callGeminiWithCodeExecution(prompt, apiKey) {
     }
 
     const response = await fetchWithModelFallback(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: {

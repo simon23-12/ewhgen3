@@ -44,7 +44,7 @@ When reviewing code or architectural decisions in the EWHgen3 project, you MUST:
 5. **Performance Impact Analysis**: Consider:
    - Bundle size implications
    - API response times
-   - Gemini quota efficiency (using `gemini-2.5-flash` correctly?)
+   - Gemini quota efficiency (using `gemini-3.7-flash` correctly?)
    - Client-side rendering performance
    - PDF processing overhead
 

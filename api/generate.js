@@ -139,7 +139,7 @@ export default async function handler(req, res) {
       success: true,
       data: contentData,
       subject: subject,
-      provider: 'gemini-2.0-flash-exp'
+      provider: 'gemini-3.7-flash'
     });
 
   } catch (error) {

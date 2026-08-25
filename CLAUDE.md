@@ -5,7 +5,7 @@ Generator für Erwartungshorizonte für NRW Lehrer für Oberstufenklausuren (der
 ## Tech Stack
 - Frontend: Multi-Page Architecture mit Shared Components
 - Backend: Node.js serverless (`api/*.js`) mit modularer Subject-Architektur
-- AI: Google Gemini 2.5 Flash API (WICHTIG: Nutze `gemini-2.5-flash`, da jedes Modell separate Quotas hat)
+- AI: Google Gemini 3 Flash API (Text: `gemini-3.7-flash`, PDF Vision: `gemini-3.6-flash`; WICHTIG: jedes Modell hat separate Quotas)
 - PDF: Gemini Vision API für Mathematik (Graphen/Formeln erkennbar), pdf.js client-side für Englisch/Philosophie
 
 ## Struktur
