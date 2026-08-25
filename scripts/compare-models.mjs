@@ -6,7 +6,7 @@
 //   node scripts/compare-models.mjs --subject mathematik --pdf klausur.pdf
 //   node scripts/compare-models.mjs --subject englisch --input k.json --models gemini-3.7-flash,gemini-2.5-flash
 //
-// Optionen: --thinking low|medium|high|none  --out <verzeichnis>
+// Optionen: --thinking minimal|low|medium|high|none  --out <verzeichnis>
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
@@ -57,7 +57,7 @@ function isValidJSON(text) {
 
 async function runModel(model, body, apiKey, thinking) {
   const payload = JSON.parse(JSON.stringify(body));
-  if (thinking !== 'none') payload.generationConfig.thinking_level = thinking;
+  if (thinking !== 'none') payload.generationConfig.thinkingConfig = { thinkingLevel: thinking };
 
   const started = Date.now();
   let response = await fetch(
@@ -65,12 +65,12 @@ async function runModel(model, body, apiKey, thinking) {
     { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
   );
 
-  // Modelle ohne thinking_level-Support: einmal ohne das Feld nachfassen
+  // Modelle ohne thinkingConfig-Support: einmal ohne das Feld nachfassen
   if (response.status === 400 && thinking !== 'none') {
     const errorText = await response.text();
     if (errorText.includes('thinking')) {
-      console.log(`  ${model}: kein thinking_level-Support, wiederhole ohne das Feld`);
-      delete payload.generationConfig.thinking_level;
+      console.log(`  ${model}: kein thinkingConfig-Support, wiederhole ohne das Feld`);
+      delete payload.generationConfig.thinkingConfig;
       response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
         { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
@@ -150,7 +150,7 @@ async function main() {
     };
   }
 
-  console.log(`Fach: ${subject} | Quelle: ${args.pdf || args.input} | thinking_level: ${thinking}`);
+  console.log(`Fach: ${subject} | Quelle: ${args.pdf || args.input} | thinkingLevel: ${thinking}`);
   console.log(`Modelle: ${models.join(', ')}\n`);
 
   mkdirSync(outDir, { recursive: true });

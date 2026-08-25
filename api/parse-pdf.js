@@ -166,7 +166,8 @@ Antworte AUSSCHLIESSLICH mit validem JSON in diesem Format (keine Erklärungen):
             temperature: 0.3,
             maxOutputTokens: 16384,
             topP: 0.95,
-            topK: 40
+            topK: 40,
+            thinkingConfig: { thinkingLevel: 'low' }
           }
         })
       }

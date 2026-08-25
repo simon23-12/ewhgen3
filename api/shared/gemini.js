@@ -20,6 +20,13 @@ const MODEL_FALLBACKS = {
   'gemini-2.5-flash': ['gemini-3.7-flash', 'gemini-3.6-flash']
 };
 
+// Thinking levels - thinking tokens are billed at the output rate, so keep them
+// as low as the task allows. Override per call via options.thinkingLevel.
+const DEFAULT_THINKING_LEVEL = {
+  text: 'low',   // prompt already prescribes the full output structure
+  pdf: 'medium'  // graphs and formulas need the extra reasoning
+};
+
 // Log token usage so real costs are visible in the Vercel function logs
 function logUsage(data, label) {
   const usage = data.usageMetadata;
@@ -113,10 +120,32 @@ async function tryFallbackModels(url, options, maxRetries, reason) {
   return null;
 }
 
+// Some models reject thinkingConfig - drop it and retry once rather than failing
+async function retryWithoutThinkingConfig(url, options, maxRetries) {
+  let body;
+  try {
+    body = JSON.parse(options.body);
+  } catch {
+    return null;
+  }
+
+  if (!body.generationConfig?.thinkingConfig) return null;
+
+  delete body.generationConfig.thinkingConfig;
+  console.log('Model rejected thinkingConfig. Retrying without it.');
+  return await fetchWithRetry(url, { ...options, body: JSON.stringify(body) }, maxRetries);
+}
+
 // Fetch with model fallback - tries alternate models on 429/503 after retries exhausted
 async function fetchWithModelFallback(url, options, maxRetries = 3) {
   try {
     const response = await fetchWithRetry(url, options, maxRetries);
+
+    // Unsupported thinkingConfig - retry once without it
+    if (response.status === 400) {
+      const retried = await retryWithoutThinkingConfig(url, options, maxRetries);
+      if (retried) return retried;
+    }
 
     // If quota/overload error after all retries, walk the fallback chain
     if (isQuotaOrOverloadError(response.status)) {
@@ -163,6 +192,7 @@ async function queueRequest(fn) {
 export async function callGeminiAPI(prompt, apiKey, options = {}) {
   return queueRequest(async () => {
     const maxTokens = options.maxOutputTokens || 16384;
+    const thinkingLevel = options.thinkingLevel || DEFAULT_THINKING_LEVEL.text;
     if (!apiKey) {
       throw new Error('GEMINI_API_KEY not configured');
     }
@@ -182,7 +212,8 @@ export async function callGeminiAPI(prompt, apiKey, options = {}) {
             temperature: 1.0,
             maxOutputTokens: maxTokens,
             topP: 0.95,
-            topK: 64
+            topK: 64,
+            thinkingConfig: { thinkingLevel }
           }
         })
       }
@@ -290,6 +321,7 @@ export function cleanJSONResponse(responseText) {
 export async function callGeminiWithPDF(prompt, pdfBase64, apiKey, options = {}) {
   return queueRequest(async () => {
     const maxTokens = options.maxOutputTokens || 65536;
+    const thinkingLevel = options.thinkingLevel || DEFAULT_THINKING_LEVEL.pdf;
     if (!apiKey) {
       throw new Error('GEMINI_API_KEY not configured');
     }
@@ -317,7 +349,8 @@ export async function callGeminiWithPDF(prompt, pdfBase64, apiKey, options = {})
             temperature: 1.0,
             maxOutputTokens: maxTokens,
             topP: 0.95,
-            topK: 64
+            topK: 64,
+            thinkingConfig: { thinkingLevel }
           }
         })
       }
