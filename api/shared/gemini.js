@@ -20,6 +20,26 @@ const MODEL_FALLBACKS = {
   'gemini-2.5-flash': ['gemini-3.7-flash', 'gemini-3.6-flash']
 };
 
+// Thinking levels - thinking tokens are billed at the output rate, so keep them
+// as low as the task allows. Override per call via options.thinkingLevel.
+const DEFAULT_THINKING_LEVEL = {
+  text: 'low',   // prompt already prescribes the full output structure
+  pdf: 'medium'  // graphs and formulas need the extra reasoning
+};
+
+// Log token usage so real costs are visible in the Vercel function logs
+function logUsage(data, label) {
+  const usage = data.usageMetadata;
+  if (!usage) return;
+  console.log(
+    `Usage [${label} / ${data.modelVersion || 'unknown'}]: ` +
+    `prompt=${usage.promptTokenCount || 0} ` +
+    `output=${usage.candidatesTokenCount || 0} ` +
+    `thoughts=${usage.thoughtsTokenCount || 0} ` +
+    `total=${usage.totalTokenCount || 0}`
+  );
+}
+
 // Check if error is a quota/overload error that should trigger fallback
 function isQuotaOrOverloadError(status) {
   return status === 429 || status === 503;
@@ -150,6 +170,7 @@ async function queueRequest(fn) {
 export async function callGeminiAPI(prompt, apiKey, options = {}) {
   return queueRequest(async () => {
     const maxTokens = options.maxOutputTokens || 16384;
+    const thinkingLevel = options.thinkingLevel || DEFAULT_THINKING_LEVEL.text;
     if (!apiKey) {
       throw new Error('GEMINI_API_KEY not configured');
     }
@@ -169,7 +190,8 @@ export async function callGeminiAPI(prompt, apiKey, options = {}) {
             temperature: 1.0,
             maxOutputTokens: maxTokens,
             topP: 0.95,
-            topK: 64
+            topK: 64,
+            thinking_level: thinkingLevel
           }
         })
       }
@@ -188,6 +210,8 @@ export async function callGeminiAPI(prompt, apiKey, options = {}) {
     if (!data.candidates || data.candidates.length === 0) {
       throw new Error('No response from Gemini API');
     }
+
+    logUsage(data, 'text');
 
     return {
       text: data.candidates[0].content.parts[0].text,
@@ -275,6 +299,7 @@ export function cleanJSONResponse(responseText) {
 export async function callGeminiWithPDF(prompt, pdfBase64, apiKey, options = {}) {
   return queueRequest(async () => {
     const maxTokens = options.maxOutputTokens || 65536;
+    const thinkingLevel = options.thinkingLevel || DEFAULT_THINKING_LEVEL.pdf;
     if (!apiKey) {
       throw new Error('GEMINI_API_KEY not configured');
     }
@@ -302,7 +327,8 @@ export async function callGeminiWithPDF(prompt, pdfBase64, apiKey, options = {})
             temperature: 1.0,
             maxOutputTokens: maxTokens,
             topP: 0.95,
-            topK: 64
+            topK: 64,
+            thinking_level: thinkingLevel
           }
         })
       }
@@ -321,6 +347,8 @@ export async function callGeminiWithPDF(prompt, pdfBase64, apiKey, options = {})
     if (!data.candidates || data.candidates.length === 0) {
       throw new Error('No response from Gemini API');
     }
+
+    logUsage(data, 'pdf-vision');
 
     return {
       text: data.candidates[0].content.parts[0].text,

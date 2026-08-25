@@ -166,7 +166,8 @@ Antworte AUSSCHLIESSLICH mit validem JSON in diesem Format (keine Erklärungen):
             temperature: 0.3,
             maxOutputTokens: 16384,
             topP: 0.95,
-            topK: 40
+            topK: 40,
+            thinking_level: 'low'
           }
         })
       }
@@ -182,6 +183,17 @@ Antworte AUSSCHLIESSLICH mit validem JSON in diesem Format (keine Erklärungen):
     }
 
     const geminiData = await geminiResponse.json();
+
+    if (geminiData.usageMetadata) {
+      const usage = geminiData.usageMetadata;
+      console.log(
+        `Usage [parse-pdf / ${geminiData.modelVersion || 'unknown'}]: ` +
+        `prompt=${usage.promptTokenCount || 0} ` +
+        `output=${usage.candidatesTokenCount || 0} ` +
+        `thoughts=${usage.thoughtsTokenCount || 0} ` +
+        `total=${usage.totalTokenCount || 0}`
+      );
+    }
 
     // Validierung
     if (!geminiData.candidates || geminiData.candidates.length === 0) {
